@@ -40,3 +40,12 @@ export interface BoardMockProps {
   logoUrl?: string;
   themeColor?: string;
 }
+
+export interface TaskItemProps {
+  task: Task;
+  onStatusChange?: (taskId: string, newStatus: Task["status"]) => void;
+}
+
+export interface TaskListProps {
+  tasks: Task[];
+}

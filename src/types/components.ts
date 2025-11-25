@@ -7,3 +7,4 @@ export interface TopbarProps {
   boardTitle: string;
   boardLogo?: string;
 }
+

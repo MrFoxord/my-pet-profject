@@ -6,7 +6,7 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { ReactNode } from "react";
 import { Board, DashboardClientProps } from "@/types";
 import { mockTasks } from "@/mocks/dashboard";
-
+import TaskList from "@/components/dashboard/TaskList/TaskList";
 
 
 export default function DashboardClient({ board, children }: DashboardClientProps) {
@@ -39,30 +39,7 @@ export default function DashboardClient({ board, children }: DashboardClientProp
                         <Typography variant="h6" gutterBottom>
                             Tasks
                         </Typography>
-                        <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-                            {mockTasks.map(task => (
-                            <Box
-                                key={task.id}
-                                sx={{
-                                p: 2,
-                                border: '1px solid #ccc',
-                                borderRadius: 1,
-                                backgroundColor:
-                                    task.status === 'done' ? '#d4edda' :
-                                    task.status === 'in-progress' ? '#fff3cd' :
-                                    '#f8d7da'
-                                }}
-                            >
-                                <Typography variant="subtitle2">{task.title}</Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                Assigned to: {task.assignedTo}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                Due: {task.dueDate}
-                                </Typography>
-                            </Box>
-                            ))}
-                        </Box>
+                        <TaskList tasks={mockTasks}/>
                     </Box>
                     {children}
                 </Box>
