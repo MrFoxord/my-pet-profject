@@ -22,7 +22,8 @@ export interface Board {
         visibleColumns?: string[];
         defaultFilter?: string;
         viewMode?: 'list' | 'grid';
-    }
+    };
+    tickets?: Ticket[];
 }
 
 export interface DashboardClientProps {
@@ -48,4 +49,33 @@ export interface TaskItemProps {
 
 export interface TaskListProps {
   tasks: Task[];
+}
+
+export interface Ticket {
+  id: string;
+  title: string;
+  type: "bug" | "feature" | "task";
+  priority: "low" | "medium" | "high";
+  
+  assignee: {
+    id: number;
+    name: string;
+    avatar: string;
+  };
+
+  subtasks: {
+    id: string;
+    title: string;
+    done: boolean;
+  }[];
+}
+
+export interface TickerCardProps {
+  ticket: Ticket;
+  onRender?: () => void;
+}
+
+export interface TicketListProps {
+  tickets: Ticket[];
+  onTicketRendered?: () => void;
 }

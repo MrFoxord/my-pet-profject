@@ -1,5 +1,5 @@
 import DashboardClient from "@/components/layout/DashboardClient";
-import { mockBoards } from "@/mocks/dashboard";
+import { mockBoards } from "@/store/mockBoards";
 import { BoardPageProps } from "@/types";
 
 export default async function BoardPage({ params }: BoardPageProps) {
