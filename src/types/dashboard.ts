@@ -54,28 +54,46 @@ export interface TaskListProps {
 export interface Ticket {
   id: string;
   title: string;
+  description: string;
   type: "bug" | "feature" | "task";
-  priority: "low" | "medium" | "high";
-  
+  priority: "low" | "medium" | "high" | "critical";
+  status: "todo" | "in-progress" | "done";
+  createdAt: string;
+  dueDate?: string;
+  updatedAt?: string;
+  relatedTicketIds?: string[];
   assignee: {
-    id: number;
-    name: string;
-    avatar: string;
+      name: string;
+      avatar: string;
   };
-
-  subtasks: {
-    id: string;
-    title: string;
-    done: boolean;
-  }[];
+  subtasks: { id: string; title: string; done: boolean }[];
+  comments?: TicketComment[];
 }
 
 export interface TickerCardProps {
   ticket: Ticket;
   onRender?: () => void;
+  onClick?: (ticket: Ticket) => void;
 }
 
 export interface TicketListProps {
   tickets: Ticket[];
   onTicketRendered?: () => void;
+  onTicketClick?: (ticket: Ticket) => void;
+}
+
+export interface TicketModalProps {
+  ticket: Ticket;
+  open: boolean;
+  onClose: () => void;
+}
+
+export interface TicketComment {
+    id: string;
+    author: {
+        name: string;
+        avatar: string;
+    };
+    message: string;
+    createdAt: string;
 }

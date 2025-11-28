@@ -16,14 +16,14 @@ import {
 import { TickerCardProps } from '@/types';
 import { useEffect } from 'react';
 
-export default function TickerCard({ ticket, onRender  }: TickerCardProps ) {
+export default function TickerCard({ ticket, onRender, onClick  }: TickerCardProps ) {
     const total =ticket.subtasks.length;
     const done = ticket.subtasks.filter(st => st.done).length;
     useEffect(() => {
         if (onRender) onRender();
     }, []);
     return (
-        <Card>
+        <Card onClick={() => onClick?.(ticket)}>
             <HeaderRow>
                 <TicketId>{ticket.id}</TicketId>
                 <TypeBadge $type={ticket.type}>{ticket.type}</TypeBadge>

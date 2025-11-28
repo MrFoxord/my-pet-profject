@@ -19,8 +19,8 @@ export const Modal = ({ open, onClose, children }: ModalProps) => {
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
                     bgcolor: 'background.paper',
-                    padding: 4,
                     borderRadius: 2,
+                    width: 'maxContent',
                 }}
             >
                 {children}
