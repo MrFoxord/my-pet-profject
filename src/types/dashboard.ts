@@ -1,5 +1,10 @@
 import { ReactNode } from "react";
-
+export type MuiLikeTheme = {
+  palette?: {
+    background?: { paper?: string };
+    action?: { hover?: string };
+  };
+};
 export interface Task {
     id: string;
     title: string;
@@ -24,6 +29,7 @@ export interface Board {
         viewMode?: 'list' | 'grid';
     };
     tickets?: Ticket[];
+    columns: BoardColumn[];
 }
 
 export interface DashboardClientProps {
@@ -51,6 +57,13 @@ export interface TaskListProps {
   tasks: Task[];
 }
 
+export interface TicketEstimate {
+  originalHours?: number;   // исходная оценка
+  spentHours?: number;      // затрачено
+  remainingHours?: number;  // осталось
+  storyPoints?: number;     // story points, если нужны
+}
+
 export interface Ticket {
   id: string;
   title: string;
@@ -68,8 +81,13 @@ export interface Ticket {
   };
   subtasks: { id: string; title: string; done: boolean }[];
   comments?: TicketComment[];
+  estimate?: TicketEstimate;
 }
-
+export interface BoardColumn {
+  id: string;
+  title: string;
+  ticketIds: string[];
+}
 export interface TickerCardProps {
   ticket: Ticket;
   onRender?: () => void;
