@@ -12,3 +12,77 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  name      String?
+  boards    Board[]   @relation("UserBoards")
+  comments  Comment[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Board {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  logoUrl     String?
+  themeColor  String?
+
+  ownerId String?
+  owner   User?     @relation("UserBoards", fields: [ownerId], references: [id])
+
+  tickets   Ticket[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Ticket {
+  id String @id
+
+  title       String
+  description String?
+
+  status   String // "todo" | "in-progress" | "done"
+  priority String // "low" | "medium" | "high" | "critical"
+  type     String // "bug" | "task" | "story" | ...
+
+  boardId String
+  board   Board   @relation(fields: [boardId], references: [id], onDelete: Cascade)
+
+  estimateOriginalHours Int?
+  estimateSpentHours    Int?
+  estimateRemainingHours Int?
+  storyPoints           Int?
+
+  subtasks Subtask[]
+  comments Comment[]
+
+  dueDate   DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Subtask {
+  id       String  @id @default(cuid())
+  title    String
+  done     Boolean @default(false)
+
+  ticketId String
+  ticket   Ticket  @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  body      String
+
+  ticketId String
+  ticket   Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  authorId String?
+  author   User?    @relation(fields: [authorId], references: [id])
+
+  createdAt DateTime @default(now())
+  
+}
