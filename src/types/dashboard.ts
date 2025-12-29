@@ -5,6 +5,14 @@ export type MuiLikeTheme = {
     action?: { hover?: string };
   };
 };
+export type BoardDto = {
+  id: string;
+  title: string;
+  description: string | null;
+  logoUrl: string | null;
+  themeColor: string | null;
+  tickets: { id: string }[];
+};
 export interface Task {
     id: string;
     title: string;

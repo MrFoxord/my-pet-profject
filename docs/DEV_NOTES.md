@@ -17,13 +17,22 @@
   - `reactCompiler: true`
   - из‑за этого эффекты (`useEffect`) должны быть аккуратными, без “пляшущих” зависимостей.
 
-### Бэкенд (план/частично)
+### Бэкенд (текущее + план)
 
 - **PostgreSQL** как основная БД.
-- **Prisma** — схема уже есть, миграции ещё не прогонялись (нужно поднять Postgres и сменить `DATABASE_URL`).
-- Будущий **Go‑сервер**:
-  - отдельная папка `/server`;
-  - Go будет использовать ту же БД что и Prisma (общий `DATABASE_URL` в `.env`).
+  - Локально установлен обычный Postgres на Windows.
+  - БД: `my_pet_profect` (создана через `CREATE DATABASE my_pet_profect;`).
+- **Prisma** — используется как инструмент **схемы и миграций**, а не как рантайм‑ORM во фронте.
+  - `schema.prisma` описывает модели `User`, `Board`, `Ticket`, `Subtask`, `Comment`.
+  - `DATABASE_URL` указывает на локальный Postgres (формат ниже в разделе 4.3).
+  - Миграции уже прогнаны (`npx prisma migrate dev --name init`), клиент сгенерирован (`npx prisma generate`).
+  - Сгенерированный Prisma Client **не используется напрямую в Next.js**; схема общая для Go‑сервера и любых тулов.
+- **Go‑сервер** (основной бэкенд):
+  - код в папке `server/` (отдельный модуль Go);
+  - использует тот же Postgres, что и Prisma (`DATABASE_URL` из `.env` в корне);
+  - для доступа к БД используется `pgxpool` (`github.com/jackc/pgx/v5/pgxpool`);
+  - конфиг и `DATABASE_URL` подхватываются через `github.com/joho/godotenv` (`Load("../.env")`);
+  - уже реализован минимальный сервер на `:8080` с эндпоинтом `/health` и CORS‑middleware.
 
 ---
 
@@ -286,83 +295,133 @@
 
 ### 4.3. Настройка `.env` и БД
 
-Сейчас `.env` сгенерен Prisma и содержит `DATABASE_URL` вида:
+Сейчас используется **локальный Postgres**, не Prisma Postgres / Data Proxy.
 
-```env
-DATABASE_URL="prisma+postgres://localhost:51213/?api_key=..."
-```
+- В корне проекта есть `.env` со строкой подключения вида:
 
-Это **Prisma Data Proxy / Prisma Postgres**.  
-Рекомендация для реального проекта: перейти на обычный Postgres с URL:
+  ```env
+  DATABASE_URL="postgresql://postgres:<ТВОЙ_ПАРОЛЬ>@localhost:5432/my_pet_profect?schema=public"
+  ```
 
-```env
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/my_pet_profect?schema=public"
-```
+  Пример из одной из машин:
 
-План:
+  ```env
+  DATABASE_URL="postgresql://postgres:brd93kv53@localhost:5432/my_pet_profect?schema=public"
+  ```
 
-1. Поднять локальный Postgres через Docker (пример):
+- `.env.example` содержит описание формата `DATABASE_URL` и можно использовать его как шаблон.
 
-   ```bash
-   docker run --name my-pet-postgres ^
-     -e POSTGRES_PASSWORD=postgres ^
-     -e POSTGRES_DB=my_pet_profect ^
-     -p 5432:5432 ^
-     -d postgres:16
-   ```
+- Миграции уже были запущены:
 
-2. В корневом `.env` заменить `DATABASE_URL` на обычный `postgresql://...` (как выше).
+  ```bash
+  npx prisma migrate dev --name init
+  npx prisma generate
+  ```
 
-3. Создать `.env.example` (уже сделан), где описан формат строки подключения и пример.
+  В результате в локальной БД созданы таблицы для всех моделей из `schema.prisma`, а Prisma Client сгенерирован в `src/generated/prisma`.
 
-4. Прогнать миграции и сгенерировать клиент:
+> Важно: Prisma Client сейчас используется только как вспомогательный инструмент (например, через Prisma Studio / seed‑скрипты). Фронтенд (Next.js) и боевой бэкенд (Go) **напрямую в рантайме Prisma не используют**.
 
-   ```bash
-   npx prisma migrate dev --name init
-   npx prisma generate
-   ```
+### 4.4. Как поднять БД на другой машине
 
-Клиент Prisma настроен на вывод в `src/generated/prisma` (см. `generator client` в `schema.prisma`).
+1. Установить PostgreSQL (обычный installer под Windows / Linux / macOS).
+2. Создать БД `my_pet_profect` (через `psql` или GUI):
+
+  ```sql
+  CREATE DATABASE my_pet_profect;
+  ```
+
+3. В корневом `.env` прописать корректный `DATABASE_URL` с твоим логином/паролем.
+4. Выполнить миграции и генерацию клиента:
+
+  ```bash
+  npx prisma migrate dev --name init
+  npx prisma generate
+  ```
+
+После этого Go‑сервер и всё остальное будет работать с той же схемой БД.
 
 ---
 
-## 5. План по Go‑серверу
+## 5. Go‑сервер
 
 ### 5.1. Структура проекта для Go
 
-Планируем завести папку `server` в корне:
+Сервер уже заведён в корне:
 
 ```
 my-pet-profect/
   server/
     go.mod
     main.go
-    internal/
-      db/
-      http/
-      boards/
+    # (в будущем можно добавить internal/db, internal/http, internal/boards и т.п.)
 ```
 
-Примерный план:
+- `go.mod` и `go.sum` лежат в `server/` (отдельный модуль Go).
+- Основной файл сервера: `server/main.go`.
 
-1. В `server/`:
+### 5.2. Текущее состояние main.go
 
-   ```bash
-   cd server
-   go mod init my-pet-profect-server
-   ```
+На текущем этапе `main.go` делает следующее:
 
-2. В `.env` (тот же, что для Prisma) уже есть `DATABASE_URL`.  
-   В Go можно либо:
-   - парсить его напрямую, либо
-   - завести отдельную переменную `PG_DSN` (но проще пока использовать `DATABASE_URL`, если это обычный `postgresql://...`).
+- Загружает переменные окружения из корневого `.env`:
 
-3. Использовать, например, `github.com/jackc/pgx/v5/pgxpool` для подключения к Postgres.
+  ```go
+  _ = godotenv.Load("../.env")
+  ```
 
-4. Первый эндпоинт: `GET /boards`:
-   - Возвращает список бордов с тиками:
-     - `Board` + связанные `Ticket[]`.
-   - На фронте: домашняя (`/`) и `DashboardClient` перестают использовать `mockBoards` и начинают ходить в этот эндпоинт.
+- Берёт `DATABASE_URL` и поднимает пул соединений через `pgxpool`:
+
+  ```go
+  pool, err := pgxpool.New(ctx, dsn)
+  ```
+
+- Пингует БД (`pool.Ping(ctx)`), чтобы упасть сразу, если база недоступна.
+- Поднимает HTTP‑сервер на `:8080`.
+- Регистрирует эндпоинт `/health`, который возвращает `200 OK` и строку `"ok"`.
+- Оборачивает весь `ServeMux` в CORS‑middleware `withCORS`, который сейчас в dev‑режиме пускает запросы с `Access-Control-Allow-Origin: *` и обрабатывает `OPTIONS`.
+
+Это уже позволяет фронту (`localhost:3000`) сходить на `http://localhost:8080/health` без CORS‑ошибок.
+
+### 5.3. Ближайшие эндпоинты
+
+Следующие шаги по серверу:
+
+1. `GET /boards`
+
+   - Достаёт из БД список бордов (`Board`) и, по минимуму, связанные тикеты (`Ticket[]`).
+   - Возвращает JSON в формате, совместимом с `BoardDto` из `src/types/dashboard.ts` (id, title, description, logoUrl, themeColor, tickets: [{ id }]).
+   - Фронт на домашней странице (`/`) будет звать именно этот эндпоинт.
+
+2. `GET /boards/:id`
+
+   - Возвращает один борд по ID с полным набором тикетов, subtasks и прочих полей.
+   - Будет использоваться страницей борда / дашбордом.
+
+3. (позже) мутации:
+
+   - `POST /tickets` — создать тикет;
+   - `PATCH /tickets/:id` — обновить тикет (описание/статус/оценки/подзадачи);
+   - `POST /comments` — добавить комментарий;
+   - и т.д.
+
+### 5.4. Связка фронт ↔ Go
+
+- Фронтенд (Next.js) в итоге должен ходить **только к Go‑серверу**, а не напрямую к БД / Prisma.
+- Для dev‑режима достаточно прямых запросов вида:
+
+  ```ts
+  fetch("http://localhost:8080/boards")
+  ```
+
+  внутри клиентских компонентов (`"use client"`) с учётом CORS.
+
+- В будущем можно спрятать URL в env (`NEXT_PUBLIC_API_URL`) и собирать его как
+
+  ```ts
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
+  fetch(`${baseUrl}/boards`);
+  ```
 
 ### 5.2. Формат API (предложение)
 
@@ -432,14 +491,16 @@ my-pet-profect/
    - `GET /boards/:id` — вернуть один борд по ID.
 4. Настроить CORS либо сделать сервер на том же домене, что и Next (например, через прокси).
 
-### Фронт: переход с моков на БД
+### Фронт: переход с моков на БД / Go
 
-1. На домашней (`src/app/page.tsx`):
-   - вместо `mockBoards` сделать клиентский запрос на `/boards` (пока что можно простым `fetch` из `"use client"` компонента);
-   - или завести `app/api/boards/route.ts`, который ходит в Go или напрямую в Prisma (временно).
+1. Домашняя (`src/app/page.tsx`):
+  - после гидрации (`isHydrated === true`) вызывать `fetch("http://localhost:8080/boards")`;
+  - ожидать от сервера массив `BoardDto[]` и подставлять его вместо `mockBoards`;
+  - пока бэкенд не готов, можно временно звать `/health` (как сейчас) просто для проверки связки.
 
-2. На `DashboardClient`:
-   - вместо `board` из `mockBoards` подгружать данные для конкретного борда с бэка.
+2. Страница борда / `DashboardClient`:
+  - вместо `board` из `mockBoards` грузить данные борда по ID через `GET http://localhost:8080/boards/:id`;
+  - адаптировать тип `Board` на фронте к форме, которую вернёт Go (минимум: tickets + возможность собрать columns по статусу).
 
 ### Дополнительные фичи (после подключения БД/Go)
 
