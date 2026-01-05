@@ -33,7 +33,10 @@ export default function Home() {
     const loadBoards = async () => {
       try {
         setLoading(true);
-        const res = await fetch("http://localhost:8080/health");
+        const baseUrl =
+          process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
+
+        const res = await fetch(`${baseUrl}/health`);
         if( !res.ok) throw new Error ('Failed to load boards');
 
          const text = await res.text();

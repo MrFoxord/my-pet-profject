@@ -27,7 +27,14 @@ func main() {
 	}
 	defer pool.Close()
 
-	log.Println("DB connected, starting HTTP server on :8080")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	addr := ":" + port
+
+	log.Printf("DB connected, starting HTTP server on %s\n", addr)
 
 	mux := http.NewServeMux()
 
@@ -37,7 +44,7 @@ func main() {
 	})
 
 	srv := &http.Server{
-		Addr:         ":8080",
+		Addr:         addr,
 		Handler:      withCORS(mux), // <─ оборачиваем mux
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
@@ -51,9 +58,13 @@ func main() {
 
 func withCORS(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// для dev можно *; чуть лучше — явно origin фронта:
-		// w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+		allowedOrigin := os.Getenv("ALLOWED_ORIGIN")
+		if allowedOrigin == "" {
+			// dev/default: позволяем всё; в проде задаём ALLOWED_ORIGIN
+			allowedOrigin = "*"
+		}
+
+		w.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 		w.Header().Set("Access-Control-Allow-Credentials", "true")

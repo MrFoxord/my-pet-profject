@@ -4,6 +4,39 @@
 
 ---
 
+## 0. Кратко про деплой в GCP (Cloud Run + Cloud SQL)
+
+Подготовка проекта к облаку:
+
+- **ENV-переменные**:
+  - пример значений лежит в [.env.example](.env.example);
+  - ключевые переменные:
+    - `DATABASE_URL` — строка подключения к PostgreSQL (общая для Prisma и Go);
+    - `NEXT_PUBLIC_API_BASE_URL` — базовый URL Go API для фронта (в dev `http://localhost:8080`, в проде — URL сервиса в Cloud Run);
+    - `PORT`, `ALLOWED_ORIGIN` — порт и CORS-origin для Go-сервера (Cloud Run сам выставляет `PORT`).
+- **Go-сервер** ([server/main.go](server/main.go)):
+  - слушает порт из `PORT` (по умолчанию 8080);
+  - CORS-origin берётся из `ALLOWED_ORIGIN` (в dev — `http://localhost:3000`, в проде — домен фронта);
+  - БД берётся по `DATABASE_URL`.
+- **Фронт** ([src/app/page.tsx](src/app/page.tsx)):
+  - вместо жёсткого `http://localhost:8080` использует `NEXT_PUBLIC_API_BASE_URL`;
+  - это позволяет менять адрес API через переменные окружения без правки кода.
+- **Dockerfile’ы для Cloud Run**:
+  - [Dockerfile.web](Dockerfile.web) — образ Next.js-приложения;
+  - [server/Dockerfile](server/Dockerfile) — образ Go API.
+
+Высокоуровневый сценарий деплоя в GCP:
+
+1. Создать Cloud SQL (PostgreSQL), выписать `DATABASE_URL`.
+2. Прогнать миграции в эту БД через Prisma (`prisma migrate deploy`).
+3. Собрать и задеплоить Go API в Cloud Run из [server/Dockerfile](server/Dockerfile), передав `DATABASE_URL`, `ALLOWED_ORIGIN` и т.п.
+4. Собрать и задеплоить фронтенд в Cloud Run (или Vercel) из [Dockerfile.web](Dockerfile.web), передав `NEXT_PUBLIC_API_BASE_URL` (URL Go-сервиса).
+5. При необходимости повесить домены и HTTPS через GCP / Vercel.
+
+Детали по шагам деплоя ещё можно будет расписать, когда финально определимся с целевой схемой (один Cloud Run/VM или раздельные сервисы).
+
+---
+
 ## 1. Текущий стек и общая идея
 
 ### Фронтенд
