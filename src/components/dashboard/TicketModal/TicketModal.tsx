@@ -1,47 +1,98 @@
 "use client";
 
-import { useMemo, useState } from 'react';
-import { Ticket } from '@/types';
-import { Modal } from '@/components/ui/Modal/Modal';
-import { Box,
-    Typography,
-    Avatar,
-    LinearProgress,
-    Checkbox,
-    Stack,
-    Button,
-    TextField,
-    Divider,
-    Chip,
-    MenuItem,
-    } from '@mui/material';
-import { TicketModalProps } from '@/types';
+import { useMemo, useState } from "react";
+import { Ticket, TicketModalProps } from "@/types";
+import { Modal } from "@/components/ui/Modal/Modal";
+import {
+  ModalOuter,
+  ModalCard,
+  Header,
+  HeaderLeft,
+  HeaderMetaRow,
+  HeaderActions,
+  Section,
+  SubtasksHeader,
+  SubtasksList,
+  SubtaskRow,
+  CommentsHeader,
+  CommentInputRow,
+  CommentsList,
+  CommentCard,
+  CommentHeader,
+  DetailsSection,
+  RelatedRow,
+  EstimatesRow,
+  Avatar,
+  Typography,
+  Button,
+  TextField,
+  Chip,
+  Divider,
+  Checkbox,
+  LinearProgress,
+  MenuItem,
+} from "./styled";
 
 const statusOptions: Ticket["status"][] = ["todo", "in-progress", "done"];
-const priorityOptions: Ticket["priority"][] = ["low", "medium", "high", "critical"];
+const priorityOptions: Ticket["priority"][] = [
+  "low",
+  "medium",
+  "high",
+  "critical",
+];
 
+// TEMP: frontend-only id, replaced by backend UUID later
 const generateId = () => Math.random().toString(36).slice(2);
 
-export const TicketModal = ({ticket, open, onClose}: TicketModalProps) =>{
-    
-    const [subtasks, setSubtasks] = useState(() => ticket?.subtasks ?? []);
-    const [isEditing, setIsEditing] = useState(false);
-    const [description, setDescription] = useState(ticket.description);
-    const [status, setStatus] = useState(ticket?.status);
-    const [priority, setPriority] = useState(ticket.priority);
-    const [commentDraft, setCommentDraft] = useState("");
-    const [comments, setComments] = useState(ticket.comments ?? []);
+export const TicketModal = ({ ticket, open, onClose }: TicketModalProps) => {
+  return (
+    <Modal open={open} onClose={onClose}>
+      {ticket && (
+        <TicketModalContent
+          key={ticket.id}
+          ticket={ticket}
+          onClose={onClose}
+        />
+      )}
+    </Modal>
+  );
+};
 
+interface TicketModalContentProps {
+  ticket: Ticket;
+  onClose: () => void;
+}
 
-    const total = subtasks.length;
-    const done = useMemo(() => subtasks.filter(st => st.done).length, [subtasks]);
-    if (!ticket) return null;
-    const progress = total ? (done / total) * 100 : 0;
-    const relatedTickets = ticket.relatedTicketIds ?? [];
+const TicketModalContent = ({ ticket, onClose }: TicketModalContentProps) => {
+  const [subtasks, setSubtasks] = useState(() => ticket.subtasks ?? []);
+  const [isEditing, setIsEditing] = useState(false);
+  const [description, setDescription] = useState(ticket.description);
+  const [status, setStatus] = useState<Ticket["status"]>(ticket.status);
+  const [priority, setPriority] = useState<Ticket["priority"]>(
+    ticket.priority
+  );
+  const [commentDraft, setCommentDraft] = useState("");
+  const [comments, setComments] = useState(ticket.comments ?? []);
+  const [estimate, setEstimate] = useState(
+    ticket.estimate ?? {
+      originalHours: undefined,
+      spentHours: undefined,
+      remainingHours: undefined,
+      storyPoints: undefined,
+    }
+  );
 
-    const handleToggleSubtask = (id: string) => {
+  const total = subtasks.length;
+  const done = useMemo(
+    () => subtasks.filter((st) => st.done).length,
+    [subtasks]
+  );
+  const progress = total ? (done / total) * 100 : 0;
+  const relatedTickets = ticket.relatedTicketIds ?? [];
+
+  const handleToggleSubtask = (id: string) => {
     setSubtasks((prev) =>
-      prev.map((st) => (st.id === id ? { ...st, done: !st.done } : st)),
+      prev.map((st) => (st.id === id ? { ...st, done: !st.done } : st))
     );
   };
 
@@ -52,11 +103,20 @@ export const TicketModal = ({ticket, open, onClose}: TicketModalProps) =>{
     setDescription(ticket.description);
     setStatus(ticket.status);
     setPriority(ticket.priority);
-    setSubtasks(ticket.subtasks);
+    setSubtasks(ticket.subtasks ?? []);
+    setComments(ticket.comments ?? []);
+    setEstimate(
+      ticket.estimate ?? {
+        originalHours: undefined,
+        spentHours: undefined,
+        remainingHours: undefined,
+        storyPoints: undefined,
+      }
+    );
   };
 
   const handleSave = () => {
-    // TODO: sync changes with backend or state manager
+    // TODO: отправить изменения на бэкенд / в стор
     setIsEditing(false);
   };
 
@@ -75,69 +135,73 @@ export const TicketModal = ({ticket, open, onClose}: TicketModalProps) =>{
   };
 
   const handleDelete = () => {
-    // TODO: trigger ticket deletion flow
+    // TODO: удаление тикета
   };
-    return (
-        <Modal open={open} onClose={onClose}>
-            <span>  {ticket.status}</span>
-        <Box
-          sx={{
-            width: "maxContent",
-            bgcolor: "background.paper",
-            borderRadius: 2,
-            boxShadow: 24,
-            p: 3,
-            display: "flex",
-            flexDirection: "column",
-            gap: 3,
-            overflowY: "auto",
-            overflowX: "auto",
-          }}
-        >
-          <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between">
-            <Stack direction="row" spacing={2} alignItems="center">
-              <Avatar src={ticket.assignee.avatar} alt={ticket.assignee.name} />
-              <Box>
-                <Typography variant="h6">{ticket.title}</Typography>
-                <Stack direction="row" spacing={1} alignItems="center">
-                  <Typography variant="body2" color="text.secondary">
-                    #{ticket.id}
-                  </Typography>
-                  <Chip size="small" label={ticket.type.toUpperCase()} />
-                  <Chip size="small" label={status} color="primary" variant="outlined" />
-                  <Chip size="small" label={`Priority: ${priority}`} color="warning" />
-                </Stack>
-              </Box>
-            </Stack>
 
-            <Stack direction="row" spacing={1}>
-              {isEditing ? (
-                <>
-                  <Button size="small" variant="outlined" onClick={handleCancelEdit}>
-                    Cancel
-                  </Button>
-                  <Button size="small" variant="contained" onClick={handleSave}>
-                    Save
-                  </Button>
-                </>
-              ) : (
-                <Button size="small" variant="outlined" onClick={handleStartEdit}>
-                  Edit
+  return (
+    <ModalOuter>
+      <ModalCard>
+        {/* Шапка */}
+        <Header>
+          <HeaderLeft>
+            <Avatar src={ticket.assignee.avatar} alt={ticket.assignee.name} />
+            <div>
+              <Typography variant="h6">{ticket.title}</Typography>
+              <HeaderMetaRow>
+                <Typography variant="body2" color="text.secondary">
+                  #{ticket.id}
+                </Typography>
+                <Chip size="small" label={ticket.type.toUpperCase()} />
+                <Chip
+                  size="small"
+                  label={status.replace("-", " ")}
+                  color="primary"
+                  variant="outlined"
+                />
+                <Chip
+                  size="small"
+                  label={`Priority: ${priority}`}
+                  color="warning"
+                />
+              </HeaderMetaRow>
+            </div>
+          </HeaderLeft>
+
+          <HeaderActions>
+            {isEditing ? (
+              <>
+                <Button size="small" variant="outlined" onClick={handleCancelEdit}>
+                  Cancel
                 </Button>
-              )}
-              <Button size="small" color="error" variant="outlined" onClick={handleDelete}>
-                Delete
+                <Button size="small" variant="contained" onClick={handleSave}>
+                  Save
+                </Button>
+              </>
+            ) : (
+              <Button size="small" variant="outlined" onClick={handleStartEdit}>
+                Edit
               </Button>
-              <Button size="small" variant="text" onClick={onClose}>
-                Close
-              </Button>
-            </Stack>
-          </Stack>
+            )}
+            <Button
+              size="small"
+              color="error"
+              variant="outlined"
+              onClick={handleDelete}
+            >
+              Delete
+            </Button>
+            <Button size="small" variant="text" onClick={onClose}>
+              Close
+            </Button>
+          </HeaderActions>
+        </Header>
 
-          <Divider />
+        <Divider />
 
+        {/* Описание + статус/priority */}
+        <Section>
           {isEditing ? (
-            <Stack spacing={2}>
+            <>
               <TextField
                 label="Description"
                 multiline
@@ -146,13 +210,15 @@ export const TicketModal = ({ticket, open, onClose}: TicketModalProps) =>{
                 onChange={(e) => setDescription(e.target.value)}
                 fullWidth
               />
-              <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+              <EstimatesRow>
                 <TextField
                   label="Status"
                   select
                   fullWidth
                   value={status}
-                  onChange={(e) => setStatus(e.target.value as Ticket["status"])}
+                  onChange={(e) =>
+                    setStatus(e.target.value as Ticket["status"])
+                  }
                 >
                   {statusOptions.map((option) => (
                     <MenuItem key={option} value={option}>
@@ -165,7 +231,9 @@ export const TicketModal = ({ticket, open, onClose}: TicketModalProps) =>{
                   select
                   fullWidth
                   value={priority}
-                  onChange={(e) => setPriority(e.target.value as Ticket["priority"])}
+                  onChange={(e) =>
+                    setPriority(e.target.value as Ticket["priority"])
+                  }
                 >
                   {priorityOptions.map((option) => (
                     <MenuItem key={option} value={option}>
@@ -173,57 +241,53 @@ export const TicketModal = ({ticket, open, onClose}: TicketModalProps) =>{
                     </MenuItem>
                   ))}
                 </TextField>
-              </Stack>
-            </Stack>
+              </EstimatesRow>
+            </>
           ) : (
             <Typography variant="body2" color="text.secondary">
               {description}
             </Typography>
           )}
+        </Section>
 
-          <Box>
-            <Stack direction="row" alignItems="center" justifyContent="space-between">
-              <Typography variant="subtitle2">
-                Subtasks ({done}/{total})
-              </Typography>
-              {total > 0 && (
-                <Typography variant="caption" color="text.secondary">
-                  {Math.round(progress)}%
-                </Typography>
-              )}
-            </Stack>
-
-            <Stack spacing={1.25} sx={{ mt: 1 }}>
-              {subtasks.map((st) => (
-                <Stack
-                  key={st.id}
-                  direction="row"
-                  spacing={1}
-                  alignItems="center"
-                  sx={{ px: 1, py: 0.75, borderRadius: 1, bgcolor: "action.hover" }}
-                >
-                  <Checkbox
-                    checked={st.done}
-                    onChange={() => handleToggleSubtask(st.id)}
-                    size="small"
-                  />
-                  <Typography variant="body2">{st.title}</Typography>
-                </Stack>
-              ))}
-            </Stack>
-
+        {/* Подзадачи */}
+        <Section>
+          <SubtasksHeader>
+            <Typography variant="subtitle2">
+              Subtasks ({done}/{total})
+            </Typography>
             {total > 0 && (
-              <Box sx={{ mt: 2 }}>
-                <LinearProgress variant="determinate" value={progress} />
-              </Box>
+              <Typography variant="caption" color="text.secondary">
+                {Math.round(progress)}%
+              </Typography>
             )}
-          </Box>
+          </SubtasksHeader>
 
-          <Divider />
+          <SubtasksList>
+            {subtasks.map((st) => (
+              <SubtaskRow key={st.id}>
+                <Checkbox
+                  checked={st.done}
+                  onChange={() => handleToggleSubtask(st.id)}
+                  size="small"
+                />
+                <Typography variant="body2">{st.title}</Typography>
+              </SubtaskRow>
+            ))}
+          </SubtasksList>
 
-          <Stack spacing={1.5}>
+          {total > 0 && (
+            <LinearProgress variant="determinate" value={progress} />
+          )}
+        </Section>
+
+        <Divider />
+
+        {/* Комментарии */}
+        <Section>
+          <CommentsHeader>
             <Typography variant="subtitle2">Discussion</Typography>
-            <Stack direction="row" spacing={1}>
+            <CommentInputRow>
               <TextField
                 fullWidth
                 size="small"
@@ -234,59 +298,141 @@ export const TicketModal = ({ticket, open, onClose}: TicketModalProps) =>{
               <Button variant="contained" onClick={handleAddComment}>
                 Send
               </Button>
-            </Stack>
+            </CommentInputRow>
+          </CommentsHeader>
 
-            <Stack spacing={1}>
-              {comments.map((comment) => (
-                <Box key={comment.id} sx={{ p: 1.5, borderRadius: 1, bgcolor: "action.hover" }}>
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <Avatar src={comment.author.avatar} sx={{ width: 24, height: 24 }} />
-                    <Typography variant="body2" fontWeight={600}>
-                      {comment.author.name}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {new Date(comment.createdAt).toLocaleString()}
-                    </Typography>
-                  </Stack>
-                  <Typography variant="body2" sx={{ mt: 0.75 }}>
-                    {comment.message}
+          <CommentsList>
+            {comments.map((comment) => (
+              <CommentCard key={comment.id}>
+                <CommentHeader>
+                  <Avatar
+                    src={comment.author.avatar}
+                    sx={{ width: 24, height: 24 }}
+                  />
+                  <Typography variant="body2" fontWeight={600}>
+                    {comment.author.name}
                   </Typography>
-                </Box>
-              ))}
-              {comments.length === 0 && (
-                <Typography variant="body2" color="text.secondary">
-                  No comments yet. Start the discussion above.
-                </Typography>
-              )}
-            </Stack>
-          </Stack>
+                  <Typography variant="caption" color="text.secondary">
+                    {new Date(comment.createdAt).toLocaleString()}
+                  </Typography>
+                </CommentHeader>
+                <Typography variant="body2">{comment.message}</Typography>
+              </CommentCard>
+            ))}
+            {comments.length === 0 && (
+              <Typography variant="body2" color="text.secondary">
+                No comments yet. Start the discussion above.
+              </Typography>
+            )}
+          </CommentsList>
+        </Section>
 
-          <Divider />
+        <Divider />
 
-          <Stack spacing={0.5}>
-            <Typography variant="subtitle2">Ticket details</Typography>
+        {/* Estimates */}
+        <Section>
+          <Typography variant="subtitle2">Estimates</Typography>
+
+          {isEditing ? (
+            <EstimatesRow>
+              <TextField
+                type="number"
+                label="Original (hours)"
+                fullWidth
+                value={estimate.originalHours ?? ""}
+                onChange={(e) =>
+                  setEstimate((prev) => ({
+                    ...prev,
+                    originalHours:
+                      e.target.value === "" ? undefined : Number(e.target.value),
+                  }))
+                }
+              />
+              <TextField
+                type="number"
+                label="Spent (hours)"
+                fullWidth
+                value={estimate.spentHours ?? ""}
+                onChange={(e) =>
+                  setEstimate((prev) => ({
+                    ...prev,
+                    spentHours:
+                      e.target.value === "" ? undefined : Number(e.target.value),
+                  }))
+                }
+              />
+              <TextField
+                type="number"
+                label="Remaining (hours)"
+                fullWidth
+                value={estimate.remainingHours ?? ""}
+                onChange={(e) =>
+                  setEstimate((prev) => ({
+                    ...prev,
+                    remainingHours:
+                      e.target.value === "" ? undefined : Number(e.target.value),
+                  }))
+                }
+              />
+              <TextField
+                type="number"
+                label="Story points"
+                fullWidth
+                value={estimate.storyPoints ?? ""}
+                onChange={(e) =>
+                  setEstimate((prev) => ({
+                    ...prev,
+                    storyPoints:
+                      e.target.value === "" ? undefined : Number(e.target.value),
+                  }))
+                }
+              />
+            </EstimatesRow>
+          ) : (
+            <DetailsSection>
+              <Typography variant="body2" color="text.secondary">
+                Original: {estimate.originalHours ?? "—"} h
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Spent: {estimate.spentHours ?? "—"} h
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Remaining: {estimate.remainingHours ?? "—"} h
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Story points: {estimate.storyPoints ?? "—"}
+              </Typography>
+            </DetailsSection>
+          )}
+        </Section>
+
+        <Divider />
+
+        {/* Детали тикета */}
+        <DetailsSection>
+          <Typography variant="subtitle2">Ticket details</Typography>
+          <Typography variant="body2" color="text.secondary">
+            Created: {new Date(ticket.createdAt).toLocaleString()}
+          </Typography>
+          {ticket.dueDate && (
             <Typography variant="body2" color="text.secondary">
-              Created: {new Date(ticket.createdAt).toLocaleString()}
+              Due: {new Date(ticket.dueDate).toLocaleString()}
             </Typography>
-            {ticket.dueDate && (
-              <Typography variant="body2" color="text.secondary">
-                Due: {new Date(ticket.dueDate).toLocaleString()}
-              </Typography>
-            )}
-            {ticket.updatedAt && (
-              <Typography variant="body2" color="text.secondary">
-                Updated: {new Date(ticket.updatedAt).toLocaleString()}
-              </Typography>
-            )}
-            {!!relatedTickets.length && (
-              <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mt: 0.5 }}>
-                {relatedTickets.map((id) => (
-                  <Chip key={id} size="small" label={`#${id}`} />
-                ))}
-              </Stack>
-            )}
-          </Stack>
-        </Box>
-    </Modal>
-    );
-}
+          )}
+          {ticket.updatedAt && (
+            <Typography variant="body2" color="text.secondary">
+              Updated: {new Date(ticket.updatedAt).toLocaleString()}
+            </Typography>
+          )}
+          {!!relatedTickets.length && (
+            <RelatedRow>
+              {relatedTickets.map((id) => (
+                <Chip key={id} size="small" label={`#${id}`} />
+              ))}
+            </RelatedRow>
+          )}
+        </DetailsSection>
+      </ModalCard>
+    </ModalOuter>
+  );
+};
