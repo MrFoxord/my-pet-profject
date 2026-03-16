@@ -47,6 +47,16 @@
 9. Проверили git-шум по `server-nest/node_modules`:
   - папка игнорируется корректно;
   - tracked-файлов в индексе нет.
+10. Довели Google OAuth до рабочего состояния end-to-end:
+  - создан OAuth Client в Google;
+  - прописаны `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` в `.env`;
+  - подтвержден вход через `/auth/signin` и callback Auth.js.
+11. Починили падение Auth.js adapter (`prisma.account.findUnique`):
+  - регенерация Prisma Client после изменений auth-моделей;
+  - перезапуск Next после обновления клиента.
+12. Исправили Prisma runtime module mismatch в сгенерированном клиенте:
+  - вместо `query_compiler_fast_bg.postgresql.*` используется доступный runtime `query_compiler_bg.postgresql.*`;
+  - после фикса сборка/запуск приложения больше не падают на `Module not found`.
 
 ### Что сейчас по факту архитектурно
 
@@ -564,8 +574,9 @@ my-pet-profect/
 ### Критично (ближайшие 1-2 итерации)
 
 1. Довести OAuth до end-to-end:
-  - добавить реальные `GOOGLE_*`, `GITHUB_*`, `FACEBOOK_*` credentials в `.env`;
-  - проверить sign-in/sign-out и создание `User/Account/Session` в БД;
+  - ✅ Google: credentials добавлены, sign-in работает;
+  - добавить и проверить `GITHUB_*`, `FACEBOOK_*` credentials в `.env`;
+  - проверить sign-out и создание `User/Account/Session` в БД для всех включенных providers;
   - проверить middleware-редиректы для гостя и авторизованного пользователя.
 2. Закрыть безопасность API на Nest:
   - перейти с query/userId-подхода к нормальной JWT/session валидации на сервере;

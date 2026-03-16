@@ -25,8 +25,8 @@ export declare class BoardsService {
         themeColor: string;
         currentUserRole: string;
         columns: {
-            id: string;
             title: string;
+            id: string;
             position: number;
         }[];
         tickets: {
@@ -44,8 +44,8 @@ export declare class BoardsService {
                 avatar: string;
             };
             subtasks: {
-                id: string;
                 title: string;
+                id: string;
                 done: boolean;
             }[];
         }[];

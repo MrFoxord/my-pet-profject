@@ -34,8 +34,8 @@ export declare class BoardsController {
         themeColor: string;
         currentUserRole: string;
         columns: {
-            id: string;
             title: string;
+            id: string;
             position: number;
         }[];
         tickets: {
@@ -53,8 +53,8 @@ export declare class BoardsController {
                 avatar: string;
             };
             subtasks: {
-                id: string;
                 title: string;
+                id: string;
                 done: boolean;
             }[];
         }[];
