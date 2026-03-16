@@ -1,0 +1,136 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.NullsOrder = exports.QueryMode = exports.SortOrder = exports.VerificationTokenScalarFieldEnum = exports.SessionScalarFieldEnum = exports.AccountScalarFieldEnum = exports.CommentScalarFieldEnum = exports.SubtaskScalarFieldEnum = exports.TicketScalarFieldEnum = exports.BoardColumnScalarFieldEnum = exports.BoardMemberScalarFieldEnum = exports.BoardScalarFieldEnum = exports.UserScalarFieldEnum = exports.TransactionIsolationLevel = exports.ModelName = exports.AnyNull = exports.JsonNull = exports.DbNull = exports.NullTypes = exports.Decimal = void 0;
+const runtime = require("@prisma/client/runtime/index-browser");
+exports.Decimal = runtime.Decimal;
+exports.NullTypes = {
+    DbNull: runtime.NullTypes.DbNull,
+    JsonNull: runtime.NullTypes.JsonNull,
+    AnyNull: runtime.NullTypes.AnyNull,
+};
+exports.DbNull = runtime.DbNull;
+exports.JsonNull = runtime.JsonNull;
+exports.AnyNull = runtime.AnyNull;
+exports.ModelName = {
+    User: 'User',
+    Board: 'Board',
+    BoardMember: 'BoardMember',
+    BoardColumn: 'BoardColumn',
+    Ticket: 'Ticket',
+    Subtask: 'Subtask',
+    Comment: 'Comment',
+    Account: 'Account',
+    Session: 'Session',
+    VerificationToken: 'VerificationToken'
+};
+exports.TransactionIsolationLevel = runtime.makeStrictEnum({
+    ReadUncommitted: 'ReadUncommitted',
+    ReadCommitted: 'ReadCommitted',
+    RepeatableRead: 'RepeatableRead',
+    Serializable: 'Serializable'
+});
+exports.UserScalarFieldEnum = {
+    id: 'id',
+    email: 'email',
+    name: 'name',
+    image: 'image',
+    emailVerified: 'emailVerified',
+    monetizationRole: 'monetizationRole',
+    workRole: 'workRole',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+exports.BoardScalarFieldEnum = {
+    id: 'id',
+    title: 'title',
+    description: 'description',
+    logoUrl: 'logoUrl',
+    themeColor: 'themeColor',
+    ownerId: 'ownerId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+exports.BoardMemberScalarFieldEnum = {
+    id: 'id',
+    role: 'role',
+    boardId: 'boardId',
+    userId: 'userId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+exports.BoardColumnScalarFieldEnum = {
+    id: 'id',
+    title: 'title',
+    position: 'position',
+    boardId: 'boardId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+exports.TicketScalarFieldEnum = {
+    id: 'id',
+    title: 'title',
+    description: 'description',
+    status: 'status',
+    priority: 'priority',
+    type: 'type',
+    boardId: 'boardId',
+    estimateOriginalHours: 'estimateOriginalHours',
+    estimateSpentHours: 'estimateSpentHours',
+    estimateRemainingHours: 'estimateRemainingHours',
+    storyPoints: 'storyPoints',
+    dueDate: 'dueDate',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+exports.SubtaskScalarFieldEnum = {
+    id: 'id',
+    title: 'title',
+    done: 'done',
+    ticketId: 'ticketId'
+};
+exports.CommentScalarFieldEnum = {
+    id: 'id',
+    body: 'body',
+    ticketId: 'ticketId',
+    authorId: 'authorId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+exports.AccountScalarFieldEnum = {
+    id: 'id',
+    userId: 'userId',
+    type: 'type',
+    provider: 'provider',
+    providerAccountId: 'providerAccountId',
+    refresh_token: 'refresh_token',
+    access_token: 'access_token',
+    expires_at: 'expires_at',
+    token_type: 'token_type',
+    scope: 'scope',
+    id_token: 'id_token',
+    session_state: 'session_state'
+};
+exports.SessionScalarFieldEnum = {
+    id: 'id',
+    sessionToken: 'sessionToken',
+    userId: 'userId',
+    expires: 'expires'
+};
+exports.VerificationTokenScalarFieldEnum = {
+    identifier: 'identifier',
+    token: 'token',
+    expires: 'expires'
+};
+exports.SortOrder = {
+    asc: 'asc',
+    desc: 'desc'
+};
+exports.QueryMode = {
+    default: 'default',
+    insensitive: 'insensitive'
+};
+exports.NullsOrder = {
+    first: 'first',
+    last: 'last'
+};
+//# sourceMappingURL=prismaNamespaceBrowser.js.map

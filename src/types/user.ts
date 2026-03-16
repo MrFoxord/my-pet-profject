@@ -1,7 +1,12 @@
-export interface test {
+export type MonetizationRole = "FREE" | "SUBMITTED" | "PREMIUM";
+
+export type WorkRole = "CLIENT" | "EXECUTOR" | "ORGANIZER" | "CEO";
+
+export interface AppUser {
     id: string;
-    title: string;
-    status: "todo" | "in-progress" | "done";
-    dueDate: string;
-    assignedTo: string;
+    email: string | null;
+    name: string | null;
+    image?: string | null;
+    monetizationRole: MonetizationRole;
+    workRole: WorkRole;
 }

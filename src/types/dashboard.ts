@@ -11,6 +11,7 @@ export type BoardDto = {
   description: string | null;
   logoUrl: string | null;
   themeColor: string | null;
+  dashboardRole?: string | null;
   tickets: { id: string }[];
 };
 export interface Task {
@@ -37,6 +38,7 @@ export interface Board {
         viewMode?: 'list' | 'grid';
     };
     tickets?: Ticket[];
+    currentUserRole?: string | null;
     columns: BoardColumn[];
 }
 

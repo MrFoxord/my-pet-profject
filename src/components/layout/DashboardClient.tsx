@@ -9,6 +9,11 @@ import { Loader } from "../ui/Loader/Loader";
 import { TicketModal } from "../dashboard/TicketModal/TicketModal";
 import { BoardColumns } from "@/components/dashboard/BoardColumns/BoardColumns";
 import {
+  deleteBoardColumn,
+  renameBoardColumn,
+  reorderBoardColumns,
+} from "@/lib/api/client";
+import {
   Root,
   Main,
   Content,
@@ -43,6 +48,46 @@ export default function DashboardClient({
     setSelectedTicket(null);
   };
 
+  const handleColumnsReorder = async (columnIds: string[]) => {
+    if (columnIds.some((columnId) => columnId.startsWith("fallback-"))) {
+      return;
+    }
+
+    try {
+      await reorderBoardColumns(board.id, columnIds);
+    } catch (error) {
+      console.error("failed to persist columns order", error);
+    }
+  };
+
+  const handleRenameColumn = async (columnId: string, title: string) => {
+    if (columnId.startsWith("fallback-")) {
+      return true;
+    }
+
+    try {
+      await renameBoardColumn(board.id, columnId, title);
+      return true;
+    } catch (error) {
+      console.error("failed to rename column", error);
+      return false;
+    }
+  };
+
+  const handleDeleteColumn = async (columnId: string, ticketIds: string[]) => {
+    if (columnId.startsWith("fallback-")) {
+      return true;
+    }
+
+    try {
+      await deleteBoardColumn(board.id, columnId, ticketIds);
+      return true;
+    } catch (error) {
+      console.error("failed to delete column", error);
+      return false;
+    }
+  };
+
   return (
     <Root $bg={board.themeColor}>
       <Sidebar boardId={board.id} themeColor={board.themeColor} />
@@ -69,7 +114,13 @@ export default function DashboardClient({
           {board.tickets && board.columns ? (
             isHydrated ? (
               <TicketsWrapper>
-                <BoardColumns board={board} onTicketClick={handleTicketClick} />
+                <BoardColumns
+                  board={board}
+                  onTicketClick={handleTicketClick}
+                  onColumnsReorder={handleColumnsReorder}
+                  onRenameColumn={handleRenameColumn}
+                  onDeleteColumn={handleDeleteColumn}
+                />
               </TicketsWrapper>
             ) : null
           ) : (

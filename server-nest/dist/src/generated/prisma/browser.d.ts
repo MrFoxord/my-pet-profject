@@ -1,0 +1,14 @@
+import * as Prisma from './internal/prismaNamespaceBrowser';
+export { Prisma };
+export * as $Enums from './enums';
+export * from './enums';
+export type User = Prisma.UserModel;
+export type Board = Prisma.BoardModel;
+export type BoardMember = Prisma.BoardMemberModel;
+export type BoardColumn = Prisma.BoardColumnModel;
+export type Ticket = Prisma.TicketModel;
+export type Subtask = Prisma.SubtaskModel;
+export type Comment = Prisma.CommentModel;
+export type Account = Prisma.AccountModel;
+export type Session = Prisma.SessionModel;
+export type VerificationToken = Prisma.VerificationTokenModel;

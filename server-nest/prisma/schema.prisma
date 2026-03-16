@@ -1,0 +1,166 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id               String            @id @default(cuid())
+  email            String?           @unique
+  name             String?
+  image            String?
+  emailVerified    DateTime?
+  monetizationRole MonetizationRole  @default(FREE)
+  workRole         WorkRole          @default(CLIENT)
+  ownedBoards      Board[]           @relation("BoardOwner")
+  boardMemberships BoardMember[]
+  accounts         Account[]
+  sessions         Session[]
+  comments         Comment[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+}
+
+model Board {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  logoUrl     String?
+  themeColor  String?
+
+  ownerId String?
+  owner   User?     @relation("BoardOwner", fields: [ownerId], references: [id])
+
+  tickets     Ticket[]
+  columns     BoardColumn[]
+  memberships BoardMember[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model BoardMember {
+  id        String   @id @default(cuid())
+  role      String
+  boardId   String
+  userId    String
+  board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([boardId, userId])
+  @@index([userId])
+}
+
+model BoardColumn {
+  id       String @id @default(cuid())
+  title    String
+  position Int
+
+  boardId String
+  board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([boardId, position])
+}
+
+model Ticket {
+  id String @id
+
+  title       String
+  description String?
+
+  status   String
+  priority String
+  type     String
+
+  boardId String
+  board   Board   @relation(fields: [boardId], references: [id], onDelete: Cascade)
+
+  estimateOriginalHours  Int?
+  estimateSpentHours     Int?
+  estimateRemainingHours Int?
+  storyPoints            Int?
+
+  subtasks Subtask[]
+  comments Comment[]
+
+  dueDate   DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Subtask {
+  id       String @id @default(cuid())
+  title    String
+  done     Boolean @default(false)
+  ticketId String
+  ticket   Ticket  @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  body      String
+  ticketId  String
+  ticket    Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  authorId  String?
+  author    User?    @relation(fields: [authorId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+enum MonetizationRole {
+  FREE
+  SUBMITTED
+  PREMIUM
+}
+
+enum WorkRole {
+  CLIENT
+  EXECUTOR
+  ORGANIZER
+  CEO
+}

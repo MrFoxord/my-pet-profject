@@ -8,7 +8,9 @@ export const ColumnsContainer = styled.div`
   display: flex;
   gap: 16px;
   align-items: flex-start;
-  overflow-x: auto;
+  width: max-content;
+  min-width: 100%;
+  overflow-x: visible;
   padding-bottom: 8px;
 `;
 

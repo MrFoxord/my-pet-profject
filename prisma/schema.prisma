@@ -14,13 +14,20 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(cuid())
-  email     String    @unique
-  name      String?
-  boards    Board[]   @relation("UserBoards")
-  comments  Comment[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id               String            @id @default(cuid())
+  email            String?           @unique
+  name             String?
+  image            String?
+  emailVerified    DateTime?
+  monetizationRole MonetizationRole  @default(FREE)
+  workRole         WorkRole          @default(CLIENT)
+  ownedBoards      Board[]           @relation("BoardOwner")
+  boardMemberships BoardMember[]
+  accounts         Account[]
+  sessions         Session[]
+  comments         Comment[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
 }
 
 model Board {
@@ -31,11 +38,41 @@ model Board {
   themeColor  String?
 
   ownerId String?
-  owner   User?     @relation("UserBoards", fields: [ownerId], references: [id])
+  owner   User?     @relation("BoardOwner", fields: [ownerId], references: [id])
 
-  tickets   Ticket[]
+  tickets     Ticket[]
+  columns     BoardColumn[]
+  memberships BoardMember[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model BoardMember {
+  id        String   @id @default(cuid())
+  role      String
+  boardId    String
+  userId     String
+  board      Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([boardId, userId])
+  @@index([userId])
+}
+
+model BoardColumn {
+  id       String @id @default(cuid())
+  title    String
+  position Int
+
+  boardId String
+  board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([boardId, position])
 }
 
 model Ticket {
@@ -85,4 +122,52 @@ model Comment {
 
   createdAt DateTime @default(now())
   
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+enum MonetizationRole {
+  FREE
+  SUBMITTED
+  PREMIUM
+}
+
+enum WorkRole {
+  CLIENT
+  EXECUTOR
+  ORGANIZER
+  CEO
 }

@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Button as MuiButton } from "@mui/material";
 
 export const PageRoot = styled.div`
   min-height: 100vh;
@@ -16,6 +17,14 @@ export const PageMain = styled.main`
 
 export const Header = styled.header`
   margin-bottom: 24px;
+`;
+
+export const HeaderTop = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 8px;
 `;
 
 export const Title = styled.h1`
@@ -81,4 +90,10 @@ export const BoardDescription = styled.p`
 export const BoardMeta = styled.div`
   font-size: 12px;
   color: #9ca3af;
+`;
+
+export const AddBoardButton = styled(MuiButton)`
+  border-radius: 10px;
+  text-transform: none;
+  font-weight: 600;
 `;

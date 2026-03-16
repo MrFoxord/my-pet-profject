@@ -5,6 +5,7 @@ import { useSortable, SortableContext, verticalListSortingStrategy } from "@dnd-
 import { CSS } from "@dnd-kit/utilities";
 import { BoardColumn, Ticket } from "@/types";
 import TickerCard from "../TickerCard/TicketCard";
+import ActionDialog from "@/components/ui/ActionDialog/ActionDialog";
 import {
   ColumnWrapper,
   ColumnCard,
@@ -17,12 +18,16 @@ interface BoardColumnViewProps {
   column: BoardColumn;
   tickets: Ticket[];
   onTicketClick?: (ticket: Ticket) => void;
+  onRenameColumn?: (columnId: string, currentTitle: string) => Promise<void> | void;
+  onDeleteColumn?: (columnId: string, ticketIds: string[]) => Promise<void> | void;
 }
 
 export function BoardColumnView({
   column,
   tickets,
   onTicketClick,
+  onRenameColumn,
+  onDeleteColumn,
 }: BoardColumnViewProps) {
   const {
     attributes,
@@ -46,12 +51,26 @@ export function BoardColumnView({
   };
 
   const ticketIds = useMemo(() => tickets.map((t) => t.id), [tickets]);
+  const actions = useMemo(
+    () => ({
+      "Переименовать": async () => {
+        if (!onRenameColumn) return;
+        await onRenameColumn(column.id, column.title);
+      },
+      "Удалить колонку": async () => {
+        if (!onDeleteColumn) return;
+        await onDeleteColumn(column.id, ticketIds);
+      },
+    }),
+    [column.id, column.title, onDeleteColumn, onRenameColumn, ticketIds]
+  );
 
   return (
     <ColumnWrapper ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <ColumnCard>
         <ColumnHeader>
           <ColumnTitle variant="subtitle2">{column.title}</ColumnTitle>
+          <ActionDialog title={`Действия: ${column.title}`} actions={actions} />
         </ColumnHeader>
 
         <SortableContext
