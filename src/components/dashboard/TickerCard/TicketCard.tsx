@@ -17,7 +17,6 @@ import {
 
 export default function TickerCard({
   ticket,
-  onRender, // можно оставить в пропсах, даже если не используешь
   onClick,
 }: TickerCardProps) {
   const total = ticket.subtasks.length;

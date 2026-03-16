@@ -17,6 +17,10 @@ model User {
   id               String            @id @default(cuid())
   email            String?           @unique
   name             String?
+  firstName        String?
+  lastName         String?
+  nickname         String?           @unique
+  isDefault        Boolean           @default(true)
   image            String?
   emailVerified    DateTime?
   monetizationRole MonetizationRole  @default(FREE)

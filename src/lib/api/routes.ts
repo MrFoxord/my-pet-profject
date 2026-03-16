@@ -1,4 +1,4 @@
-const DEFAULT_API_BASE_URL = "http://localhost:8081";
+const DEFAULT_API_BASE_URL = "http://localhost:8082";
 
 function trimTrailingSlash(value: string): string {
   return value.replace(/\/+$/, "");
@@ -9,26 +9,19 @@ export function getApiBaseUrl(): string {
   return trimTrailingSlash(envUrl ?? DEFAULT_API_BASE_URL);
 }
 
-function withQuery(path: string, query?: Record<string, string | undefined>): string {
-  const params = new URLSearchParams();
-
-  for (const [key, value] of Object.entries(query ?? {})) {
-    if (value) {
-      params.set(key, value);
-    }
-  }
-
-  const qs = params.toString();
-  return qs ? `${path}?${qs}` : path;
-}
+// All browser-facing board routes go through the Next.js proxy which
+// attaches the verified session userId and the internal secret before
+// forwarding to Nest. This prevents IDOR via user-supplied query params.
+const PROXY_BASE = "/api/proxy";
 
 export const apiRoutes = {
   health: () => `${getApiBaseUrl()}/health`,
-  boards: (userId?: string) => withQuery(`${getApiBaseUrl()}/boards`, { userId }),
-  boardById: (boardId: string, userId?: string) =>
-    withQuery(`${getApiBaseUrl()}/boards/${boardId}`, { userId }),
+  boards: () => `${PROXY_BASE}/boards`,
+  boardById: (boardId: string) => `${PROXY_BASE}/boards/${boardId}`,
+  userDefaultState: () => `${PROXY_BASE}/users/me/default-state`,
+  userDefaultProfile: () => `${PROXY_BASE}/users/me/default-profile`,
   boardColumnsOrder: (boardId: string) =>
-    `${getApiBaseUrl()}/boards/${boardId}/columns/order`,
+    `${PROXY_BASE}/boards/${boardId}/columns/order`,
   boardColumnById: (boardId: string, columnId: string) =>
-    `${getApiBaseUrl()}/boards/${boardId}/columns/${columnId}`,
+    `${PROXY_BASE}/boards/${boardId}/columns/${columnId}`,
 };

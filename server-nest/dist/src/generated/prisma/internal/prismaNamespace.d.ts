@@ -958,6 +958,10 @@ export declare const UserScalarFieldEnum: {
     readonly id: "id";
     readonly email: "email";
     readonly name: "name";
+    readonly firstName: "firstName";
+    readonly lastName: "lastName";
+    readonly nickname: "nickname";
+    readonly isDefault: "isDefault";
     readonly image: "image";
     readonly emailVerified: "emailVerified";
     readonly monetizationRole: "monetizationRole";
@@ -1073,6 +1077,7 @@ export declare const NullsOrder: {
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder];
 export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String'>;
 export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>;
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>;
 export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>;
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>;
 export type EnumMonetizationRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MonetizationRole'>;
@@ -1081,7 +1086,6 @@ export type EnumWorkRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 export type ListEnumWorkRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkRole[]'>;
 export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>;
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>;
-export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>;
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>;
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>;
 export type BatchPayload = {

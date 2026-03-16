@@ -11,6 +11,10 @@ export type UserMinAggregateOutputType = {
     id: string | null;
     email: string | null;
     name: string | null;
+    firstName: string | null;
+    lastName: string | null;
+    nickname: string | null;
+    isDefault: boolean | null;
     image: string | null;
     emailVerified: Date | null;
     monetizationRole: $Enums.MonetizationRole | null;
@@ -22,6 +26,10 @@ export type UserMaxAggregateOutputType = {
     id: string | null;
     email: string | null;
     name: string | null;
+    firstName: string | null;
+    lastName: string | null;
+    nickname: string | null;
+    isDefault: boolean | null;
     image: string | null;
     emailVerified: Date | null;
     monetizationRole: $Enums.MonetizationRole | null;
@@ -33,6 +41,10 @@ export type UserCountAggregateOutputType = {
     id: number;
     email: number;
     name: number;
+    firstName: number;
+    lastName: number;
+    nickname: number;
+    isDefault: number;
     image: number;
     emailVerified: number;
     monetizationRole: number;
@@ -45,6 +57,10 @@ export type UserMinAggregateInputType = {
     id?: true;
     email?: true;
     name?: true;
+    firstName?: true;
+    lastName?: true;
+    nickname?: true;
+    isDefault?: true;
     image?: true;
     emailVerified?: true;
     monetizationRole?: true;
@@ -56,6 +72,10 @@ export type UserMaxAggregateInputType = {
     id?: true;
     email?: true;
     name?: true;
+    firstName?: true;
+    lastName?: true;
+    nickname?: true;
+    isDefault?: true;
     image?: true;
     emailVerified?: true;
     monetizationRole?: true;
@@ -67,6 +87,10 @@ export type UserCountAggregateInputType = {
     id?: true;
     email?: true;
     name?: true;
+    firstName?: true;
+    lastName?: true;
+    nickname?: true;
+    isDefault?: true;
     image?: true;
     emailVerified?: true;
     monetizationRole?: true;
@@ -103,6 +127,10 @@ export type UserGroupByOutputType = {
     id: string;
     email: string | null;
     name: string | null;
+    firstName: string | null;
+    lastName: string | null;
+    nickname: string | null;
+    isDefault: boolean;
     image: string | null;
     emailVerified: Date | null;
     monetizationRole: $Enums.MonetizationRole;
@@ -123,6 +151,10 @@ export type UserWhereInput = {
     id?: Prisma.StringFilter<"User"> | string;
     email?: Prisma.StringNullableFilter<"User"> | string | null;
     name?: Prisma.StringNullableFilter<"User"> | string | null;
+    firstName?: Prisma.StringNullableFilter<"User"> | string | null;
+    lastName?: Prisma.StringNullableFilter<"User"> | string | null;
+    nickname?: Prisma.StringNullableFilter<"User"> | string | null;
+    isDefault?: Prisma.BoolFilter<"User"> | boolean;
     image?: Prisma.StringNullableFilter<"User"> | string | null;
     emailVerified?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null;
     monetizationRole?: Prisma.EnumMonetizationRoleFilter<"User"> | $Enums.MonetizationRole;
@@ -139,6 +171,10 @@ export type UserOrderByWithRelationInput = {
     id?: Prisma.SortOrder;
     email?: Prisma.SortOrderInput | Prisma.SortOrder;
     name?: Prisma.SortOrderInput | Prisma.SortOrder;
+    firstName?: Prisma.SortOrderInput | Prisma.SortOrder;
+    lastName?: Prisma.SortOrderInput | Prisma.SortOrder;
+    nickname?: Prisma.SortOrderInput | Prisma.SortOrder;
+    isDefault?: Prisma.SortOrder;
     image?: Prisma.SortOrderInput | Prisma.SortOrder;
     emailVerified?: Prisma.SortOrderInput | Prisma.SortOrder;
     monetizationRole?: Prisma.SortOrder;
@@ -154,10 +190,14 @@ export type UserOrderByWithRelationInput = {
 export type UserWhereUniqueInput = Prisma.AtLeast<{
     id?: string;
     email?: string;
+    nickname?: string;
     AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[];
     OR?: Prisma.UserWhereInput[];
     NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[];
     name?: Prisma.StringNullableFilter<"User"> | string | null;
+    firstName?: Prisma.StringNullableFilter<"User"> | string | null;
+    lastName?: Prisma.StringNullableFilter<"User"> | string | null;
+    isDefault?: Prisma.BoolFilter<"User"> | boolean;
     image?: Prisma.StringNullableFilter<"User"> | string | null;
     emailVerified?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null;
     monetizationRole?: Prisma.EnumMonetizationRoleFilter<"User"> | $Enums.MonetizationRole;
@@ -169,11 +209,15 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
     accounts?: Prisma.AccountListRelationFilter;
     sessions?: Prisma.SessionListRelationFilter;
     comments?: Prisma.CommentListRelationFilter;
-}, "id" | "email">;
+}, "id" | "email" | "nickname">;
 export type UserOrderByWithAggregationInput = {
     id?: Prisma.SortOrder;
     email?: Prisma.SortOrderInput | Prisma.SortOrder;
     name?: Prisma.SortOrderInput | Prisma.SortOrder;
+    firstName?: Prisma.SortOrderInput | Prisma.SortOrder;
+    lastName?: Prisma.SortOrderInput | Prisma.SortOrder;
+    nickname?: Prisma.SortOrderInput | Prisma.SortOrder;
+    isDefault?: Prisma.SortOrder;
     image?: Prisma.SortOrderInput | Prisma.SortOrder;
     emailVerified?: Prisma.SortOrderInput | Prisma.SortOrder;
     monetizationRole?: Prisma.SortOrder;
@@ -191,6 +235,10 @@ export type UserScalarWhereWithAggregatesInput = {
     id?: Prisma.StringWithAggregatesFilter<"User"> | string;
     email?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null;
     name?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null;
+    firstName?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null;
+    lastName?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null;
+    nickname?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null;
+    isDefault?: Prisma.BoolWithAggregatesFilter<"User"> | boolean;
     image?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null;
     emailVerified?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null;
     monetizationRole?: Prisma.EnumMonetizationRoleWithAggregatesFilter<"User"> | $Enums.MonetizationRole;
@@ -202,6 +250,10 @@ export type UserCreateInput = {
     id?: string;
     email?: string | null;
     name?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    nickname?: string | null;
+    isDefault?: boolean;
     image?: string | null;
     emailVerified?: Date | string | null;
     monetizationRole?: $Enums.MonetizationRole;
@@ -218,6 +270,10 @@ export type UserUncheckedCreateInput = {
     id?: string;
     email?: string | null;
     name?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    nickname?: string | null;
+    isDefault?: boolean;
     image?: string | null;
     emailVerified?: Date | string | null;
     monetizationRole?: $Enums.MonetizationRole;
@@ -234,6 +290,10 @@ export type UserUpdateInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     monetizationRole?: Prisma.EnumMonetizationRoleFieldUpdateOperationsInput | $Enums.MonetizationRole;
@@ -250,6 +310,10 @@ export type UserUncheckedUpdateInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     monetizationRole?: Prisma.EnumMonetizationRoleFieldUpdateOperationsInput | $Enums.MonetizationRole;
@@ -266,6 +330,10 @@ export type UserCreateManyInput = {
     id?: string;
     email?: string | null;
     name?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    nickname?: string | null;
+    isDefault?: boolean;
     image?: string | null;
     emailVerified?: Date | string | null;
     monetizationRole?: $Enums.MonetizationRole;
@@ -277,6 +345,10 @@ export type UserUpdateManyMutationInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     monetizationRole?: Prisma.EnumMonetizationRoleFieldUpdateOperationsInput | $Enums.MonetizationRole;
@@ -288,6 +360,10 @@ export type UserUncheckedUpdateManyInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     monetizationRole?: Prisma.EnumMonetizationRoleFieldUpdateOperationsInput | $Enums.MonetizationRole;
@@ -299,6 +375,10 @@ export type UserCountOrderByAggregateInput = {
     id?: Prisma.SortOrder;
     email?: Prisma.SortOrder;
     name?: Prisma.SortOrder;
+    firstName?: Prisma.SortOrder;
+    lastName?: Prisma.SortOrder;
+    nickname?: Prisma.SortOrder;
+    isDefault?: Prisma.SortOrder;
     image?: Prisma.SortOrder;
     emailVerified?: Prisma.SortOrder;
     monetizationRole?: Prisma.SortOrder;
@@ -310,6 +390,10 @@ export type UserMaxOrderByAggregateInput = {
     id?: Prisma.SortOrder;
     email?: Prisma.SortOrder;
     name?: Prisma.SortOrder;
+    firstName?: Prisma.SortOrder;
+    lastName?: Prisma.SortOrder;
+    nickname?: Prisma.SortOrder;
+    isDefault?: Prisma.SortOrder;
     image?: Prisma.SortOrder;
     emailVerified?: Prisma.SortOrder;
     monetizationRole?: Prisma.SortOrder;
@@ -321,6 +405,10 @@ export type UserMinOrderByAggregateInput = {
     id?: Prisma.SortOrder;
     email?: Prisma.SortOrder;
     name?: Prisma.SortOrder;
+    firstName?: Prisma.SortOrder;
+    lastName?: Prisma.SortOrder;
+    nickname?: Prisma.SortOrder;
+    isDefault?: Prisma.SortOrder;
     image?: Prisma.SortOrder;
     emailVerified?: Prisma.SortOrder;
     monetizationRole?: Prisma.SortOrder;
@@ -341,6 +429,9 @@ export type StringFieldUpdateOperationsInput = {
 };
 export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null;
+};
+export type BoolFieldUpdateOperationsInput = {
+    set?: boolean;
 };
 export type NullableDateTimeFieldUpdateOperationsInput = {
     set?: Date | string | null;
@@ -422,6 +513,10 @@ export type UserCreateWithoutOwnedBoardsInput = {
     id?: string;
     email?: string | null;
     name?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    nickname?: string | null;
+    isDefault?: boolean;
     image?: string | null;
     emailVerified?: Date | string | null;
     monetizationRole?: $Enums.MonetizationRole;
@@ -437,6 +532,10 @@ export type UserUncheckedCreateWithoutOwnedBoardsInput = {
     id?: string;
     email?: string | null;
     name?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    nickname?: string | null;
+    isDefault?: boolean;
     image?: string | null;
     emailVerified?: Date | string | null;
     monetizationRole?: $Enums.MonetizationRole;
@@ -465,6 +564,10 @@ export type UserUpdateWithoutOwnedBoardsInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     monetizationRole?: Prisma.EnumMonetizationRoleFieldUpdateOperationsInput | $Enums.MonetizationRole;
@@ -480,6 +583,10 @@ export type UserUncheckedUpdateWithoutOwnedBoardsInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     monetizationRole?: Prisma.EnumMonetizationRoleFieldUpdateOperationsInput | $Enums.MonetizationRole;
@@ -495,6 +602,10 @@ export type UserCreateWithoutBoardMembershipsInput = {
     id?: string;
     email?: string | null;
     name?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    nickname?: string | null;
+    isDefault?: boolean;
     image?: string | null;
     emailVerified?: Date | string | null;
     monetizationRole?: $Enums.MonetizationRole;
@@ -510,6 +621,10 @@ export type UserUncheckedCreateWithoutBoardMembershipsInput = {
     id?: string;
     email?: string | null;
     name?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    nickname?: string | null;
+    isDefault?: boolean;
     image?: string | null;
     emailVerified?: Date | string | null;
     monetizationRole?: $Enums.MonetizationRole;
@@ -538,6 +653,10 @@ export type UserUpdateWithoutBoardMembershipsInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     monetizationRole?: Prisma.EnumMonetizationRoleFieldUpdateOperationsInput | $Enums.MonetizationRole;
@@ -553,6 +672,10 @@ export type UserUncheckedUpdateWithoutBoardMembershipsInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     monetizationRole?: Prisma.EnumMonetizationRoleFieldUpdateOperationsInput | $Enums.MonetizationRole;
@@ -568,6 +691,10 @@ export type UserCreateWithoutCommentsInput = {
     id?: string;
     email?: string | null;
     name?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    nickname?: string | null;
+    isDefault?: boolean;
     image?: string | null;
     emailVerified?: Date | string | null;
     monetizationRole?: $Enums.MonetizationRole;
@@ -583,6 +710,10 @@ export type UserUncheckedCreateWithoutCommentsInput = {
     id?: string;
     email?: string | null;
     name?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    nickname?: string | null;
+    isDefault?: boolean;
     image?: string | null;
     emailVerified?: Date | string | null;
     monetizationRole?: $Enums.MonetizationRole;
@@ -611,6 +742,10 @@ export type UserUpdateWithoutCommentsInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     monetizationRole?: Prisma.EnumMonetizationRoleFieldUpdateOperationsInput | $Enums.MonetizationRole;
@@ -626,6 +761,10 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     monetizationRole?: Prisma.EnumMonetizationRoleFieldUpdateOperationsInput | $Enums.MonetizationRole;
@@ -641,6 +780,10 @@ export type UserCreateWithoutAccountsInput = {
     id?: string;
     email?: string | null;
     name?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    nickname?: string | null;
+    isDefault?: boolean;
     image?: string | null;
     emailVerified?: Date | string | null;
     monetizationRole?: $Enums.MonetizationRole;
@@ -656,6 +799,10 @@ export type UserUncheckedCreateWithoutAccountsInput = {
     id?: string;
     email?: string | null;
     name?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    nickname?: string | null;
+    isDefault?: boolean;
     image?: string | null;
     emailVerified?: Date | string | null;
     monetizationRole?: $Enums.MonetizationRole;
@@ -684,6 +831,10 @@ export type UserUpdateWithoutAccountsInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     monetizationRole?: Prisma.EnumMonetizationRoleFieldUpdateOperationsInput | $Enums.MonetizationRole;
@@ -699,6 +850,10 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     monetizationRole?: Prisma.EnumMonetizationRoleFieldUpdateOperationsInput | $Enums.MonetizationRole;
@@ -714,6 +869,10 @@ export type UserCreateWithoutSessionsInput = {
     id?: string;
     email?: string | null;
     name?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    nickname?: string | null;
+    isDefault?: boolean;
     image?: string | null;
     emailVerified?: Date | string | null;
     monetizationRole?: $Enums.MonetizationRole;
@@ -729,6 +888,10 @@ export type UserUncheckedCreateWithoutSessionsInput = {
     id?: string;
     email?: string | null;
     name?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    nickname?: string | null;
+    isDefault?: boolean;
     image?: string | null;
     emailVerified?: Date | string | null;
     monetizationRole?: $Enums.MonetizationRole;
@@ -757,6 +920,10 @@ export type UserUpdateWithoutSessionsInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     monetizationRole?: Prisma.EnumMonetizationRoleFieldUpdateOperationsInput | $Enums.MonetizationRole;
@@ -772,6 +939,10 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean;
     image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     monetizationRole?: Prisma.EnumMonetizationRoleFieldUpdateOperationsInput | $Enums.MonetizationRole;
@@ -819,6 +990,10 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
     id?: boolean;
     email?: boolean;
     name?: boolean;
+    firstName?: boolean;
+    lastName?: boolean;
+    nickname?: boolean;
+    isDefault?: boolean;
     image?: boolean;
     emailVerified?: boolean;
     monetizationRole?: boolean;
@@ -836,6 +1011,10 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
     id?: boolean;
     email?: boolean;
     name?: boolean;
+    firstName?: boolean;
+    lastName?: boolean;
+    nickname?: boolean;
+    isDefault?: boolean;
     image?: boolean;
     emailVerified?: boolean;
     monetizationRole?: boolean;
@@ -847,6 +1026,10 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
     id?: boolean;
     email?: boolean;
     name?: boolean;
+    firstName?: boolean;
+    lastName?: boolean;
+    nickname?: boolean;
+    isDefault?: boolean;
     image?: boolean;
     emailVerified?: boolean;
     monetizationRole?: boolean;
@@ -858,6 +1041,10 @@ export type UserSelectScalar = {
     id?: boolean;
     email?: boolean;
     name?: boolean;
+    firstName?: boolean;
+    lastName?: boolean;
+    nickname?: boolean;
+    isDefault?: boolean;
     image?: boolean;
     emailVerified?: boolean;
     monetizationRole?: boolean;
@@ -865,7 +1052,7 @@ export type UserSelectScalar = {
     createdAt?: boolean;
     updatedAt?: boolean;
 };
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "image" | "emailVerified" | "monetizationRole" | "workRole" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>;
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "name" | "firstName" | "lastName" | "nickname" | "isDefault" | "image" | "emailVerified" | "monetizationRole" | "workRole" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>;
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     ownedBoards?: boolean | Prisma.User$ownedBoardsArgs<ExtArgs>;
     boardMemberships?: boolean | Prisma.User$boardMembershipsArgs<ExtArgs>;
@@ -889,6 +1076,10 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
         id: string;
         email: string | null;
         name: string | null;
+        firstName: string | null;
+        lastName: string | null;
+        nickname: string | null;
+        isDefault: boolean;
         image: string | null;
         emailVerified: Date | null;
         monetizationRole: $Enums.MonetizationRole;
@@ -960,6 +1151,10 @@ export interface UserFieldRefs {
     readonly id: Prisma.FieldRef<"User", 'String'>;
     readonly email: Prisma.FieldRef<"User", 'String'>;
     readonly name: Prisma.FieldRef<"User", 'String'>;
+    readonly firstName: Prisma.FieldRef<"User", 'String'>;
+    readonly lastName: Prisma.FieldRef<"User", 'String'>;
+    readonly nickname: Prisma.FieldRef<"User", 'String'>;
+    readonly isDefault: Prisma.FieldRef<"User", 'Boolean'>;
     readonly image: Prisma.FieldRef<"User", 'String'>;
     readonly emailVerified: Prisma.FieldRef<"User", 'DateTime'>;
     readonly monetizationRole: Prisma.FieldRef<"User", 'MonetizationRole'>;

@@ -5,7 +5,6 @@ import {
   DndContext,
   DragEndEvent,
   DragOverEvent,
-  DragStartEvent,
   type CollisionDetection,
   closestCenter,
   useSensor,
@@ -38,7 +37,6 @@ export function BoardColumns({
 }: BoardColumnsProps) {
   const [columns, setColumns] = useState(board.columns);
   const [tickets, setTickets] = useState(board.tickets ?? []);
-  const [activeId, setActiveId] = useState<string | null>(null);
 
   const ticketsById = useMemo(
     () =>
@@ -69,10 +67,6 @@ export function BoardColumns({
     }
 
     return closestCenter(args);
-  };
-
-  const handleDragStart = (event: DragStartEvent) => {
-    setActiveId(String(event.active.id));
   };
 
   const handleDragOver = (event: DragOverEvent) => {
@@ -122,7 +116,6 @@ export function BoardColumns({
     const { active, over } = event;
 
     if (!over) {
-      setActiveId(null);
       return;
     }
 
@@ -162,8 +155,6 @@ export function BoardColumns({
         void onColumnsReorder(reorderedColumnIds);
       }
     }
-
-    setActiveId(null);
   };
 
   const handleRenameColumn = async (columnId: string, currentTitle: string) => {
@@ -212,7 +203,6 @@ export function BoardColumns({
     <DndContext
       sensors={sensors}
       collisionDetection={collisionDetection}
-      onDragStart={handleDragStart}
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
     >

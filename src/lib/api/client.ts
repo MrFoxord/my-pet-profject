@@ -22,6 +22,23 @@ export type ApiBoardResponse = Omit<Board, "columns"> & {
   currentUserRole?: string | null;
 };
 
+export type UserDefaultStateResponse = {
+  id: string;
+  name: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  nickname: string | null;
+  workRole: "CLIENT" | "EXECUTOR" | "ORGANIZER" | "CEO";
+  isDefault: boolean;
+};
+
+export type UpdateDefaultProfileInput = {
+  firstName: string;
+  lastName: string;
+  nickname?: string;
+  workRole: "CLIENT" | "EXECUTOR" | "ORGANIZER" | "CEO";
+};
+
 async function apiRequest<T>(
   input: string,
   init?: RequestInit,
@@ -44,8 +61,8 @@ async function apiRequest<T>(
   return (await response.json()) as T;
 }
 
-export async function getBoards(userId?: string): Promise<BoardDto[]> {
-  const data = await apiRequest<BoardDto[]>(apiRoutes.boards(userId));
+export async function getBoards(): Promise<BoardDto[]> {
+  const data = await apiRequest<BoardDto[]>(apiRoutes.boards());
   return data ?? [];
 }
 
@@ -60,18 +77,39 @@ export async function createBoard(input: CreateBoardInput): Promise<BoardDto | n
 }
 
 export async function getBoardById(
-  boardId: string,
-  userId?: string
+  boardId: string
 ): Promise<ApiBoardResponse | null> {
   return apiRequest<ApiBoardResponse>(
-    apiRoutes.boardById(boardId, userId),
-    {
-      cache: "no-store",
-    },
-    {
-      allowNotFound: true,
-    }
+    apiRoutes.boardById(boardId),
+    { cache: "no-store" },
+    { allowNotFound: true }
   );
+}
+
+export async function getUserDefaultState(): Promise<UserDefaultStateResponse> {
+  const data = await apiRequest<UserDefaultStateResponse>(apiRoutes.userDefaultState());
+  if (!data) {
+    throw new Error("API request failed: empty user state response");
+  }
+  return data;
+}
+
+export async function updateDefaultProfile(
+  input: UpdateDefaultProfileInput
+): Promise<UserDefaultStateResponse> {
+  const data = await apiRequest<UserDefaultStateResponse>(apiRoutes.userDefaultProfile(), {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  });
+
+  if (!data) {
+    throw new Error("API request failed: empty update profile response");
+  }
+
+  return data;
 }
 
 export async function reorderBoardColumns(

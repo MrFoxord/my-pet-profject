@@ -1,12 +1,17 @@
+import { Request } from 'express';
 import { BoardsService } from './boards.service';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { ReorderColumnsDto } from './dto/reorder-columns.dto';
 import { RenameColumnDto } from './dto/rename-column.dto';
 import { DeleteColumnDto } from './dto/delete-column.dto';
+import { ServiceJwtPayload } from '../auth/internal-auth.guard';
+type AuthRequest = Request & {
+    serviceUser?: ServiceJwtPayload;
+};
 export declare class BoardsController {
     private readonly boardsService;
     constructor(boardsService: BoardsService);
-    findAll(userId?: string): Promise<{
+    findAll(req: AuthRequest): Promise<{
         id: string;
         title: string;
         description: string;
@@ -17,7 +22,7 @@ export declare class BoardsController {
             id: string;
         }[];
     }[]>;
-    create(dto: CreateBoardDto): Promise<{
+    create(dto: CreateBoardDto, req: AuthRequest): Promise<{
         id: string;
         title: string;
         description: string;
@@ -26,7 +31,7 @@ export declare class BoardsController {
         dashboardRole: string;
         tickets: any[];
     }>;
-    findById(id: string, userId?: string): Promise<{
+    findById(id: string, req: AuthRequest): Promise<{
         id: string;
         title: string;
         description: string;
@@ -69,3 +74,4 @@ export declare class BoardsController {
         ok: boolean;
     }>;
 }
+export {};

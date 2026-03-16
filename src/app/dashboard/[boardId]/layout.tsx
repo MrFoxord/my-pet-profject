@@ -1,5 +1,7 @@
 import { ReactNode } from "react";
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { auth } from "@/auth";
 
 interface Props {
     children: ReactNode;
@@ -13,7 +15,13 @@ export async function generateMetadata ({params} : {params: {boardId: string}}):
     }
 }
 
-export default function BoardLayout({children,} : Props) {
+export default async function BoardLayout({children,} : Props) {
+    const session = await auth();
+
+    if (!session) {
+        redirect("/auth/signin");
+    }
+
     return (
         <>
             {children}

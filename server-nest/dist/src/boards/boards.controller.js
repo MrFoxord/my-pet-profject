@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var _a, _b, _c;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BoardsController = void 0;
 const common_1 = require("@nestjs/common");
@@ -19,18 +20,19 @@ const create_board_dto_1 = require("./dto/create-board.dto");
 const reorder_columns_dto_1 = require("./dto/reorder-columns.dto");
 const rename_column_dto_1 = require("./dto/rename-column.dto");
 const delete_column_dto_1 = require("./dto/delete-column.dto");
+const internal_auth_guard_1 = require("../auth/internal-auth.guard");
 let BoardsController = class BoardsController {
     constructor(boardsService) {
         this.boardsService = boardsService;
     }
-    findAll(userId) {
-        return this.boardsService.findAll(userId);
+    findAll(req) {
+        return this.boardsService.findAll(req.serviceUser?.sub);
     }
-    create(dto) {
-        return this.boardsService.create(dto);
+    create(dto, req) {
+        return this.boardsService.create({ ...dto, ownerId: req.serviceUser?.sub });
     }
-    async findById(id, userId) {
-        const board = await this.boardsService.findById(id, userId);
+    async findById(id, req) {
+        const board = await this.boardsService.findById(id, req.serviceUser?.sub);
         if (!board)
             throw new common_1.NotFoundException();
         return board;
@@ -51,25 +53,26 @@ let BoardsController = class BoardsController {
 exports.BoardsController = BoardsController;
 __decorate([
     (0, common_1.Get)(),
-    __param(0, (0, common_1.Query)('userId')),
+    __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [typeof (_a = typeof AuthRequest !== "undefined" && AuthRequest) === "function" ? _a : Object]),
     __metadata("design:returntype", void 0)
 ], BoardsController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Post)(),
     (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_board_dto_1.CreateBoardDto]),
+    __metadata("design:paramtypes", [create_board_dto_1.CreateBoardDto, typeof (_b = typeof AuthRequest !== "undefined" && AuthRequest) === "function" ? _b : Object]),
     __metadata("design:returntype", void 0)
 ], BoardsController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Query)('userId')),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [String, typeof (_c = typeof AuthRequest !== "undefined" && AuthRequest) === "function" ? _c : Object]),
     __metadata("design:returntype", Promise)
 ], BoardsController.prototype, "findById", null);
 __decorate([
@@ -100,6 +103,7 @@ __decorate([
 ], BoardsController.prototype, "deleteColumn", null);
 exports.BoardsController = BoardsController = __decorate([
     (0, common_1.Controller)('boards'),
+    (0, common_1.UseGuards)(internal_auth_guard_1.InternalAuthGuard),
     __metadata("design:paramtypes", [boards_service_1.BoardsService])
 ], BoardsController);
 //# sourceMappingURL=boards.controller.js.map

@@ -53,7 +53,7 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
     const dsn = normalizeDatabaseUrl(rawDsn);
     this.pool = new Pool({ connectionString: dsn });
     const adapter = new PrismaPg(this.pool);
-    this._client = new PrismaClient({ adapter } as any) as unknown as PrismaInstance;
+    this._client = new PrismaClient({ adapter }) as PrismaInstance;
   }
 
   // Expose model accessors so services can do this.prisma.board / boardColumn / etc.
@@ -83,16 +83,17 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
   async $transaction<T extends readonly unknown[]>(
     ops: [...{ [K in keyof T]: Promise<T[K]> }],
   ): Promise<T>;
-  async $transaction(...args: any[]): Promise<any> {
-    return (this._client as any).$transaction(...args);
+  async $transaction(...args: unknown[]): Promise<unknown> {
+    // Call through the Prisma client instance directly to keep internal `this` binding.
+    return (this._client.$transaction as (...params: unknown[]) => Promise<unknown>)(...args);
   }
 
   async onModuleInit() {
-    await (this._client as any).$connect();
+    await this._client.$connect();
   }
 
   async onModuleDestroy() {
-    await (this._client as any).$disconnect();
+    await this._client.$disconnect();
     await this.pool.end();
   }
 }

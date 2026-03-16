@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import DashboardClient from "@/components/layout/DashboardClient";
-import { ApiBoardColumn, ApiBoardResponse, getBoardById } from "@/lib/api/client";
+import { ApiBoardColumn } from "@/lib/api/client";
+import { getServerBoardById } from "@/lib/api/serverClient";
 import { Board, BoardColumn, BoardPageProps, Ticket } from "@/types";
 
 function buildColumnsFromApi(
@@ -51,9 +52,9 @@ function buildColumnsFromApi(
     return columns;
 }
 
-async function getBoard(boardId: string, userId?: string): Promise<Board | null> {
+async function getBoard(boardId: string, userId?: string | null): Promise<Board | null> {
     try {
-        const board = await getBoardById(boardId, userId);
+        const board = await getServerBoardById(boardId, userId);
 
         if (!board) {
             return null;

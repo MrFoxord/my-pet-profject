@@ -337,10 +337,6 @@ export type SubtaskUncheckedUpdateManyWithoutTicketNestedInput = {
   deleteMany?: Prisma.SubtaskScalarWhereInput | Prisma.SubtaskScalarWhereInput[]
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type SubtaskCreateWithoutTicketInput = {
   id?: string
   title: string

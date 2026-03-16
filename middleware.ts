@@ -6,7 +6,8 @@ export default auth((request) => {
   const pathname = request.nextUrl.pathname;
   const isAuthRoute = pathname.startsWith("/auth");
   const isProtectedRoute =
-    pathname.startsWith("/boards") || pathname.startsWith("/dashboard");
+    pathname.startsWith("/boards") ||
+    pathname.startsWith("/dashboard");
 
   if (isAuthRoute && isAuthenticated) {
     return NextResponse.redirect(new URL("/boards", request.url));

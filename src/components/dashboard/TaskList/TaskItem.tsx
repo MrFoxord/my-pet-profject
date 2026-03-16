@@ -2,14 +2,10 @@
 
 import {Card, CardContent, Typography, Box, Button } from "@mui/material";
 import { TaskItemProps, Task } from "@/types";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export default function TaskItem({ task, onStatusChange }: TaskItemProps) {
     const [status, setStatus] = useState<Task["status"]>(task.status);
-
-        // useEffect(() => {
-        //     setStatus(task.status);
-        // }, [task.status]);
 
     const statusColors: Record<Task["status"], string> = {
         todo: "#f59e0b",
