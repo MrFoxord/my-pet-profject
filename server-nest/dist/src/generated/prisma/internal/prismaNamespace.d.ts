@@ -160,12 +160,13 @@ export declare const ModelName: {
     readonly User: "User";
     readonly Board: "Board";
     readonly BoardMember: "BoardMember";
+    readonly BoardRole: "BoardRole";
+    readonly BoardInvitation: "BoardInvitation";
     readonly BoardColumn: "BoardColumn";
     readonly Ticket: "Ticket";
     readonly Subtask: "Subtask";
     readonly Comment: "Comment";
     readonly Account: "Account";
-    readonly Session: "Session";
     readonly VerificationToken: "VerificationToken";
 };
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
@@ -179,7 +180,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         omit: GlobalOmitOptions;
     };
     meta: {
-        modelProps: "user" | "board" | "boardMember" | "boardColumn" | "ticket" | "subtask" | "comment" | "account" | "session" | "verificationToken";
+        modelProps: "user" | "board" | "boardMember" | "boardRole" | "boardInvitation" | "boardColumn" | "ticket" | "subtask" | "comment" | "account" | "verificationToken";
         txIsolationLevel: TransactionIsolationLevel;
     };
     model: {
@@ -402,6 +403,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
                 count: {
                     args: Prisma.BoardMemberCountArgs<ExtArgs>;
                     result: runtime.Types.Utils.Optional<Prisma.BoardMemberCountAggregateOutputType> | number;
+                };
+            };
+        };
+        BoardRole: {
+            payload: Prisma.$BoardRolePayload<ExtArgs>;
+            fields: Prisma.BoardRoleFieldRefs;
+            operations: {
+                findUnique: {
+                    args: Prisma.BoardRoleFindUniqueArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardRolePayload> | null;
+                };
+                findUniqueOrThrow: {
+                    args: Prisma.BoardRoleFindUniqueOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardRolePayload>;
+                };
+                findFirst: {
+                    args: Prisma.BoardRoleFindFirstArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardRolePayload> | null;
+                };
+                findFirstOrThrow: {
+                    args: Prisma.BoardRoleFindFirstOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardRolePayload>;
+                };
+                findMany: {
+                    args: Prisma.BoardRoleFindManyArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardRolePayload>[];
+                };
+                create: {
+                    args: Prisma.BoardRoleCreateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardRolePayload>;
+                };
+                createMany: {
+                    args: Prisma.BoardRoleCreateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                createManyAndReturn: {
+                    args: Prisma.BoardRoleCreateManyAndReturnArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardRolePayload>[];
+                };
+                delete: {
+                    args: Prisma.BoardRoleDeleteArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardRolePayload>;
+                };
+                update: {
+                    args: Prisma.BoardRoleUpdateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardRolePayload>;
+                };
+                deleteMany: {
+                    args: Prisma.BoardRoleDeleteManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                updateMany: {
+                    args: Prisma.BoardRoleUpdateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                updateManyAndReturn: {
+                    args: Prisma.BoardRoleUpdateManyAndReturnArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardRolePayload>[];
+                };
+                upsert: {
+                    args: Prisma.BoardRoleUpsertArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardRolePayload>;
+                };
+                aggregate: {
+                    args: Prisma.BoardRoleAggregateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.AggregateBoardRole>;
+                };
+                groupBy: {
+                    args: Prisma.BoardRoleGroupByArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.BoardRoleGroupByOutputType>[];
+                };
+                count: {
+                    args: Prisma.BoardRoleCountArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.BoardRoleCountAggregateOutputType> | number;
+                };
+            };
+        };
+        BoardInvitation: {
+            payload: Prisma.$BoardInvitationPayload<ExtArgs>;
+            fields: Prisma.BoardInvitationFieldRefs;
+            operations: {
+                findUnique: {
+                    args: Prisma.BoardInvitationFindUniqueArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardInvitationPayload> | null;
+                };
+                findUniqueOrThrow: {
+                    args: Prisma.BoardInvitationFindUniqueOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardInvitationPayload>;
+                };
+                findFirst: {
+                    args: Prisma.BoardInvitationFindFirstArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardInvitationPayload> | null;
+                };
+                findFirstOrThrow: {
+                    args: Prisma.BoardInvitationFindFirstOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardInvitationPayload>;
+                };
+                findMany: {
+                    args: Prisma.BoardInvitationFindManyArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardInvitationPayload>[];
+                };
+                create: {
+                    args: Prisma.BoardInvitationCreateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardInvitationPayload>;
+                };
+                createMany: {
+                    args: Prisma.BoardInvitationCreateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                createManyAndReturn: {
+                    args: Prisma.BoardInvitationCreateManyAndReturnArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardInvitationPayload>[];
+                };
+                delete: {
+                    args: Prisma.BoardInvitationDeleteArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardInvitationPayload>;
+                };
+                update: {
+                    args: Prisma.BoardInvitationUpdateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardInvitationPayload>;
+                };
+                deleteMany: {
+                    args: Prisma.BoardInvitationDeleteManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                updateMany: {
+                    args: Prisma.BoardInvitationUpdateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                updateManyAndReturn: {
+                    args: Prisma.BoardInvitationUpdateManyAndReturnArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardInvitationPayload>[];
+                };
+                upsert: {
+                    args: Prisma.BoardInvitationUpsertArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$BoardInvitationPayload>;
+                };
+                aggregate: {
+                    args: Prisma.BoardInvitationAggregateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.AggregateBoardInvitation>;
+                };
+                groupBy: {
+                    args: Prisma.BoardInvitationGroupByArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.BoardInvitationGroupByOutputType>[];
+                };
+                count: {
+                    args: Prisma.BoardInvitationCountArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.BoardInvitationCountAggregateOutputType> | number;
                 };
             };
         };
@@ -775,80 +924,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
                 };
             };
         };
-        Session: {
-            payload: Prisma.$SessionPayload<ExtArgs>;
-            fields: Prisma.SessionFieldRefs;
-            operations: {
-                findUnique: {
-                    args: Prisma.SessionFindUniqueArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$SessionPayload> | null;
-                };
-                findUniqueOrThrow: {
-                    args: Prisma.SessionFindUniqueOrThrowArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$SessionPayload>;
-                };
-                findFirst: {
-                    args: Prisma.SessionFindFirstArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$SessionPayload> | null;
-                };
-                findFirstOrThrow: {
-                    args: Prisma.SessionFindFirstOrThrowArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$SessionPayload>;
-                };
-                findMany: {
-                    args: Prisma.SessionFindManyArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$SessionPayload>[];
-                };
-                create: {
-                    args: Prisma.SessionCreateArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$SessionPayload>;
-                };
-                createMany: {
-                    args: Prisma.SessionCreateManyArgs<ExtArgs>;
-                    result: BatchPayload;
-                };
-                createManyAndReturn: {
-                    args: Prisma.SessionCreateManyAndReturnArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$SessionPayload>[];
-                };
-                delete: {
-                    args: Prisma.SessionDeleteArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$SessionPayload>;
-                };
-                update: {
-                    args: Prisma.SessionUpdateArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$SessionPayload>;
-                };
-                deleteMany: {
-                    args: Prisma.SessionDeleteManyArgs<ExtArgs>;
-                    result: BatchPayload;
-                };
-                updateMany: {
-                    args: Prisma.SessionUpdateManyArgs<ExtArgs>;
-                    result: BatchPayload;
-                };
-                updateManyAndReturn: {
-                    args: Prisma.SessionUpdateManyAndReturnArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$SessionPayload>[];
-                };
-                upsert: {
-                    args: Prisma.SessionUpsertArgs<ExtArgs>;
-                    result: runtime.Types.Utils.PayloadToResult<Prisma.$SessionPayload>;
-                };
-                aggregate: {
-                    args: Prisma.SessionAggregateArgs<ExtArgs>;
-                    result: runtime.Types.Utils.Optional<Prisma.AggregateSession>;
-                };
-                groupBy: {
-                    args: Prisma.SessionGroupByArgs<ExtArgs>;
-                    result: runtime.Types.Utils.Optional<Prisma.SessionGroupByOutputType>[];
-                };
-                count: {
-                    args: Prisma.SessionCountArgs<ExtArgs>;
-                    result: runtime.Types.Utils.Optional<Prisma.SessionCountAggregateOutputType> | number;
-                };
-            };
-        };
         VerificationToken: {
             payload: Prisma.$VerificationTokenPayload<ExtArgs>;
             fields: Prisma.VerificationTokenFieldRefs;
@@ -990,6 +1065,25 @@ export declare const BoardMemberScalarFieldEnum: {
     readonly updatedAt: "updatedAt";
 };
 export type BoardMemberScalarFieldEnum = (typeof BoardMemberScalarFieldEnum)[keyof typeof BoardMemberScalarFieldEnum];
+export declare const BoardRoleScalarFieldEnum: {
+    readonly id: "id";
+    readonly boardId: "boardId";
+    readonly name: "name";
+    readonly permissions: "permissions";
+    readonly createdAt: "createdAt";
+    readonly updatedAt: "updatedAt";
+};
+export type BoardRoleScalarFieldEnum = (typeof BoardRoleScalarFieldEnum)[keyof typeof BoardRoleScalarFieldEnum];
+export declare const BoardInvitationScalarFieldEnum: {
+    readonly id: "id";
+    readonly email: "email";
+    readonly boardId: "boardId";
+    readonly role: "role";
+    readonly status: "status";
+    readonly expiresAt: "expiresAt";
+    readonly createdAt: "createdAt";
+};
+export type BoardInvitationScalarFieldEnum = (typeof BoardInvitationScalarFieldEnum)[keyof typeof BoardInvitationScalarFieldEnum];
 export declare const BoardColumnScalarFieldEnum: {
     readonly id: "id";
     readonly title: "title";
@@ -1004,9 +1098,13 @@ export declare const TicketScalarFieldEnum: {
     readonly title: "title";
     readonly description: "description";
     readonly status: "status";
+    readonly sortIndex: "sortIndex";
     readonly priority: "priority";
     readonly type: "type";
+    readonly accessibilityRoles: "accessibilityRoles";
+    readonly accessibilityIds: "accessibilityIds";
     readonly boardId: "boardId";
+    readonly columnId: "columnId";
     readonly estimateOriginalHours: "estimateOriginalHours";
     readonly estimateSpentHours: "estimateSpentHours";
     readonly estimateRemainingHours: "estimateRemainingHours";
@@ -1047,13 +1145,6 @@ export declare const AccountScalarFieldEnum: {
     readonly session_state: "session_state";
 };
 export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeof AccountScalarFieldEnum];
-export declare const SessionScalarFieldEnum: {
-    readonly id: "id";
-    readonly sessionToken: "sessionToken";
-    readonly userId: "userId";
-    readonly expires: "expires";
-};
-export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum];
 export declare const VerificationTokenScalarFieldEnum: {
     readonly identifier: "identifier";
     readonly token: "token";
@@ -1084,6 +1175,8 @@ export type EnumMonetizationRoleFieldRefInput<$PrismaModel> = FieldRefInputType<
 export type ListEnumMonetizationRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MonetizationRole[]'>;
 export type EnumWorkRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkRole'>;
 export type ListEnumWorkRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkRole[]'>;
+export type EnumBoardMemberRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BoardMemberRole'>;
+export type ListEnumBoardMemberRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BoardMemberRole[]'>;
 export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>;
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>;
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>;
@@ -1115,12 +1208,13 @@ export type GlobalOmitConfig = {
     user?: Prisma.UserOmit;
     board?: Prisma.BoardOmit;
     boardMember?: Prisma.BoardMemberOmit;
+    boardRole?: Prisma.BoardRoleOmit;
+    boardInvitation?: Prisma.BoardInvitationOmit;
     boardColumn?: Prisma.BoardColumnOmit;
     ticket?: Prisma.TicketOmit;
     subtask?: Prisma.SubtaskOmit;
     comment?: Prisma.CommentOmit;
     account?: Prisma.AccountOmit;
-    session?: Prisma.SessionOmit;
     verificationToken?: Prisma.VerificationTokenOmit;
 };
 export type LogLevel = 'info' | 'query' | 'warn' | 'error';

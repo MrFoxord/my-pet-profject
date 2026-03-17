@@ -1,3 +1,10 @@
+export declare const BoardMemberRole: {
+    readonly OWNER: "OWNER";
+    readonly ADMIN: "ADMIN";
+    readonly MEMBER: "MEMBER";
+    readonly VIEWER: "VIEWER";
+};
+export type BoardMemberRole = (typeof BoardMemberRole)[keyof typeof BoardMemberRole];
 export declare const MonetizationRole: {
     readonly FREE: "FREE";
     readonly SUBMITTED: "SUBMITTED";

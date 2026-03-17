@@ -1,10 +1,4 @@
-import { Task,BoardMockProps } from "@/types";
-
-export const mockTasks: Task[] = [
-  { id: "1", title: "Сделать дизайн", status: "todo", assignedTo: "Иван", dueDate: "2025-11-30" },
-  { id: "2", title: "Настроить базу", status: "in-progress", assignedTo: "Мария", dueDate: "2025-12-05" },
-  { id: "3", title: "Написать документацию", status: "done", assignedTo: "Алексей", dueDate: "2025-11-25" },
-];
+import { BoardMockProps } from "@/types";
 
 export const mockBoards: BoardMockProps[] = [
   {

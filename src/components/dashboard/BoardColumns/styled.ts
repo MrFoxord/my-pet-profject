@@ -36,6 +36,27 @@ export const ColumnHeader = styled.div`
   margin-bottom: 4px;
 `;
 
+export const ColumnActions = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+export const AddTicketButton = styled.button`
+  border: 0;
+  background: #0f172a;
+  color: #fff;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 export const ColumnTitle = styled(MuiTypography)`
   font-weight: 600;
   font-size: 0.95rem;

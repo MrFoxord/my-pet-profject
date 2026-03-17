@@ -11,7 +11,16 @@ export declare class PrismaService implements OnModuleInit, OnModuleDestroy {
     get boardColumn(): import("../generated/prisma/models").BoardColumnDelegate<import("@prisma/client/runtime/client").InternalArgs, {
         omit: import("../generated/prisma/internal/prismaNamespace").GlobalOmitConfig;
     }>;
+    get boardMember(): import("../generated/prisma/models").BoardMemberDelegate<import("@prisma/client/runtime/client").InternalArgs, {
+        omit: import("../generated/prisma/internal/prismaNamespace").GlobalOmitConfig;
+    }>;
     get ticket(): import("../generated/prisma/models").TicketDelegate<import("@prisma/client/runtime/client").InternalArgs, {
+        omit: import("../generated/prisma/internal/prismaNamespace").GlobalOmitConfig;
+    }>;
+    get boardRole(): import("../generated/prisma/models").BoardRoleDelegate<import("@prisma/client/runtime/client").InternalArgs, {
+        omit: import("../generated/prisma/internal/prismaNamespace").GlobalOmitConfig;
+    }>;
+    get boardInvitation(): import("../generated/prisma/models").BoardInvitationDelegate<import("@prisma/client/runtime/client").InternalArgs, {
         omit: import("../generated/prisma/internal/prismaNamespace").GlobalOmitConfig;
     }>;
     get subtask(): import("../generated/prisma/models").SubtaskDelegate<import("@prisma/client/runtime/client").InternalArgs, {

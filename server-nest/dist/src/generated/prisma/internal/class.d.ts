@@ -37,6 +37,12 @@ export interface PrismaClient<in LogOpts extends Prisma.LogLevel = never, in out
     get boardMember(): Prisma.BoardMemberDelegate<ExtArgs, {
         omit: OmitOpts;
     }>;
+    get boardRole(): Prisma.BoardRoleDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    get boardInvitation(): Prisma.BoardInvitationDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
     get boardColumn(): Prisma.BoardColumnDelegate<ExtArgs, {
         omit: OmitOpts;
     }>;
@@ -50,9 +56,6 @@ export interface PrismaClient<in LogOpts extends Prisma.LogLevel = never, in out
         omit: OmitOpts;
     }>;
     get account(): Prisma.AccountDelegate<ExtArgs, {
-        omit: OmitOpts;
-    }>;
-    get session(): Prisma.SessionDelegate<ExtArgs, {
         omit: OmitOpts;
     }>;
     get verificationToken(): Prisma.VerificationTokenDelegate<ExtArgs, {

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NullsOrder = exports.QueryMode = exports.SortOrder = exports.VerificationTokenScalarFieldEnum = exports.SessionScalarFieldEnum = exports.AccountScalarFieldEnum = exports.CommentScalarFieldEnum = exports.SubtaskScalarFieldEnum = exports.TicketScalarFieldEnum = exports.BoardColumnScalarFieldEnum = exports.BoardMemberScalarFieldEnum = exports.BoardScalarFieldEnum = exports.UserScalarFieldEnum = exports.TransactionIsolationLevel = exports.ModelName = exports.AnyNull = exports.JsonNull = exports.DbNull = exports.NullTypes = exports.Decimal = void 0;
+exports.NullsOrder = exports.QueryMode = exports.SortOrder = exports.VerificationTokenScalarFieldEnum = exports.AccountScalarFieldEnum = exports.CommentScalarFieldEnum = exports.SubtaskScalarFieldEnum = exports.TicketScalarFieldEnum = exports.BoardColumnScalarFieldEnum = exports.BoardInvitationScalarFieldEnum = exports.BoardRoleScalarFieldEnum = exports.BoardMemberScalarFieldEnum = exports.BoardScalarFieldEnum = exports.UserScalarFieldEnum = exports.TransactionIsolationLevel = exports.ModelName = exports.AnyNull = exports.JsonNull = exports.DbNull = exports.NullTypes = exports.Decimal = void 0;
 const runtime = require("@prisma/client/runtime/index-browser");
 exports.Decimal = runtime.Decimal;
 exports.NullTypes = {
@@ -15,12 +15,13 @@ exports.ModelName = {
     User: 'User',
     Board: 'Board',
     BoardMember: 'BoardMember',
+    BoardRole: 'BoardRole',
+    BoardInvitation: 'BoardInvitation',
     BoardColumn: 'BoardColumn',
     Ticket: 'Ticket',
     Subtask: 'Subtask',
     Comment: 'Comment',
     Account: 'Account',
-    Session: 'Session',
     VerificationToken: 'VerificationToken'
 };
 exports.TransactionIsolationLevel = runtime.makeStrictEnum({
@@ -62,6 +63,23 @@ exports.BoardMemberScalarFieldEnum = {
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
 };
+exports.BoardRoleScalarFieldEnum = {
+    id: 'id',
+    boardId: 'boardId',
+    name: 'name',
+    permissions: 'permissions',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+exports.BoardInvitationScalarFieldEnum = {
+    id: 'id',
+    email: 'email',
+    boardId: 'boardId',
+    role: 'role',
+    status: 'status',
+    expiresAt: 'expiresAt',
+    createdAt: 'createdAt'
+};
 exports.BoardColumnScalarFieldEnum = {
     id: 'id',
     title: 'title',
@@ -75,9 +93,13 @@ exports.TicketScalarFieldEnum = {
     title: 'title',
     description: 'description',
     status: 'status',
+    sortIndex: 'sortIndex',
     priority: 'priority',
     type: 'type',
+    accessibilityRoles: 'accessibilityRoles',
+    accessibilityIds: 'accessibilityIds',
     boardId: 'boardId',
+    columnId: 'columnId',
     estimateOriginalHours: 'estimateOriginalHours',
     estimateSpentHours: 'estimateSpentHours',
     estimateRemainingHours: 'estimateRemainingHours',
@@ -113,12 +135,6 @@ exports.AccountScalarFieldEnum = {
     scope: 'scope',
     id_token: 'id_token',
     session_state: 'session_state'
-};
-exports.SessionScalarFieldEnum = {
-    id: 'id',
-    sessionToken: 'sessionToken',
-    userId: 'userId',
-    expires: 'expires'
 };
 exports.VerificationTokenScalarFieldEnum = {
     identifier: 'identifier',

@@ -18,6 +18,12 @@ import { CreateBoardDto } from './dto/create-board.dto';
 import { ReorderColumnsDto } from './dto/reorder-columns.dto';
 import { RenameColumnDto } from './dto/rename-column.dto';
 import { DeleteColumnDto } from './dto/delete-column.dto';
+import { CreateTicketDto } from './dto/create-ticket.dto';
+import { UpdateTicketDto } from './dto/update-ticket.dto';
+import { ReorderTicketsDto } from './dto/reorder-tickets.dto';
+import { CreateBoardRoleDto } from './dto/create-board-role.dto';
+import { UpdateBoardRoleDto } from './dto/update-board-role.dto';
+import { CreateBoardInvitationDto } from './dto/create-board-invitation.dto';
 import { InternalAuthGuard, ServiceJwtPayload } from '../auth/internal-auth.guard';
 
 type AuthRequest = Request & { serviceUser?: ServiceJwtPayload };
@@ -74,5 +80,118 @@ export class BoardsController {
   ) {
     await this.boardsService.deleteColumn(boardId, columnId, dto);
     return { ok: true };
+  }
+
+  @Post(':boardId/tickets')
+  @HttpCode(HttpStatus.CREATED)
+  createTicket(
+    @Param('boardId') boardId: string,
+    @Body() dto: CreateTicketDto,
+    @Req() req: AuthRequest,
+  ) {
+    return this.boardsService.createTicket(boardId, dto, req.serviceUser?.sub);
+  }
+
+  @Patch(':boardId/tickets/reorder')
+  async reorderTickets(
+    @Param('boardId') boardId: string,
+    @Body() dto: ReorderTicketsDto,
+    @Req() req: AuthRequest,
+  ) {
+    await this.boardsService.reorderTickets(boardId, dto, req.serviceUser?.sub);
+    return { ok: true };
+  }
+
+  @Patch(':boardId/tickets/:ticketId')
+  updateTicket(
+    @Param('boardId') boardId: string,
+    @Param('ticketId') ticketId: string,
+    @Body() dto: UpdateTicketDto,
+    @Req() req: AuthRequest,
+  ) {
+    return this.boardsService.updateTicket(boardId, ticketId, dto, req.serviceUser?.sub);
+  }
+
+  @Delete(':boardId/tickets/:ticketId')
+  async deleteTicket(
+    @Param('boardId') boardId: string,
+    @Param('ticketId') ticketId: string,
+    @Req() req: AuthRequest,
+  ) {
+    await this.boardsService.deleteTicket(boardId, ticketId, req.serviceUser?.sub);
+    return { ok: true };
+  }
+
+  @Post(':boardId/roles')
+  @HttpCode(HttpStatus.CREATED)
+  createBoardRole(
+    @Param('boardId') boardId: string,
+    @Body() dto: CreateBoardRoleDto,
+    @Req() req: AuthRequest,
+  ) {
+    return this.boardsService.createBoardRole(boardId, dto, req.serviceUser?.sub);
+  }
+
+  @Get(':boardId/roles')
+  listBoardRoles(
+    @Param('boardId') boardId: string,
+    @Req() req: AuthRequest,
+  ) {
+    return this.boardsService.listBoardRoles(boardId, req.serviceUser?.sub);
+  }
+
+  @Patch(':boardId/roles/:roleId')
+  updateBoardRole(
+    @Param('boardId') boardId: string,
+    @Param('roleId') roleId: string,
+    @Body() dto: UpdateBoardRoleDto,
+    @Req() req: AuthRequest,
+  ) {
+    return this.boardsService.updateBoardRole(boardId, roleId, dto, req.serviceUser?.sub);
+  }
+
+  @Delete(':boardId/roles/:roleId')
+  deleteBoardRole(
+    @Param('boardId') boardId: string,
+    @Param('roleId') roleId: string,
+    @Req() req: AuthRequest,
+  ) {
+    return this.boardsService.deleteBoardRole(boardId, roleId, req.serviceUser?.sub);
+  }
+
+  @Post(':boardId/invitations')
+  @HttpCode(HttpStatus.CREATED)
+  createBoardInvitation(
+    @Param('boardId') boardId: string,
+    @Body() dto: CreateBoardInvitationDto,
+    @Req() req: AuthRequest,
+  ) {
+    return this.boardsService.createBoardInvitation(boardId, dto, req.serviceUser?.sub);
+  }
+
+  @Get(':boardId/invitations')
+  listBoardInvitations(
+    @Param('boardId') boardId: string,
+    @Req() req: AuthRequest,
+  ) {
+    return this.boardsService.listBoardInvitations(boardId, req.serviceUser?.sub);
+  }
+
+  @Post(':boardId/invitations/:invitationId/accept')
+  acceptBoardInvitation(
+    @Param('boardId') boardId: string,
+    @Param('invitationId') invitationId: string,
+    @Req() req: AuthRequest,
+  ) {
+    return this.boardsService.acceptBoardInvitation(boardId, invitationId, req.serviceUser?.sub);
+  }
+
+  @Delete(':boardId/invitations/:invitationId')
+  revokeBoardInvitation(
+    @Param('boardId') boardId: string,
+    @Param('invitationId') invitationId: string,
+    @Req() req: AuthRequest,
+  ) {
+    return this.boardsService.revokeBoardInvitation(boardId, invitationId, req.serviceUser?.sub);
   }
 }

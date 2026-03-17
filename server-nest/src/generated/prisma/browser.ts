@@ -33,6 +33,16 @@ export type Board = Prisma.BoardModel
  */
 export type BoardMember = Prisma.BoardMemberModel
 /**
+ * Model BoardRole
+ * 
+ */
+export type BoardRole = Prisma.BoardRoleModel
+/**
+ * Model BoardInvitation
+ * 
+ */
+export type BoardInvitation = Prisma.BoardInvitationModel
+/**
  * Model BoardColumn
  * 
  */
@@ -57,11 +67,6 @@ export type Comment = Prisma.CommentModel
  * 
  */
 export type Account = Prisma.AccountModel
-/**
- * Model Session
- * 
- */
-export type Session = Prisma.SessionModel
 /**
  * Model VerificationToken
  * 

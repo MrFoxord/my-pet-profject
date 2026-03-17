@@ -1,0 +1,41 @@
+// ── Custom components (with consistent app-level styling) ─────────────────────
+export { Button } from "./Button/Button";
+export type { ButtonProps } from "./Button/Button";
+export { Input } from "./Input/Input";
+export { Card } from "./Card/Card";
+export { Loader } from "./Loader/Loader";
+export { Modal } from "./Modal/Modal";
+export { default as ActionDialog } from "./ActionDialog/ActionDialog";
+
+// ── Composite domain-specific components ──────────────────────────────────────
+export { RolesSelect } from "./RolesSelect/RolesSelect";
+export type { RolesSelectProps } from "./RolesSelect/RolesSelect";
+export {
+  TicketTypeSelect,
+  TicketPrioritySelect,
+  TicketStatusSelect,
+} from "./TicketSelects";
+
+// ── MUI pass-throughs (centralized — add custom styles here when needed) ──────
+export {
+  Avatar,
+  Box,
+  Checkbox,
+  Chip,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  FormControl,
+  IconButton,
+  InputLabel,
+  LinearProgress,
+  ListItemText,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";

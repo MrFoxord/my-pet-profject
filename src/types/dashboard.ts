@@ -1,10 +1,12 @@
 import { ReactNode } from "react";
+
 export type MuiLikeTheme = {
   palette?: {
     background?: { paper?: string };
     action?: { hover?: string };
   };
 };
+
 export type BoardDto = {
   id: string;
   title: string;
@@ -14,32 +16,26 @@ export type BoardDto = {
   dashboardRole?: string | null;
   tickets: { id: string }[];
 };
-export interface Task {
-    id: string;
-    title: string;
-    status: "todo" | "in-progress" | "done";
-    dueDate: string;
-    assignedTo: string;
-}
+
 export interface Board {
-    id: string;
-    title: string;
-    description?: string;
-    logoUrl?: string;
-    themeColor?: string;
-    stats?: {
-        totalTasks: number;
-        completedTasks: number;
-        activeTasks: number;
-    },
-    settings?: {
-        visibleColumns?: string[];
-        defaultFilter?: string;
-        viewMode?: 'list' | 'grid';
-    };
-    tickets?: Ticket[];
-    currentUserRole?: string | null;
-    columns: BoardColumn[];
+  id: string;
+  title: string;
+  description?: string;
+  logoUrl?: string;
+  themeColor?: string;
+  stats?: {
+    totalTasks: number;
+    completedTasks: number;
+    activeTasks: number;
+  };
+  settings?: {
+    visibleColumns?: string[];
+    defaultFilter?: string;
+    viewMode?: "list" | "grid";
+  };
+  tickets?: Ticket[];
+  currentUserRole?: string | null;
+  columns: BoardColumn[];
 }
 
 export interface DashboardClientProps {
@@ -48,7 +44,7 @@ export interface DashboardClientProps {
 }
 
 export interface BoardPageProps {
-  params: { boardId: string };
+  params: Promise<{ boardId: string }>;
 }
 
 export interface BoardMockProps {
@@ -58,20 +54,11 @@ export interface BoardMockProps {
   themeColor?: string;
 }
 
-export interface TaskItemProps {
-  task: Task;
-  onStatusChange?: (taskId: string, newStatus: Task["status"]) => void;
-}
-
-export interface TaskListProps {
-  tasks: Task[];
-}
-
 export interface TicketEstimate {
-  originalHours?: number;   // исходная оценка
-  spentHours?: number;      // затрачено
-  remainingHours?: number;  // осталось
-  storyPoints?: number;     // story points, если нужны
+  originalHours?: number;
+  spentHours?: number;
+  remainingHours?: number;
+  storyPoints?: number;
 }
 
 export interface Ticket {
@@ -81,47 +68,58 @@ export interface Ticket {
   type: "bug" | "feature" | "task";
   priority: "low" | "medium" | "high" | "critical";
   status: "todo" | "in-progress" | "done";
+  sortIndex?: number;
+  columnId?: string | null;
+  accessibilityRoles?: string[];
+  accessibilityIds?: string[];
   createdAt: string;
   dueDate?: string;
   updatedAt?: string;
   relatedTicketIds?: string[];
   assignee: {
-      name: string;
-      avatar: string;
+    name: string;
+    avatar: string;
   };
   subtasks: { id: string; title: string; done: boolean }[];
   comments?: TicketComment[];
   estimate?: TicketEstimate;
 }
+
 export interface BoardColumn {
   id: string;
   title: string;
   ticketIds: string[];
 }
+
 export interface TickerCardProps {
   ticket: Ticket;
-  onRender?: () => void;
   onClick?: (ticket: Ticket) => void;
-}
-
-export interface TicketListProps {
-  tickets: Ticket[];
-  onTicketRendered?: () => void;
-  onTicketClick?: (ticket: Ticket) => void;
 }
 
 export interface TicketModalProps {
   ticket: Ticket;
   open: boolean;
   onClose: () => void;
+  boardRoleNames?: string[];
+  onSaveTicket?: (
+    ticketId: string,
+    payload: {
+      description: string;
+      status: Ticket["status"];
+      priority: Ticket["priority"];
+      type: Ticket["type"];
+      accessibilityRoles: string[];
+    }
+  ) => Promise<Ticket | null>;
+  onDeleteTicket?: (ticketId: string) => Promise<boolean>;
 }
 
 export interface TicketComment {
-    id: string;
-    author: {
-        name: string;
-        avatar: string;
-    };
-    message: string;
-    createdAt: string;
+  id: string;
+  author: {
+    name: string;
+    avatar: string;
+  };
+  message: string;
+  createdAt: string;
 }

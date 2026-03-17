@@ -12,6 +12,8 @@ import {
   ColumnHeader,
   ColumnTitle,
   ColumnTicketList,
+  ColumnActions,
+  AddTicketButton,
 } from "./styled";
 
 interface BoardColumnViewProps {
@@ -20,6 +22,7 @@ interface BoardColumnViewProps {
   onTicketClick?: (ticket: Ticket) => void;
   onRenameColumn?: (columnId: string, currentTitle: string) => Promise<void> | void;
   onDeleteColumn?: (columnId: string, ticketIds: string[]) => Promise<void> | void;
+  onCreateTicket?: (columnId: string, columnTitle: string) => Promise<void> | void;
 }
 
 export function BoardColumnView({
@@ -28,6 +31,7 @@ export function BoardColumnView({
   onTicketClick,
   onRenameColumn,
   onDeleteColumn,
+  onCreateTicket,
 }: BoardColumnViewProps) {
   const {
     attributes,
@@ -61,8 +65,12 @@ export function BoardColumnView({
         if (!onDeleteColumn) return;
         await onDeleteColumn(column.id, ticketIds);
       },
+      "Добавить тикет": async () => {
+        if (!onCreateTicket) return;
+        await onCreateTicket(column.id, column.title);
+      },
     }),
-    [column.id, column.title, onDeleteColumn, onRenameColumn, ticketIds]
+    [column.id, column.title, onCreateTicket, onDeleteColumn, onRenameColumn, ticketIds]
   );
 
   return (
@@ -70,7 +78,16 @@ export function BoardColumnView({
       <ColumnCard>
         <ColumnHeader>
           <ColumnTitle variant="subtitle2">{column.title}</ColumnTitle>
-          <ActionDialog title={`Действия: ${column.title}`} actions={actions} />
+          <ColumnActions>
+            <AddTicketButton
+              type="button"
+              aria-label="Добавить тикет"
+              onClick={() => void onCreateTicket?.(column.id, column.title)}
+            >
+              +
+            </AddTicketButton>
+            <ActionDialog title={`Действия: ${column.title}`} actions={actions} />
+          </ColumnActions>
         </ColumnHeader>
 
         <SortableContext

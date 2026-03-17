@@ -99,6 +99,7 @@ export type CreateBoardPayload = {
   themeColor: string;
   icon: string;
   columns: string[];
+  customRoles: string[];
 };
 
 interface CreateBoardModalProps {
@@ -119,6 +120,7 @@ export default function CreateBoardModal({
   const [themeColor, setThemeColor] = useState(themeOptions[0].value);
   const [icon, setIcon] = useState(iconOptions[0].value);
   const [columns, setColumns] = useState(["Backlog", "In Progress", "Done"]);
+  const [customRoles, setCustomRoles] = useState([""]);
 
   const selectedIcon = useMemo(
     () => iconOptions.find((option) => option.value === icon) ?? iconOptions[0],
@@ -131,11 +133,17 @@ export default function CreateBoardModal({
     setThemeColor(themeOptions[0].value);
     setIcon(iconOptions[0].value);
     setColumns(["Backlog", "In Progress", "Done"]);
+    setCustomRoles([""]);
   };
 
   const normalizedColumns = useMemo(
     () => columns.map((column) => column.trim()).filter(Boolean),
     [columns]
+  );
+
+  const normalizedCustomRoles = useMemo(
+    () => customRoles.map((role) => role.trim()).filter(Boolean),
+    [customRoles]
   );
 
   const updateColumn = (index: number, value: string) => {
@@ -148,6 +156,18 @@ export default function CreateBoardModal({
 
   const removeColumn = (index: number) => {
     setColumns((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const updateCustomRole = (index: number, value: string) => {
+    setCustomRoles((prev) => prev.map((item, i) => (i === index ? value : item)));
+  };
+
+  const addCustomRole = () => {
+    setCustomRoles((prev) => [...prev, ""]);
+  };
+
+  const removeCustomRole = (index: number) => {
+    setCustomRoles((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleClose = () => {
@@ -165,6 +185,7 @@ export default function CreateBoardModal({
       themeColor,
       icon,
       columns: normalizedColumns,
+      customRoles: normalizedCustomRoles,
     });
 
     resetForm();
@@ -272,6 +293,45 @@ export default function CreateBoardModal({
 
             <Typography variant="caption" color="text.secondary">
               Нужно минимум 1 колонка с названием.
+            </Typography>
+          </ColumnsSection>
+
+          <ColumnsSection>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 1,
+              }}
+            >
+              <Typography variant="subtitle2">Кастомные роли доски</Typography>
+              <Button onClick={addCustomRole} startIcon={<AddRoundedIcon />} variant="outlined" size="small">
+                Добавить
+              </Button>
+            </Box>
+
+            {customRoles.map((role, index) => (
+              <ColumnRow key={`role-${index}`}>
+                <TextField
+                  size="small"
+                  label={`Роль ${index + 1}`}
+                  value={role}
+                  onChange={(e) => updateCustomRole(index, e.target.value)}
+                  fullWidth
+                />
+                <IconButton
+                  aria-label="Удалить роль"
+                  onClick={() => removeCustomRole(index)}
+                  disabled={customRoles.length <= 1}
+                >
+                  <DeleteOutlineRoundedIcon fontSize="small" />
+                </IconButton>
+              </ColumnRow>
+            ))}
+
+            <Typography variant="caption" color="text.secondary">
+              Стандартные роли OWNER/ADMIN/MEMBER/VIEWER добавляются автоматически.
             </Typography>
           </ColumnsSection>
 

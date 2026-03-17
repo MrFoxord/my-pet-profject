@@ -54,12 +54,13 @@ export const ModelName = {
   User: 'User',
   Board: 'Board',
   BoardMember: 'BoardMember',
+  BoardRole: 'BoardRole',
+  BoardInvitation: 'BoardInvitation',
   BoardColumn: 'BoardColumn',
   Ticket: 'Ticket',
   Subtask: 'Subtask',
   Comment: 'Comment',
   Account: 'Account',
-  Session: 'Session',
   VerificationToken: 'VerificationToken'
 } as const
 
@@ -124,6 +125,31 @@ export const BoardMemberScalarFieldEnum = {
 export type BoardMemberScalarFieldEnum = (typeof BoardMemberScalarFieldEnum)[keyof typeof BoardMemberScalarFieldEnum]
 
 
+export const BoardRoleScalarFieldEnum = {
+  id: 'id',
+  boardId: 'boardId',
+  name: 'name',
+  permissions: 'permissions',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BoardRoleScalarFieldEnum = (typeof BoardRoleScalarFieldEnum)[keyof typeof BoardRoleScalarFieldEnum]
+
+
+export const BoardInvitationScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  boardId: 'boardId',
+  role: 'role',
+  status: 'status',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+} as const
+
+export type BoardInvitationScalarFieldEnum = (typeof BoardInvitationScalarFieldEnum)[keyof typeof BoardInvitationScalarFieldEnum]
+
+
 export const BoardColumnScalarFieldEnum = {
   id: 'id',
   title: 'title',
@@ -141,9 +167,13 @@ export const TicketScalarFieldEnum = {
   title: 'title',
   description: 'description',
   status: 'status',
+  sortIndex: 'sortIndex',
   priority: 'priority',
   type: 'type',
+  accessibilityRoles: 'accessibilityRoles',
+  accessibilityIds: 'accessibilityIds',
   boardId: 'boardId',
+  columnId: 'columnId',
   estimateOriginalHours: 'estimateOriginalHours',
   estimateSpentHours: 'estimateSpentHours',
   estimateRemainingHours: 'estimateRemainingHours',
@@ -194,16 +224,6 @@ export const AccountScalarFieldEnum = {
 } as const
 
 export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeof AccountScalarFieldEnum]
-
-
-export const SessionScalarFieldEnum = {
-  id: 'id',
-  sessionToken: 'sessionToken',
-  userId: 'userId',
-  expires: 'expires'
-} as const
-
-export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
 
 
 export const VerificationTokenScalarFieldEnum = {

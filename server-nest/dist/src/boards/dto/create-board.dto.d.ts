@@ -4,6 +4,7 @@ export declare class CreateBoardDto {
     themeColor?: string;
     logoUrl?: string;
     columns?: string[];
+    customRoles?: string[];
     ownerId?: string;
     dashboardRole?: string;
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Toolbar } from "@mui/material";
 import { Topbar } from "@/components/layout/Topbar";
 import { Sidebar } from "@/components/layout/Sidebar";
@@ -9,9 +10,14 @@ import { Loader } from "../ui/Loader/Loader";
 import { TicketModal } from "../dashboard/TicketModal/TicketModal";
 import { BoardColumns } from "@/components/dashboard/BoardColumns/BoardColumns";
 import {
+  createTicket,
+  deleteTicket,
   deleteBoardColumn,
+  getBoardRoles,
   renameBoardColumn,
   reorderBoardColumns,
+  reorderBoardTickets,
+  updateTicket,
 } from "@/lib/api/client";
 import {
   Root,
@@ -29,14 +35,36 @@ export default function DashboardClient({
   board,
   children,
 }: DashboardClientProps) {
+  const router = useRouter();
   const [isHydrated, setIsHydrated] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [boardRoleNames, setBoardRoleNames] = useState<string[]>([]);
 
   useEffect(() => {
     const id = requestAnimationFrame(() => setIsHydrated(true));
     return () => cancelAnimationFrame(id);
   }, []);
+
+  useEffect(() => {
+    let active = true;
+
+    const loadRoles = async () => {
+      try {
+        const roles = await getBoardRoles(board.id);
+        if (!active) return;
+        setBoardRoleNames(roles.map((role) => role.name));
+      } catch (error) {
+        console.error("failed to load board roles", error);
+      }
+    };
+
+    void loadRoles();
+
+    return () => {
+      active = false;
+    };
+  }, [board.id]);
 
   const handleTicketClick = (ticket: Ticket) => {
     setSelectedTicket(ticket);
@@ -46,6 +74,50 @@ export default function DashboardClient({
   const handleModalClose = () => {
     setModalOpen(false);
     setSelectedTicket(null);
+  };
+
+  const handleSaveTicket = async (
+    ticketId: string,
+    payload: {
+      description: string;
+      status: Ticket["status"];
+      priority: Ticket["priority"];
+      type: Ticket["type"];
+      accessibilityRoles: string[];
+    }
+  ) => {
+    try {
+      const updated = await updateTicket(board.id, ticketId, {
+        description: payload.description,
+        status: payload.status,
+        priority: payload.priority,
+        type: payload.type,
+        accessibilityRoles: payload.accessibilityRoles,
+      });
+
+      if (updated) {
+        setSelectedTicket(updated);
+        router.refresh();
+      }
+
+      return updated;
+    } catch (error) {
+      console.error("failed to update ticket", error);
+      return null;
+    }
+  };
+
+  const handleDeleteTicket = async (ticketId: string) => {
+    try {
+      await deleteTicket(board.id, ticketId);
+      setSelectedTicket(null);
+      setModalOpen(false);
+      router.refresh();
+      return true;
+    } catch (error) {
+      console.error("failed to delete ticket", error);
+      return false;
+    }
   };
 
   const handleColumnsReorder = async (columnIds: string[]) => {
@@ -88,6 +160,49 @@ export default function DashboardClient({
     }
   };
 
+  const handleCreateTicket = async (input: {
+    columnId: string;
+    status: Ticket["status"];
+    title: string;
+    description?: string;
+    type: Ticket["type"];
+    priority: Ticket["priority"];
+    accessibilityRoles: string[];
+    accessibilityIds: string[];
+  }) => {
+    if (input.columnId.startsWith("fallback-")) {
+      window.alert("Сначала создайте реальные колонки в базе данных для этой доски.");
+      return null;
+    }
+
+    try {
+      return await createTicket({
+        boardId: board.id,
+        title: input.title,
+        description: input.description,
+        status: input.status,
+        type: input.type,
+        priority: input.priority,
+        columnId: input.columnId,
+        accessibilityRoles: input.accessibilityRoles,
+        accessibilityIds: input.accessibilityIds,
+      });
+    } catch (error) {
+      console.error("failed to create ticket", error);
+      return null;
+    }
+  };
+
+  const handleTicketsReorder = async (
+    items: { id: string; status: Ticket["status"]; sortIndex: number; columnId?: string }[]
+  ) => {
+    try {
+      await reorderBoardTickets(board.id, { items });
+    } catch (error) {
+      console.error("failed to persist tickets order", error);
+    }
+  };
+
   return (
     <Root $bg={board.themeColor}>
       <Sidebar boardId={board.id} themeColor={board.themeColor} />
@@ -116,10 +231,13 @@ export default function DashboardClient({
               <TicketsWrapper>
                 <BoardColumns
                   board={board}
+                  boardRoleNames={boardRoleNames}
                   onTicketClick={handleTicketClick}
                   onColumnsReorder={handleColumnsReorder}
                   onRenameColumn={handleRenameColumn}
                   onDeleteColumn={handleDeleteColumn}
+                  onCreateTicket={handleCreateTicket}
+                  onTicketsReorder={handleTicketsReorder}
                 />
               </TicketsWrapper>
             ) : null
@@ -133,6 +251,9 @@ export default function DashboardClient({
               ticket={selectedTicket}
               open={modalOpen}
               onClose={handleModalClose}
+              boardRoleNames={boardRoleNames}
+              onSaveTicket={handleSaveTicket}
+              onDeleteTicket={handleDeleteTicket}
             />
           )}
 

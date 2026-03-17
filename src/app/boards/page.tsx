@@ -149,6 +149,8 @@ export default function BoardsPage() {
         themeColor: payload.themeColor,
         logoUrl: null,
         columns: payload.columns,
+        customRoles: payload.customRoles,
+        ownerId: userId,
       });
 
       setCreateModalOpen(false);

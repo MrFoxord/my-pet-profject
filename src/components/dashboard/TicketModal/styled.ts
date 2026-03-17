@@ -1,18 +1,5 @@
 import styled from "styled-components";
-import {
-  Avatar as MuiAvatar,
-  Typography as MuiTypography,
-  Button as MuiButton,
-  TextField as MuiTextField,
-  Chip as MuiChip,
-  Divider as MuiDivider,
-  Checkbox as MuiCheckbox,
-  LinearProgress as MuiLinearProgress,
-  MenuItem as MuiMenuItem,
-} from "@mui/material";
 import { MuiLikeTheme } from "@/types";
-
-
 
 export const ModalOuter = styled.div`
   min-height: 100vh;
@@ -46,7 +33,9 @@ export const Header = styled.div`
 export const HeaderLeft = styled.div`
   display: flex;
   gap: 16px;
-  align-items: center;
+  align-items: flex-start;
+  flex: 1;
+  min-width: 0;
 `;
 
 export const HeaderMetaRow = styled.div`
@@ -57,10 +46,24 @@ export const HeaderMetaRow = styled.div`
   align-items: center;
 `;
 
+/** Строка с ролями доступа — всегда видна в шапке тикета */
+export const AccessRolesRow = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin-top: 8px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: ${({ theme }) =>
+    (theme as MuiLikeTheme)?.palette?.action?.hover ?? "#f4f4f5"};
+`;
+
 export const HeaderActions = styled.div`
   display: flex;
   gap: 8px;
   align-items: center;
+  flex-shrink: 0;
 `;
 
 export const Section = styled.div`
@@ -147,27 +150,3 @@ export const EstimatesRow = styled.div`
     flex-direction: row;
   }
 `;
-
-
-export const Avatar = styled(MuiAvatar)`
-  width: 40px;
-  height: 40px;
-`;
-
-export const Typography = styled(MuiTypography)``;
-
-export const Button = styled(MuiButton)`
-  text-transform: none;
-`;
-
-export const TextField = styled(MuiTextField)``;
-
-export const Chip = styled(MuiChip)``;
-
-export const Divider = styled(MuiDivider)``;
-
-export const Checkbox = styled(MuiCheckbox)``;
-
-export const LinearProgress = styled(MuiLinearProgress)``;
-
-export const MenuItem = styled(MuiMenuItem)``;

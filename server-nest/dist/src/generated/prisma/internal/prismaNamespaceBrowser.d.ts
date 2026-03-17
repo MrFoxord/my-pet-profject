@@ -14,12 +14,13 @@ export declare const ModelName: {
     readonly User: "User";
     readonly Board: "Board";
     readonly BoardMember: "BoardMember";
+    readonly BoardRole: "BoardRole";
+    readonly BoardInvitation: "BoardInvitation";
     readonly BoardColumn: "BoardColumn";
     readonly Ticket: "Ticket";
     readonly Subtask: "Subtask";
     readonly Comment: "Comment";
     readonly Account: "Account";
-    readonly Session: "Session";
     readonly VerificationToken: "VerificationToken";
 };
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
@@ -66,6 +67,25 @@ export declare const BoardMemberScalarFieldEnum: {
     readonly updatedAt: "updatedAt";
 };
 export type BoardMemberScalarFieldEnum = (typeof BoardMemberScalarFieldEnum)[keyof typeof BoardMemberScalarFieldEnum];
+export declare const BoardRoleScalarFieldEnum: {
+    readonly id: "id";
+    readonly boardId: "boardId";
+    readonly name: "name";
+    readonly permissions: "permissions";
+    readonly createdAt: "createdAt";
+    readonly updatedAt: "updatedAt";
+};
+export type BoardRoleScalarFieldEnum = (typeof BoardRoleScalarFieldEnum)[keyof typeof BoardRoleScalarFieldEnum];
+export declare const BoardInvitationScalarFieldEnum: {
+    readonly id: "id";
+    readonly email: "email";
+    readonly boardId: "boardId";
+    readonly role: "role";
+    readonly status: "status";
+    readonly expiresAt: "expiresAt";
+    readonly createdAt: "createdAt";
+};
+export type BoardInvitationScalarFieldEnum = (typeof BoardInvitationScalarFieldEnum)[keyof typeof BoardInvitationScalarFieldEnum];
 export declare const BoardColumnScalarFieldEnum: {
     readonly id: "id";
     readonly title: "title";
@@ -80,9 +100,13 @@ export declare const TicketScalarFieldEnum: {
     readonly title: "title";
     readonly description: "description";
     readonly status: "status";
+    readonly sortIndex: "sortIndex";
     readonly priority: "priority";
     readonly type: "type";
+    readonly accessibilityRoles: "accessibilityRoles";
+    readonly accessibilityIds: "accessibilityIds";
     readonly boardId: "boardId";
+    readonly columnId: "columnId";
     readonly estimateOriginalHours: "estimateOriginalHours";
     readonly estimateSpentHours: "estimateSpentHours";
     readonly estimateRemainingHours: "estimateRemainingHours";
@@ -123,13 +147,6 @@ export declare const AccountScalarFieldEnum: {
     readonly session_state: "session_state";
 };
 export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeof AccountScalarFieldEnum];
-export declare const SessionScalarFieldEnum: {
-    readonly id: "id";
-    readonly sessionToken: "sessionToken";
-    readonly userId: "userId";
-    readonly expires: "expires";
-};
-export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum];
 export declare const VerificationTokenScalarFieldEnum: {
     readonly identifier: "identifier";
     readonly token: "token";

@@ -7,6 +7,9 @@ import Facebook from "next-auth/providers/facebook";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 
+const sessionStrategy =
+  process.env.AUTH_SESSION_STRATEGY === "database" ? "database" : "jwt";
+
 const providers = [];
 
 if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
@@ -63,7 +66,7 @@ export const authProviderStates = [
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma as never),
   session: {
-    strategy: "database",
+    strategy: sessionStrategy,
   },
   secret: process.env.AUTH_SECRET ?? "dev-auth-secret",
   trustHost: true,
@@ -72,14 +75,39 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   providers,
   callbacks: {
-    async session({ session, user }) {
+    async jwt({ token, user }) {
+      if (user) {
+        token.userId = user.id;
+        token.userEmail = user.email ?? null;
+        token.userName = user.name ?? null;
+        token.userImage = user.image ?? null;
+        token.monetizationRole = user.monetizationRole ?? "FREE";
+        token.workRole = user.workRole ?? "CLIENT";
+      }
+
+      return token;
+    },
+    async session({ session, user, token }) {
       if (session.user) {
-        session.user.id = user.id;
-        session.user.email = user.email ?? null;
-        session.user.name = user.name ?? null;
-        session.user.image = user.image ?? null;
-        session.user.monetizationRole = user.monetizationRole ?? "FREE";
-        session.user.workRole = user.workRole ?? "CLIENT";
+        if (sessionStrategy === "database" && user) {
+          session.user.id = user.id;
+          session.user.email = user.email ?? null;
+          session.user.name = user.name ?? null;
+          session.user.image = user.image ?? null;
+          session.user.monetizationRole = user.monetizationRole ?? "FREE";
+          session.user.workRole = user.workRole ?? "CLIENT";
+        } else {
+          session.user.id = (token.userId as string) ?? session.user.id;
+          session.user.email = (token.userEmail as string | null) ?? session.user.email ?? null;
+          session.user.name = (token.userName as string | null) ?? session.user.name ?? null;
+          session.user.image = (token.userImage as string | null) ?? session.user.image ?? null;
+          session.user.monetizationRole =
+            (token.monetizationRole as "FREE" | "SUBMITTED" | "PREMIUM") ??
+            "FREE";
+          session.user.workRole =
+            (token.workRole as "CLIENT" | "EXECUTOR" | "ORGANIZER" | "CEO") ??
+            "CLIENT";
+        }
       }
 
       return session;

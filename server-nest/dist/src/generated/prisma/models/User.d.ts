@@ -164,7 +164,6 @@ export type UserWhereInput = {
     ownedBoards?: Prisma.BoardListRelationFilter;
     boardMemberships?: Prisma.BoardMemberListRelationFilter;
     accounts?: Prisma.AccountListRelationFilter;
-    sessions?: Prisma.SessionListRelationFilter;
     comments?: Prisma.CommentListRelationFilter;
 };
 export type UserOrderByWithRelationInput = {
@@ -184,7 +183,6 @@ export type UserOrderByWithRelationInput = {
     ownedBoards?: Prisma.BoardOrderByRelationAggregateInput;
     boardMemberships?: Prisma.BoardMemberOrderByRelationAggregateInput;
     accounts?: Prisma.AccountOrderByRelationAggregateInput;
-    sessions?: Prisma.SessionOrderByRelationAggregateInput;
     comments?: Prisma.CommentOrderByRelationAggregateInput;
 };
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -207,7 +205,6 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
     ownedBoards?: Prisma.BoardListRelationFilter;
     boardMemberships?: Prisma.BoardMemberListRelationFilter;
     accounts?: Prisma.AccountListRelationFilter;
-    sessions?: Prisma.SessionListRelationFilter;
     comments?: Prisma.CommentListRelationFilter;
 }, "id" | "email" | "nickname">;
 export type UserOrderByWithAggregationInput = {
@@ -263,7 +260,6 @@ export type UserCreateInput = {
     ownedBoards?: Prisma.BoardCreateNestedManyWithoutOwnerInput;
     boardMemberships?: Prisma.BoardMemberCreateNestedManyWithoutUserInput;
     accounts?: Prisma.AccountCreateNestedManyWithoutUserInput;
-    sessions?: Prisma.SessionCreateNestedManyWithoutUserInput;
     comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput;
 };
 export type UserUncheckedCreateInput = {
@@ -283,7 +279,6 @@ export type UserUncheckedCreateInput = {
     ownedBoards?: Prisma.BoardUncheckedCreateNestedManyWithoutOwnerInput;
     boardMemberships?: Prisma.BoardMemberUncheckedCreateNestedManyWithoutUserInput;
     accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput;
-    sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput;
     comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput;
 };
 export type UserUpdateInput = {
@@ -303,7 +298,6 @@ export type UserUpdateInput = {
     ownedBoards?: Prisma.BoardUpdateManyWithoutOwnerNestedInput;
     boardMemberships?: Prisma.BoardMemberUpdateManyWithoutUserNestedInput;
     accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput;
-    sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput;
     comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput;
 };
 export type UserUncheckedUpdateInput = {
@@ -323,7 +317,6 @@ export type UserUncheckedUpdateInput = {
     ownedBoards?: Prisma.BoardUncheckedUpdateManyWithoutOwnerNestedInput;
     boardMemberships?: Prisma.BoardMemberUncheckedUpdateManyWithoutUserNestedInput;
     accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput;
-    sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput;
     comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput;
 };
 export type UserCreateManyInput = {
@@ -497,18 +490,6 @@ export type UserUpdateOneRequiredWithoutAccountsNestedInput = {
     connect?: Prisma.UserWhereUniqueInput;
     update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAccountsInput, Prisma.UserUpdateWithoutAccountsInput>, Prisma.UserUncheckedUpdateWithoutAccountsInput>;
 };
-export type UserCreateNestedOneWithoutSessionsInput = {
-    create?: Prisma.XOR<Prisma.UserCreateWithoutSessionsInput, Prisma.UserUncheckedCreateWithoutSessionsInput>;
-    connectOrCreate?: Prisma.UserCreateOrConnectWithoutSessionsInput;
-    connect?: Prisma.UserWhereUniqueInput;
-};
-export type UserUpdateOneRequiredWithoutSessionsNestedInput = {
-    create?: Prisma.XOR<Prisma.UserCreateWithoutSessionsInput, Prisma.UserUncheckedCreateWithoutSessionsInput>;
-    connectOrCreate?: Prisma.UserCreateOrConnectWithoutSessionsInput;
-    upsert?: Prisma.UserUpsertWithoutSessionsInput;
-    connect?: Prisma.UserWhereUniqueInput;
-    update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSessionsInput, Prisma.UserUpdateWithoutSessionsInput>, Prisma.UserUncheckedUpdateWithoutSessionsInput>;
-};
 export type UserCreateWithoutOwnedBoardsInput = {
     id?: string;
     email?: string | null;
@@ -525,7 +506,6 @@ export type UserCreateWithoutOwnedBoardsInput = {
     updatedAt?: Date | string;
     boardMemberships?: Prisma.BoardMemberCreateNestedManyWithoutUserInput;
     accounts?: Prisma.AccountCreateNestedManyWithoutUserInput;
-    sessions?: Prisma.SessionCreateNestedManyWithoutUserInput;
     comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput;
 };
 export type UserUncheckedCreateWithoutOwnedBoardsInput = {
@@ -544,7 +524,6 @@ export type UserUncheckedCreateWithoutOwnedBoardsInput = {
     updatedAt?: Date | string;
     boardMemberships?: Prisma.BoardMemberUncheckedCreateNestedManyWithoutUserInput;
     accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput;
-    sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput;
     comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput;
 };
 export type UserCreateOrConnectWithoutOwnedBoardsInput = {
@@ -576,7 +555,6 @@ export type UserUpdateWithoutOwnedBoardsInput = {
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     boardMemberships?: Prisma.BoardMemberUpdateManyWithoutUserNestedInput;
     accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput;
-    sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput;
     comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput;
 };
 export type UserUncheckedUpdateWithoutOwnedBoardsInput = {
@@ -595,7 +573,6 @@ export type UserUncheckedUpdateWithoutOwnedBoardsInput = {
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     boardMemberships?: Prisma.BoardMemberUncheckedUpdateManyWithoutUserNestedInput;
     accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput;
-    sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput;
     comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput;
 };
 export type UserCreateWithoutBoardMembershipsInput = {
@@ -614,7 +591,6 @@ export type UserCreateWithoutBoardMembershipsInput = {
     updatedAt?: Date | string;
     ownedBoards?: Prisma.BoardCreateNestedManyWithoutOwnerInput;
     accounts?: Prisma.AccountCreateNestedManyWithoutUserInput;
-    sessions?: Prisma.SessionCreateNestedManyWithoutUserInput;
     comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput;
 };
 export type UserUncheckedCreateWithoutBoardMembershipsInput = {
@@ -633,7 +609,6 @@ export type UserUncheckedCreateWithoutBoardMembershipsInput = {
     updatedAt?: Date | string;
     ownedBoards?: Prisma.BoardUncheckedCreateNestedManyWithoutOwnerInput;
     accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput;
-    sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput;
     comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput;
 };
 export type UserCreateOrConnectWithoutBoardMembershipsInput = {
@@ -665,7 +640,6 @@ export type UserUpdateWithoutBoardMembershipsInput = {
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     ownedBoards?: Prisma.BoardUpdateManyWithoutOwnerNestedInput;
     accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput;
-    sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput;
     comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput;
 };
 export type UserUncheckedUpdateWithoutBoardMembershipsInput = {
@@ -684,7 +658,6 @@ export type UserUncheckedUpdateWithoutBoardMembershipsInput = {
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     ownedBoards?: Prisma.BoardUncheckedUpdateManyWithoutOwnerNestedInput;
     accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput;
-    sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput;
     comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput;
 };
 export type UserCreateWithoutCommentsInput = {
@@ -704,7 +677,6 @@ export type UserCreateWithoutCommentsInput = {
     ownedBoards?: Prisma.BoardCreateNestedManyWithoutOwnerInput;
     boardMemberships?: Prisma.BoardMemberCreateNestedManyWithoutUserInput;
     accounts?: Prisma.AccountCreateNestedManyWithoutUserInput;
-    sessions?: Prisma.SessionCreateNestedManyWithoutUserInput;
 };
 export type UserUncheckedCreateWithoutCommentsInput = {
     id?: string;
@@ -723,7 +695,6 @@ export type UserUncheckedCreateWithoutCommentsInput = {
     ownedBoards?: Prisma.BoardUncheckedCreateNestedManyWithoutOwnerInput;
     boardMemberships?: Prisma.BoardMemberUncheckedCreateNestedManyWithoutUserInput;
     accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput;
-    sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput;
 };
 export type UserCreateOrConnectWithoutCommentsInput = {
     where: Prisma.UserWhereUniqueInput;
@@ -755,7 +726,6 @@ export type UserUpdateWithoutCommentsInput = {
     ownedBoards?: Prisma.BoardUpdateManyWithoutOwnerNestedInput;
     boardMemberships?: Prisma.BoardMemberUpdateManyWithoutUserNestedInput;
     accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput;
-    sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput;
 };
 export type UserUncheckedUpdateWithoutCommentsInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -774,7 +744,6 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
     ownedBoards?: Prisma.BoardUncheckedUpdateManyWithoutOwnerNestedInput;
     boardMemberships?: Prisma.BoardMemberUncheckedUpdateManyWithoutUserNestedInput;
     accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput;
-    sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput;
 };
 export type UserCreateWithoutAccountsInput = {
     id?: string;
@@ -792,7 +761,6 @@ export type UserCreateWithoutAccountsInput = {
     updatedAt?: Date | string;
     ownedBoards?: Prisma.BoardCreateNestedManyWithoutOwnerInput;
     boardMemberships?: Prisma.BoardMemberCreateNestedManyWithoutUserInput;
-    sessions?: Prisma.SessionCreateNestedManyWithoutUserInput;
     comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput;
 };
 export type UserUncheckedCreateWithoutAccountsInput = {
@@ -811,7 +779,6 @@ export type UserUncheckedCreateWithoutAccountsInput = {
     updatedAt?: Date | string;
     ownedBoards?: Prisma.BoardUncheckedCreateNestedManyWithoutOwnerInput;
     boardMemberships?: Prisma.BoardMemberUncheckedCreateNestedManyWithoutUserInput;
-    sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput;
     comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput;
 };
 export type UserCreateOrConnectWithoutAccountsInput = {
@@ -843,7 +810,6 @@ export type UserUpdateWithoutAccountsInput = {
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     ownedBoards?: Prisma.BoardUpdateManyWithoutOwnerNestedInput;
     boardMemberships?: Prisma.BoardMemberUpdateManyWithoutUserNestedInput;
-    sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput;
     comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput;
 };
 export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -862,110 +828,18 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     ownedBoards?: Prisma.BoardUncheckedUpdateManyWithoutOwnerNestedInput;
     boardMemberships?: Prisma.BoardMemberUncheckedUpdateManyWithoutUserNestedInput;
-    sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput;
-    comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput;
-};
-export type UserCreateWithoutSessionsInput = {
-    id?: string;
-    email?: string | null;
-    name?: string | null;
-    firstName?: string | null;
-    lastName?: string | null;
-    nickname?: string | null;
-    isDefault?: boolean;
-    image?: string | null;
-    emailVerified?: Date | string | null;
-    monetizationRole?: $Enums.MonetizationRole;
-    workRole?: $Enums.WorkRole;
-    createdAt?: Date | string;
-    updatedAt?: Date | string;
-    ownedBoards?: Prisma.BoardCreateNestedManyWithoutOwnerInput;
-    boardMemberships?: Prisma.BoardMemberCreateNestedManyWithoutUserInput;
-    accounts?: Prisma.AccountCreateNestedManyWithoutUserInput;
-    comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput;
-};
-export type UserUncheckedCreateWithoutSessionsInput = {
-    id?: string;
-    email?: string | null;
-    name?: string | null;
-    firstName?: string | null;
-    lastName?: string | null;
-    nickname?: string | null;
-    isDefault?: boolean;
-    image?: string | null;
-    emailVerified?: Date | string | null;
-    monetizationRole?: $Enums.MonetizationRole;
-    workRole?: $Enums.WorkRole;
-    createdAt?: Date | string;
-    updatedAt?: Date | string;
-    ownedBoards?: Prisma.BoardUncheckedCreateNestedManyWithoutOwnerInput;
-    boardMemberships?: Prisma.BoardMemberUncheckedCreateNestedManyWithoutUserInput;
-    accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput;
-    comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput;
-};
-export type UserCreateOrConnectWithoutSessionsInput = {
-    where: Prisma.UserWhereUniqueInput;
-    create: Prisma.XOR<Prisma.UserCreateWithoutSessionsInput, Prisma.UserUncheckedCreateWithoutSessionsInput>;
-};
-export type UserUpsertWithoutSessionsInput = {
-    update: Prisma.XOR<Prisma.UserUpdateWithoutSessionsInput, Prisma.UserUncheckedUpdateWithoutSessionsInput>;
-    create: Prisma.XOR<Prisma.UserCreateWithoutSessionsInput, Prisma.UserUncheckedCreateWithoutSessionsInput>;
-    where?: Prisma.UserWhereInput;
-};
-export type UserUpdateToOneWithWhereWithoutSessionsInput = {
-    where?: Prisma.UserWhereInput;
-    data: Prisma.XOR<Prisma.UserUpdateWithoutSessionsInput, Prisma.UserUncheckedUpdateWithoutSessionsInput>;
-};
-export type UserUpdateWithoutSessionsInput = {
-    id?: Prisma.StringFieldUpdateOperationsInput | string;
-    email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-    image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
-    monetizationRole?: Prisma.EnumMonetizationRoleFieldUpdateOperationsInput | $Enums.MonetizationRole;
-    workRole?: Prisma.EnumWorkRoleFieldUpdateOperationsInput | $Enums.WorkRole;
-    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-    ownedBoards?: Prisma.BoardUpdateManyWithoutOwnerNestedInput;
-    boardMemberships?: Prisma.BoardMemberUpdateManyWithoutUserNestedInput;
-    accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput;
-    comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput;
-};
-export type UserUncheckedUpdateWithoutSessionsInput = {
-    id?: Prisma.StringFieldUpdateOperationsInput | string;
-    email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-    image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-    emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
-    monetizationRole?: Prisma.EnumMonetizationRoleFieldUpdateOperationsInput | $Enums.MonetizationRole;
-    workRole?: Prisma.EnumWorkRoleFieldUpdateOperationsInput | $Enums.WorkRole;
-    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-    ownedBoards?: Prisma.BoardUncheckedUpdateManyWithoutOwnerNestedInput;
-    boardMemberships?: Prisma.BoardMemberUncheckedUpdateManyWithoutUserNestedInput;
-    accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput;
     comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput;
 };
 export type UserCountOutputType = {
     ownedBoards: number;
     boardMemberships: number;
     accounts: number;
-    sessions: number;
     comments: number;
 };
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     ownedBoards?: boolean | UserCountOutputTypeCountOwnedBoardsArgs;
     boardMemberships?: boolean | UserCountOutputTypeCountBoardMembershipsArgs;
     accounts?: boolean | UserCountOutputTypeCountAccountsArgs;
-    sessions?: boolean | UserCountOutputTypeCountSessionsArgs;
     comments?: boolean | UserCountOutputTypeCountCommentsArgs;
 };
 export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -979,9 +853,6 @@ export type UserCountOutputTypeCountBoardMembershipsArgs<ExtArgs extends runtime
 };
 export type UserCountOutputTypeCountAccountsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     where?: Prisma.AccountWhereInput;
-};
-export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-    where?: Prisma.SessionWhereInput;
 };
 export type UserCountOutputTypeCountCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     where?: Prisma.CommentWhereInput;
@@ -1003,7 +874,6 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
     ownedBoards?: boolean | Prisma.User$ownedBoardsArgs<ExtArgs>;
     boardMemberships?: boolean | Prisma.User$boardMembershipsArgs<ExtArgs>;
     accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>;
-    sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>;
     comments?: boolean | Prisma.User$commentsArgs<ExtArgs>;
     _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
 }, ExtArgs["result"]["user"]>;
@@ -1057,7 +927,6 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     ownedBoards?: boolean | Prisma.User$ownedBoardsArgs<ExtArgs>;
     boardMemberships?: boolean | Prisma.User$boardMembershipsArgs<ExtArgs>;
     accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>;
-    sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>;
     comments?: boolean | Prisma.User$commentsArgs<ExtArgs>;
     _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
 };
@@ -1069,7 +938,6 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
         ownedBoards: Prisma.$BoardPayload<ExtArgs>[];
         boardMemberships: Prisma.$BoardMemberPayload<ExtArgs>[];
         accounts: Prisma.$AccountPayload<ExtArgs>[];
-        sessions: Prisma.$SessionPayload<ExtArgs>[];
         comments: Prisma.$CommentPayload<ExtArgs>[];
     };
     scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1141,7 +1009,6 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
     ownedBoards<T extends Prisma.User$ownedBoardsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ownedBoardsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BoardPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
     boardMemberships<T extends Prisma.User$boardMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$boardMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BoardMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
     accounts<T extends Prisma.User$accountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
-    sessions<T extends Prisma.User$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
     comments<T extends Prisma.User$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
     then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
     catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): runtime.Types.Utils.JsPromise<T | TResult>;
@@ -1292,17 +1159,6 @@ export type User$accountsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
     take?: number;
     skip?: number;
     distinct?: Prisma.AccountScalarFieldEnum | Prisma.AccountScalarFieldEnum[];
-};
-export type User$sessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-    select?: Prisma.SessionSelect<ExtArgs> | null;
-    omit?: Prisma.SessionOmit<ExtArgs> | null;
-    include?: Prisma.SessionInclude<ExtArgs> | null;
-    where?: Prisma.SessionWhereInput;
-    orderBy?: Prisma.SessionOrderByWithRelationInput | Prisma.SessionOrderByWithRelationInput[];
-    cursor?: Prisma.SessionWhereUniqueInput;
-    take?: number;
-    skip?: number;
-    distinct?: Prisma.SessionScalarFieldEnum | Prisma.SessionScalarFieldEnum[];
 };
 export type User$commentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     select?: Prisma.CommentSelect<ExtArgs> | null;

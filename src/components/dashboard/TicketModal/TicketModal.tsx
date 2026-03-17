@@ -2,55 +2,63 @@
 
 import { useMemo, useState } from "react";
 import { Ticket, TicketModalProps } from "@/types";
-import { Modal } from "@/components/ui/Modal/Modal";
 import {
-  ModalOuter,
-  ModalCard,
-  Header,
-  HeaderLeft,
-  HeaderMetaRow,
-  HeaderActions,
-  Section,
-  SubtasksHeader,
-  SubtasksList,
-  SubtaskRow,
-  CommentsHeader,
-  CommentInputRow,
-  CommentsList,
-  CommentCard,
-  CommentHeader,
-  DetailsSection,
-  RelatedRow,
-  EstimatesRow,
   Avatar,
-  Typography,
   Button,
-  TextField,
+  Checkbox,
   Chip,
   Divider,
-  Checkbox,
   LinearProgress,
-  MenuItem,
+  Modal,
+  RolesSelect,
+  TextField,
+  TicketPrioritySelect,
+  TicketStatusSelect,
+  TicketTypeSelect,
+  Typography,
+} from "@/components/ui";
+import {
+  AccessRolesRow,
+  CommentCard,
+  CommentHeader,
+  CommentInputRow,
+  CommentsHeader,
+  CommentsList,
+  DetailsSection,
+  EstimatesRow,
+  Header,
+  HeaderActions,
+  HeaderLeft,
+  HeaderMetaRow,
+  ModalCard,
+  ModalOuter,
+  RelatedRow,
+  Section,
+  SubtaskRow,
+  SubtasksList,
+  SubtasksHeader,
 } from "./styled";
-
-const statusOptions: Ticket["status"][] = ["todo", "in-progress", "done"];
-const priorityOptions: Ticket["priority"][] = [
-  "low",
-  "medium",
-  "high",
-  "critical",
-];
 
 // TEMP: frontend-only id, replaced by backend UUID later
 const generateId = () => Math.random().toString(36).slice(2);
 
-export const TicketModal = ({ ticket, open, onClose }: TicketModalProps) => {
+export const TicketModal = ({
+  ticket,
+  open,
+  onClose,
+  boardRoleNames = [],
+  onSaveTicket,
+  onDeleteTicket,
+}: TicketModalProps) => {
   return (
     <Modal open={open} onClose={onClose}>
       {ticket && (
         <TicketModalContent
           key={ticket.id}
           ticket={ticket}
+          boardRoleNames={boardRoleNames}
+          onSaveTicket={onSaveTicket}
+          onDeleteTicket={onDeleteTicket}
           onClose={onClose}
         />
       )}
@@ -60,16 +68,38 @@ export const TicketModal = ({ ticket, open, onClose }: TicketModalProps) => {
 
 interface TicketModalContentProps {
   ticket: Ticket;
+  boardRoleNames: string[];
+  onSaveTicket?: (
+    ticketId: string,
+    payload: {
+      description: string;
+      status: Ticket["status"];
+      priority: Ticket["priority"];
+      type: Ticket["type"];
+      accessibilityRoles: string[];
+    }
+  ) => Promise<Ticket | null>;
+  onDeleteTicket?: (ticketId: string) => Promise<boolean>;
   onClose: () => void;
 }
 
-const TicketModalContent = ({ ticket, onClose }: TicketModalContentProps) => {
+const TicketModalContent = ({
+  ticket,
+  boardRoleNames,
+  onSaveTicket,
+  onDeleteTicket,
+  onClose,
+}: TicketModalContentProps) => {
   const [subtasks, setSubtasks] = useState(() => ticket.subtasks ?? []);
   const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [description, setDescription] = useState(ticket.description);
   const [status, setStatus] = useState<Ticket["status"]>(ticket.status);
-  const [priority, setPriority] = useState<Ticket["priority"]>(
-    ticket.priority
+  const [type, setType] = useState<Ticket["type"]>(ticket.type);
+  const [priority, setPriority] = useState<Ticket["priority"]>(ticket.priority);
+  const [accessibilityRoles, setAccessibilityRoles] = useState<string[]>(
+    ticket.accessibilityRoles ?? []
   );
   const [commentDraft, setCommentDraft] = useState("");
   const [comments, setComments] = useState(ticket.comments ?? []);
@@ -102,7 +132,9 @@ const TicketModalContent = ({ ticket, onClose }: TicketModalContentProps) => {
     setIsEditing(false);
     setDescription(ticket.description);
     setStatus(ticket.status);
+    setType(ticket.type);
     setPriority(ticket.priority);
+    setAccessibilityRoles(ticket.accessibilityRoles ?? []);
     setSubtasks(ticket.subtasks ?? []);
     setComments(ticket.comments ?? []);
     setEstimate(
@@ -115,9 +147,21 @@ const TicketModalContent = ({ ticket, onClose }: TicketModalContentProps) => {
     );
   };
 
-  const handleSave = () => {
-    // TODO: отправить изменения на бэкенд / в стор
-    setIsEditing(false);
+  const handleSave = async () => {
+    if (!onSaveTicket) {
+      setIsEditing(false);
+      return;
+    }
+    setIsSaving(true);
+    const updated = await onSaveTicket(ticket.id, {
+      description,
+      status,
+      priority,
+      type,
+      accessibilityRoles,
+    });
+    setIsSaving(false);
+    if (updated) setIsEditing(false);
   };
 
   const handleAddComment = () => {
@@ -134,19 +178,32 @@ const TicketModalContent = ({ ticket, onClose }: TicketModalContentProps) => {
     setCommentDraft("");
   };
 
-  const handleDelete = () => {
-    // TODO: удаление тикета
+  const handleDelete = async () => {
+    if (!onDeleteTicket) return;
+    const confirmed = window.confirm(
+      "Удалить тикет? Это действие нельзя отменить."
+    );
+    if (!confirmed) return;
+    setIsDeleting(true);
+    const ok = await onDeleteTicket(ticket.id);
+    setIsDeleting(false);
+    if (ok) onClose();
   };
 
   return (
     <ModalOuter>
       <ModalCard>
-        {/* Шапка */}
+        {/* ── Шапка ─────────────────────────────────────────────────────── */}
         <Header>
           <HeaderLeft>
-            <Avatar src={ticket.assignee.avatar} alt={ticket.assignee.name} />
+            <Avatar
+              src={ticket.assignee.avatar}
+              alt={ticket.assignee.name}
+              sx={{ width: 40, height: 40, flexShrink: 0 }}
+            />
             <div>
               <Typography variant="h6">{ticket.title}</Typography>
+
               <HeaderMetaRow>
                 <Typography variant="body2" color="text.secondary">
                   #{ticket.id}
@@ -164,17 +221,47 @@ const TicketModalContent = ({ ticket, onClose }: TicketModalContentProps) => {
                   color="warning"
                 />
               </HeaderMetaRow>
+
+              {/* Роли доступа — видны всегда */}
+              <AccessRolesRow>
+                <Typography variant="caption" color="text.secondary">
+                  Доступ:&nbsp;
+                </Typography>
+                {accessibilityRoles.length > 0 ? (
+                  accessibilityRoles.map((role) => (
+                    <Chip
+                      key={role}
+                      size="small"
+                      label={role}
+                      variant="outlined"
+                    />
+                  ))
+                ) : (
+                  <Typography variant="caption" color="text.secondary">
+                    без ограничений
+                  </Typography>
+                )}
+              </AccessRolesRow>
             </div>
           </HeaderLeft>
 
           <HeaderActions>
             {isEditing ? (
               <>
-                <Button size="small" variant="outlined" onClick={handleCancelEdit}>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  onClick={handleCancelEdit}
+                >
                   Cancel
                 </Button>
-                <Button size="small" variant="contained" onClick={handleSave}>
-                  Save
+                <Button
+                  size="small"
+                  variant="contained"
+                  onClick={handleSave}
+                  disabled={isSaving}
+                >
+                  {isSaving ? "Saving..." : "Save"}
                 </Button>
               </>
             ) : (
@@ -187,8 +274,9 @@ const TicketModalContent = ({ ticket, onClose }: TicketModalContentProps) => {
               color="error"
               variant="outlined"
               onClick={handleDelete}
+              disabled={isDeleting}
             >
-              Delete
+              {isDeleting ? "Deleting..." : "Delete"}
             </Button>
             <Button size="small" variant="text" onClick={onClose}>
               Close
@@ -198,7 +286,7 @@ const TicketModalContent = ({ ticket, onClose }: TicketModalContentProps) => {
 
         <Divider />
 
-        {/* Описание + статус/priority */}
+        {/* ── Описание + редактирование ─────────────────────────────────── */}
         <Section>
           {isEditing ? (
             <>
@@ -211,37 +299,16 @@ const TicketModalContent = ({ ticket, onClose }: TicketModalContentProps) => {
                 fullWidth
               />
               <EstimatesRow>
-                <TextField
-                  label="Status"
-                  select
-                  fullWidth
-                  value={status}
-                  onChange={(e) =>
-                    setStatus(e.target.value as Ticket["status"])
-                  }
-                >
-                  {statusOptions.map((option) => (
-                    <MenuItem key={option} value={option}>
-                      {option.replace("-", " ")}
-                    </MenuItem>
-                  ))}
-                </TextField>
-                <TextField
-                  label="Priority"
-                  select
-                  fullWidth
-                  value={priority}
-                  onChange={(e) =>
-                    setPriority(e.target.value as Ticket["priority"])
-                  }
-                >
-                  {priorityOptions.map((option) => (
-                    <MenuItem key={option} value={option}>
-                      {option}
-                    </MenuItem>
-                  ))}
-                </TextField>
+                <TicketStatusSelect value={status} onChange={setStatus} />
+                <TicketTypeSelect value={type} onChange={setType} />
+                <TicketPrioritySelect value={priority} onChange={setPriority} />
               </EstimatesRow>
+              <RolesSelect
+                value={accessibilityRoles}
+                onChange={setAccessibilityRoles}
+                boardRoleNames={boardRoleNames}
+                label="Роли доступа"
+              />
             </>
           ) : (
             <Typography variant="body2" color="text.secondary">
@@ -250,7 +317,7 @@ const TicketModalContent = ({ ticket, onClose }: TicketModalContentProps) => {
           )}
         </Section>
 
-        {/* Подзадачи */}
+        {/* ── Подзадачи ─────────────────────────────────────────────────── */}
         <Section>
           <SubtasksHeader>
             <Typography variant="subtitle2">
@@ -283,7 +350,7 @@ const TicketModalContent = ({ ticket, onClose }: TicketModalContentProps) => {
 
         <Divider />
 
-        {/* Комментарии */}
+        {/* ── Комментарии ───────────────────────────────────────────────── */}
         <Section>
           <CommentsHeader>
             <Typography variant="subtitle2">Discussion</Typography>
@@ -329,7 +396,7 @@ const TicketModalContent = ({ ticket, onClose }: TicketModalContentProps) => {
 
         <Divider />
 
-        {/* Estimates */}
+        {/* ── Оценки ────────────────────────────────────────────────────── */}
         <Section>
           <Typography variant="subtitle2">Estimates</Typography>
 
@@ -344,7 +411,9 @@ const TicketModalContent = ({ ticket, onClose }: TicketModalContentProps) => {
                   setEstimate((prev) => ({
                     ...prev,
                     originalHours:
-                      e.target.value === "" ? undefined : Number(e.target.value),
+                      e.target.value === ""
+                        ? undefined
+                        : Number(e.target.value),
                   }))
                 }
               />
@@ -357,7 +426,9 @@ const TicketModalContent = ({ ticket, onClose }: TicketModalContentProps) => {
                   setEstimate((prev) => ({
                     ...prev,
                     spentHours:
-                      e.target.value === "" ? undefined : Number(e.target.value),
+                      e.target.value === ""
+                        ? undefined
+                        : Number(e.target.value),
                   }))
                 }
               />
@@ -370,7 +441,9 @@ const TicketModalContent = ({ ticket, onClose }: TicketModalContentProps) => {
                   setEstimate((prev) => ({
                     ...prev,
                     remainingHours:
-                      e.target.value === "" ? undefined : Number(e.target.value),
+                      e.target.value === ""
+                        ? undefined
+                        : Number(e.target.value),
                   }))
                 }
               />
@@ -383,7 +456,9 @@ const TicketModalContent = ({ ticket, onClose }: TicketModalContentProps) => {
                   setEstimate((prev) => ({
                     ...prev,
                     storyPoints:
-                      e.target.value === "" ? undefined : Number(e.target.value),
+                      e.target.value === ""
+                        ? undefined
+                        : Number(e.target.value),
                   }))
                 }
               />
@@ -408,7 +483,7 @@ const TicketModalContent = ({ ticket, onClose }: TicketModalContentProps) => {
 
         <Divider />
 
-        {/* Детали тикета */}
+        {/* ── Детали тикета ─────────────────────────────────────────────── */}
         <DetailsSection>
           <Typography variant="subtitle2">Ticket details</Typography>
           <Typography variant="body2" color="text.secondary">

@@ -22,6 +22,11 @@ export class CreateBoardDto {
   columns?: string[];
 
   @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  customRoles?: string[];
+
+  @IsOptional()
   @IsString()
   ownerId?: string;
 

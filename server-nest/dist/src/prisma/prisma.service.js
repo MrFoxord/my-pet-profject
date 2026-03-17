@@ -61,8 +61,17 @@ let PrismaService = class PrismaService {
     get boardColumn() {
         return this._client.boardColumn;
     }
+    get boardMember() {
+        return this._client.boardMember;
+    }
     get ticket() {
         return this._client.ticket;
+    }
+    get boardRole() {
+        return this._client.boardRole;
+    }
+    get boardInvitation() {
+        return this._client.boardInvitation;
     }
     get subtask() {
         return this._client.subtask;

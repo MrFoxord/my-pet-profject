@@ -45,7 +45,10 @@ function buildColumnsFromApi(
     };
 
     for (const ticket of tickets) {
-        const targetColumn = findColumnByStatus(ticket.status) ?? fallbackColumn;
+        const byId = ticket.columnId
+          ? columns.find((column) => column.id === ticket.columnId)
+          : undefined;
+        const targetColumn = byId ?? findColumnByStatus(ticket.status) ?? fallbackColumn;
         targetColumn.ticketIds.push(ticket.id);
     }
 

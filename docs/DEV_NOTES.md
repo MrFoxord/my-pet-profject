@@ -160,3 +160,104 @@
 5. Не запускать параллельно несколько `next dev`/`nest --watch` в одной рабочей копии (во избежание lock/порт-конфликтов и ложных 5xx).
 
 ---
+
+## Актуализация на 2026-03-17
+
+### Что сделали за день
+
+1. Расширили доменную модель досок и ролей:
+  - `BoardMember.role` переведен на enum `BoardMemberRole`;
+  - добавлены `BoardRole` и `BoardInvitation`;
+  - схема синхронизирована и в корневом Prisma, и в `server-nest/prisma/schema.prisma`.
+2. Реализовали backend API для ролей доски:
+  - `POST /boards/:boardId/roles`;
+  - `GET /boards/:boardId/roles`;
+  - `PATCH /boards/:boardId/roles/:roleId`;
+  - `DELETE /boards/:boardId/roles/:roleId`.
+3. Реализовали backend API для инвайтов в доску:
+  - `POST /boards/:boardId/invitations`;
+  - `GET /boards/:boardId/invitations`;
+  - `POST /boards/:boardId/invitations/:invitationId/accept`;
+  - `DELETE /boards/:boardId/invitations/:invitationId`.
+4. Обновили создание доски:
+  - в модалку добавлен ввод кастомных ролей;
+  - кастомные роли создаются сразу при создании борды;
+  - исправлен критичный баг: при создании борды теперь передается `ownerId`, поэтому для создателя реально создается `BoardMember`.
+5. Перевели создание тикетов с `prompt` на полноценную модалку:
+  - `title`, `description`, `type`, `priority`;
+  - выбор доступа по ролям;
+  - в мультиселекте сначала стандартные роли (`owner/admin/member/viewer`), затем кастомные роли доски.
+6. Доработали модалку тикета:
+  - добавили backend `PATCH /boards/:boardId/tickets/:ticketId`;
+  - добавили backend `DELETE /boards/:boardId/tickets/:ticketId`;
+  - редактирование тикета из модалки теперь реально сохраняется в Nest;
+  - удаление тикета из модалки теперь реально работает через API.
+7. Привели Next build к стабильному состоянию:
+  - исправили контракт `params` для Next 16 App Router;
+  - исключили `server-nest` из фронтового typecheck через `tsconfig.json`;
+  - добавили `@types/express` для корректной типизации во фронтовой сборке, когда Next захватывал backend-код.
+8. Провели фронтовый cleanup и первый слой систематизации UI:
+  - добавлены shared-компоненты `RolesSelect`, `TicketTypeSelect`, `TicketPrioritySelect`, `TicketStatusSelect`;
+  - введен единый barrel `src/components/ui/index.ts`;
+  - `TicketModal` и `BoardColumns` переведены на shared UI-компоненты;
+  - удалены неиспользуемые/пустые компоненты: `TaskList`, `TicketList`, `TicketDetails`, `ModalTaskEditor`.
+
+### Ключевые баги и наблюдения
+
+1. Самый важный найденный баг за день:
+  - борда создавалась без `ownerId` в клиентском вызове `createBoard`;
+  - из-за этого в таблице `BoardMember` не появлялась запись для создателя;
+  - любые защищенные операции (`delete ticket`, `update ticket`, roles/invitations) падали через `ensureBoardMembership` с `400 board access denied`.
+2. В текущем состоянии `accessibilityRoles` уже сохраняются и редактируются корректно, но это пока только данные, а не полноценный enforcement.
+  - То есть ограничения видимости/редактирования на сервере пока не применяются по этим ролям автоматически.
+3. В Next 16 важно аккуратно следить за server/app route typing:
+  - `params` для dynamic routes в typegen ожидаются как `Promise<...>`.
+4. Во фронте был явный structural drift:
+  - часть UI уже жила через MUI/styled-components;
+  - часть через локальные ad-hoc компоненты;
+  - часть файлов была пустой или orphaned.
+  Сегодня это начали вычищать, но работа еще не завершена на весь фронт.
+5. В сборке Next остались warning'и по Prisma + Edge Runtime:
+  - это не ломает build сейчас;
+  - но это сигнал, что `auth.ts` / prisma imports потенциально могут быть чувствительны в edge-context, если туда продолжат попадать Node-only зависимости.
+
+### Рекомендации
+
+1. Не распыляться дальше на случайные UX-улучшения тикетов, пока не закрыт enforcement прав.
+2. Все новые поля доступа сначала реализовывать в серверных проверках, и только потом расширять UI.
+3. Продолжать выносить повторяющийся UI в shared-слой:
+  - кнопки;
+  - select'ы;
+  - field groups;
+  - модальные actions;
+  - статусные chip/badge-компоненты.
+4. После удаления orphaned-компонентов периодически делать повторную зачистку imports/types, потому что проект исторически уже накопил несколько слоев устаревших abstraction-ов.
+5. При проверке build на Windows лучше вызывать Node/Nest/Next напрямую через `node .../bin/...`, если PowerShell execution policy мешает обычным `npm`/`npx` сценариям.
+
+### Что логичнее делать дальше
+
+#### Следующий лучший шаг
+
+1. Реализовать backend enforcement для тикетных доступов:
+  - фильтрация видимости тикетов по `accessibilityRoles`;
+  - проверка прав на update/delete;
+  - отдельное правило на изменение самого доступа к тикету.
+
+#### После этого
+
+1. Сделать `Board Settings` / `Board Management` UI:
+  - участники;
+  - инвайты;
+  - кастомные роли;
+  - смена ролей участникам.
+2. Затем перейти к permissions у кастомных ролей:
+  - пока у кастомных ролей есть только имя;
+  - следующий слой — реальные permissions (`ticket.view`, `ticket.edit`, `ticket.delete`, `board.manage_members` и т.д.).
+
+### Практический TODO на следующую итерацию
+
+1. Вынести серверные helper'ы доступа в отдельный service/guard utility для boards/tickets.
+2. Добавить серверную функцию вида `getEffectiveBoardRolesForUser(boardId, userId)`.
+3. На чтении борды фильтровать `tickets` по этим ролям.
+4. На mutation-эндпоинтах тикета ввести проверку не только membership, но и ticket-level access.
+5. После этого строить UI управления участниками и ролями доски.

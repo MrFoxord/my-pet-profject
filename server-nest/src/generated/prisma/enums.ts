@@ -9,6 +9,16 @@
 * 🟢 You can import this file directly.
 */
 
+export const BoardMemberRole = {
+  OWNER: 'OWNER',
+  ADMIN: 'ADMIN',
+  MEMBER: 'MEMBER',
+  VIEWER: 'VIEWER'
+} as const
+
+export type BoardMemberRole = (typeof BoardMemberRole)[keyof typeof BoardMemberRole]
+
+
 export const MonetizationRole = {
   FREE: 'FREE',
   SUBMITTED: 'SUBMITTED',

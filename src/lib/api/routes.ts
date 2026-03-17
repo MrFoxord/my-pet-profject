@@ -20,8 +20,16 @@ export const apiRoutes = {
   boardById: (boardId: string) => `${PROXY_BASE}/boards/${boardId}`,
   userDefaultState: () => `${PROXY_BASE}/users/me/default-state`,
   userDefaultProfile: () => `${PROXY_BASE}/users/me/default-profile`,
+  boardTickets: (boardId: string) => `${PROXY_BASE}/boards/${boardId}/tickets`,
+  boardTicketById: (boardId: string, ticketId: string) =>
+    `${PROXY_BASE}/boards/${boardId}/tickets/${ticketId}`,
+  boardTicketsReorder: (boardId: string) =>
+    `${PROXY_BASE}/boards/${boardId}/tickets/reorder`,
   boardColumnsOrder: (boardId: string) =>
     `${PROXY_BASE}/boards/${boardId}/columns/order`,
   boardColumnById: (boardId: string, columnId: string) =>
     `${PROXY_BASE}/boards/${boardId}/columns/${columnId}`,
+    boardRoles: (boardId: string) => `${PROXY_BASE}/boards/${boardId}/roles`,
+    boardRoleById: (boardId: string, roleId: string) =>
+      `${PROXY_BASE}/boards/${boardId}/roles/${roleId}`,
 };

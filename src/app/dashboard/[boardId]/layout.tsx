@@ -7,7 +7,11 @@ interface Props {
     children: ReactNode;
 }
 
-export async function generateMetadata ({params} : {params: {boardId: string}}): Promise<Metadata> {
+interface MetadataProps {
+    params: Promise<{ boardId: string }>;
+}
+
+export async function generateMetadata ({ params }: MetadataProps): Promise<Metadata> {
     const resolvedParams = await params;
     return {
         title: `Dashboard - Board ${resolvedParams.boardId}`,

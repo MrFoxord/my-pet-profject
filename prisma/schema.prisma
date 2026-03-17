@@ -28,7 +28,6 @@ model User {
   ownedBoards      Board[]           @relation("BoardOwner")
   boardMemberships BoardMember[]
   accounts         Account[]
-  sessions         Session[]
   comments         Comment[]
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
@@ -47,22 +46,52 @@ model Board {
   tickets     Ticket[]
   columns     BoardColumn[]
   memberships BoardMember[]
+  roles       BoardRole[]
+  invitations BoardInvitation[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
 
 model BoardMember {
-  id        String   @id @default(cuid())
-  role      String
-  boardId    String
-  userId     String
-  board      Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id        String             @id @default(cuid())
+  role      BoardMemberRole    @default(MEMBER)
+  boardId   String
+  userId    String
+  board     Board              @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
 
   @@unique([boardId, userId])
   @@index([userId])
+}
+
+model BoardRole {
+  id          String   @id @default(cuid())
+  boardId     String
+  board       Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  name        String
+  permissions String[] @default([])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([boardId, name])
+  @@index([boardId])
+}
+
+model BoardInvitation {
+  id        String   @id @default(cuid())
+  email     String
+  boardId   String
+  board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  role      BoardMemberRole
+  status    String   @default("pending") // "pending" | "accepted" | "declined"
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@unique([boardId, email])
+  @@index([boardId])
+  @@index([email])
 }
 
 model BoardColumn {
@@ -72,6 +101,7 @@ model BoardColumn {
 
   boardId String
   board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  tickets Ticket[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -85,12 +115,19 @@ model Ticket {
   title       String
   description String?
 
-  status   String // "todo" | "in-progress" | "done"
-  priority String // "low" | "medium" | "high" | "critical"
-  type     String // "bug" | "task" | "story" | ...
+  status    String // "todo" | "in-progress" | "done"
+  sortIndex Int    @default(0)
+  priority  String // "low" | "medium" | "high" | "critical"
+  type      String // "bug" | "task" | "story" | ...
+
+  accessibilityRoles String[] @default([])
+  accessibilityIds   String[] @default([])
 
   boardId String
   board   Board   @relation(fields: [boardId], references: [id], onDelete: Cascade)
+
+  columnId String?
+  column   BoardColumn? @relation(fields: [columnId], references: [id], onDelete: SetNull)
 
   estimateOriginalHours Int?
   estimateSpentHours    Int?
@@ -103,6 +140,9 @@ model Ticket {
   dueDate   DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+
+  @@index([boardId, status, sortIndex])
+  @@index([boardId, columnId, sortIndex])
 }
 
 model Subtask {
@@ -147,20 +187,19 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
 model VerificationToken {
   identifier String
   token      String   @unique
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+enum BoardMemberRole {
+  OWNER
+  ADMIN
+  MEMBER
+  VIEWER
 }
 
 enum MonetizationRole {

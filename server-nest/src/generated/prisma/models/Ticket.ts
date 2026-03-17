@@ -27,6 +27,7 @@ export type AggregateTicket = {
 }
 
 export type TicketAvgAggregateOutputType = {
+  sortIndex: number | null
   estimateOriginalHours: number | null
   estimateSpentHours: number | null
   estimateRemainingHours: number | null
@@ -34,6 +35,7 @@ export type TicketAvgAggregateOutputType = {
 }
 
 export type TicketSumAggregateOutputType = {
+  sortIndex: number | null
   estimateOriginalHours: number | null
   estimateSpentHours: number | null
   estimateRemainingHours: number | null
@@ -45,9 +47,11 @@ export type TicketMinAggregateOutputType = {
   title: string | null
   description: string | null
   status: string | null
+  sortIndex: number | null
   priority: string | null
   type: string | null
   boardId: string | null
+  columnId: string | null
   estimateOriginalHours: number | null
   estimateSpentHours: number | null
   estimateRemainingHours: number | null
@@ -62,9 +66,11 @@ export type TicketMaxAggregateOutputType = {
   title: string | null
   description: string | null
   status: string | null
+  sortIndex: number | null
   priority: string | null
   type: string | null
   boardId: string | null
+  columnId: string | null
   estimateOriginalHours: number | null
   estimateSpentHours: number | null
   estimateRemainingHours: number | null
@@ -79,9 +85,13 @@ export type TicketCountAggregateOutputType = {
   title: number
   description: number
   status: number
+  sortIndex: number
   priority: number
   type: number
+  accessibilityRoles: number
+  accessibilityIds: number
   boardId: number
+  columnId: number
   estimateOriginalHours: number
   estimateSpentHours: number
   estimateRemainingHours: number
@@ -94,6 +104,7 @@ export type TicketCountAggregateOutputType = {
 
 
 export type TicketAvgAggregateInputType = {
+  sortIndex?: true
   estimateOriginalHours?: true
   estimateSpentHours?: true
   estimateRemainingHours?: true
@@ -101,6 +112,7 @@ export type TicketAvgAggregateInputType = {
 }
 
 export type TicketSumAggregateInputType = {
+  sortIndex?: true
   estimateOriginalHours?: true
   estimateSpentHours?: true
   estimateRemainingHours?: true
@@ -112,9 +124,11 @@ export type TicketMinAggregateInputType = {
   title?: true
   description?: true
   status?: true
+  sortIndex?: true
   priority?: true
   type?: true
   boardId?: true
+  columnId?: true
   estimateOriginalHours?: true
   estimateSpentHours?: true
   estimateRemainingHours?: true
@@ -129,9 +143,11 @@ export type TicketMaxAggregateInputType = {
   title?: true
   description?: true
   status?: true
+  sortIndex?: true
   priority?: true
   type?: true
   boardId?: true
+  columnId?: true
   estimateOriginalHours?: true
   estimateSpentHours?: true
   estimateRemainingHours?: true
@@ -146,9 +162,13 @@ export type TicketCountAggregateInputType = {
   title?: true
   description?: true
   status?: true
+  sortIndex?: true
   priority?: true
   type?: true
+  accessibilityRoles?: true
+  accessibilityIds?: true
   boardId?: true
+  columnId?: true
   estimateOriginalHours?: true
   estimateSpentHours?: true
   estimateRemainingHours?: true
@@ -250,9 +270,13 @@ export type TicketGroupByOutputType = {
   title: string
   description: string | null
   status: string
+  sortIndex: number
   priority: string
   type: string
+  accessibilityRoles: string[]
+  accessibilityIds: string[]
   boardId: string
+  columnId: string | null
   estimateOriginalHours: number | null
   estimateSpentHours: number | null
   estimateRemainingHours: number | null
@@ -290,9 +314,13 @@ export type TicketWhereInput = {
   title?: Prisma.StringFilter<"Ticket"> | string
   description?: Prisma.StringNullableFilter<"Ticket"> | string | null
   status?: Prisma.StringFilter<"Ticket"> | string
+  sortIndex?: Prisma.IntFilter<"Ticket"> | number
   priority?: Prisma.StringFilter<"Ticket"> | string
   type?: Prisma.StringFilter<"Ticket"> | string
+  accessibilityRoles?: Prisma.StringNullableListFilter<"Ticket">
+  accessibilityIds?: Prisma.StringNullableListFilter<"Ticket">
   boardId?: Prisma.StringFilter<"Ticket"> | string
+  columnId?: Prisma.StringNullableFilter<"Ticket"> | string | null
   estimateOriginalHours?: Prisma.IntNullableFilter<"Ticket"> | number | null
   estimateSpentHours?: Prisma.IntNullableFilter<"Ticket"> | number | null
   estimateRemainingHours?: Prisma.IntNullableFilter<"Ticket"> | number | null
@@ -301,6 +329,7 @@ export type TicketWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Ticket"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Ticket"> | Date | string
   board?: Prisma.XOR<Prisma.BoardScalarRelationFilter, Prisma.BoardWhereInput>
+  column?: Prisma.XOR<Prisma.BoardColumnNullableScalarRelationFilter, Prisma.BoardColumnWhereInput> | null
   subtasks?: Prisma.SubtaskListRelationFilter
   comments?: Prisma.CommentListRelationFilter
 }
@@ -310,9 +339,13 @@ export type TicketOrderByWithRelationInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  sortIndex?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  accessibilityRoles?: Prisma.SortOrder
+  accessibilityIds?: Prisma.SortOrder
   boardId?: Prisma.SortOrder
+  columnId?: Prisma.SortOrderInput | Prisma.SortOrder
   estimateOriginalHours?: Prisma.SortOrderInput | Prisma.SortOrder
   estimateSpentHours?: Prisma.SortOrderInput | Prisma.SortOrder
   estimateRemainingHours?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -321,6 +354,7 @@ export type TicketOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   board?: Prisma.BoardOrderByWithRelationInput
+  column?: Prisma.BoardColumnOrderByWithRelationInput
   subtasks?: Prisma.SubtaskOrderByRelationAggregateInput
   comments?: Prisma.CommentOrderByRelationAggregateInput
 }
@@ -333,9 +367,13 @@ export type TicketWhereUniqueInput = Prisma.AtLeast<{
   title?: Prisma.StringFilter<"Ticket"> | string
   description?: Prisma.StringNullableFilter<"Ticket"> | string | null
   status?: Prisma.StringFilter<"Ticket"> | string
+  sortIndex?: Prisma.IntFilter<"Ticket"> | number
   priority?: Prisma.StringFilter<"Ticket"> | string
   type?: Prisma.StringFilter<"Ticket"> | string
+  accessibilityRoles?: Prisma.StringNullableListFilter<"Ticket">
+  accessibilityIds?: Prisma.StringNullableListFilter<"Ticket">
   boardId?: Prisma.StringFilter<"Ticket"> | string
+  columnId?: Prisma.StringNullableFilter<"Ticket"> | string | null
   estimateOriginalHours?: Prisma.IntNullableFilter<"Ticket"> | number | null
   estimateSpentHours?: Prisma.IntNullableFilter<"Ticket"> | number | null
   estimateRemainingHours?: Prisma.IntNullableFilter<"Ticket"> | number | null
@@ -344,6 +382,7 @@ export type TicketWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Ticket"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Ticket"> | Date | string
   board?: Prisma.XOR<Prisma.BoardScalarRelationFilter, Prisma.BoardWhereInput>
+  column?: Prisma.XOR<Prisma.BoardColumnNullableScalarRelationFilter, Prisma.BoardColumnWhereInput> | null
   subtasks?: Prisma.SubtaskListRelationFilter
   comments?: Prisma.CommentListRelationFilter
 }, "id">
@@ -353,9 +392,13 @@ export type TicketOrderByWithAggregationInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  sortIndex?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  accessibilityRoles?: Prisma.SortOrder
+  accessibilityIds?: Prisma.SortOrder
   boardId?: Prisma.SortOrder
+  columnId?: Prisma.SortOrderInput | Prisma.SortOrder
   estimateOriginalHours?: Prisma.SortOrderInput | Prisma.SortOrder
   estimateSpentHours?: Prisma.SortOrderInput | Prisma.SortOrder
   estimateRemainingHours?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -378,9 +421,13 @@ export type TicketScalarWhereWithAggregatesInput = {
   title?: Prisma.StringWithAggregatesFilter<"Ticket"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Ticket"> | string | null
   status?: Prisma.StringWithAggregatesFilter<"Ticket"> | string
+  sortIndex?: Prisma.IntWithAggregatesFilter<"Ticket"> | number
   priority?: Prisma.StringWithAggregatesFilter<"Ticket"> | string
   type?: Prisma.StringWithAggregatesFilter<"Ticket"> | string
+  accessibilityRoles?: Prisma.StringNullableListFilter<"Ticket">
+  accessibilityIds?: Prisma.StringNullableListFilter<"Ticket">
   boardId?: Prisma.StringWithAggregatesFilter<"Ticket"> | string
+  columnId?: Prisma.StringNullableWithAggregatesFilter<"Ticket"> | string | null
   estimateOriginalHours?: Prisma.IntNullableWithAggregatesFilter<"Ticket"> | number | null
   estimateSpentHours?: Prisma.IntNullableWithAggregatesFilter<"Ticket"> | number | null
   estimateRemainingHours?: Prisma.IntNullableWithAggregatesFilter<"Ticket"> | number | null
@@ -395,8 +442,11 @@ export type TicketCreateInput = {
   title: string
   description?: string | null
   status: string
+  sortIndex?: number
   priority: string
   type: string
+  accessibilityRoles?: Prisma.TicketCreateaccessibilityRolesInput | string[]
+  accessibilityIds?: Prisma.TicketCreateaccessibilityIdsInput | string[]
   estimateOriginalHours?: number | null
   estimateSpentHours?: number | null
   estimateRemainingHours?: number | null
@@ -405,6 +455,7 @@ export type TicketCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   board: Prisma.BoardCreateNestedOneWithoutTicketsInput
+  column?: Prisma.BoardColumnCreateNestedOneWithoutTicketsInput
   subtasks?: Prisma.SubtaskCreateNestedManyWithoutTicketInput
   comments?: Prisma.CommentCreateNestedManyWithoutTicketInput
 }
@@ -414,9 +465,13 @@ export type TicketUncheckedCreateInput = {
   title: string
   description?: string | null
   status: string
+  sortIndex?: number
   priority: string
   type: string
+  accessibilityRoles?: Prisma.TicketCreateaccessibilityRolesInput | string[]
+  accessibilityIds?: Prisma.TicketCreateaccessibilityIdsInput | string[]
   boardId: string
+  columnId?: string | null
   estimateOriginalHours?: number | null
   estimateSpentHours?: number | null
   estimateRemainingHours?: number | null
@@ -433,8 +488,11 @@ export type TicketUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  sortIndex?: Prisma.IntFieldUpdateOperationsInput | number
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
+  accessibilityRoles?: Prisma.TicketUpdateaccessibilityRolesInput | string[]
+  accessibilityIds?: Prisma.TicketUpdateaccessibilityIdsInput | string[]
   estimateOriginalHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   estimateSpentHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   estimateRemainingHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -443,6 +501,7 @@ export type TicketUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   board?: Prisma.BoardUpdateOneRequiredWithoutTicketsNestedInput
+  column?: Prisma.BoardColumnUpdateOneWithoutTicketsNestedInput
   subtasks?: Prisma.SubtaskUpdateManyWithoutTicketNestedInput
   comments?: Prisma.CommentUpdateManyWithoutTicketNestedInput
 }
@@ -452,9 +511,13 @@ export type TicketUncheckedUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  sortIndex?: Prisma.IntFieldUpdateOperationsInput | number
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
+  accessibilityRoles?: Prisma.TicketUpdateaccessibilityRolesInput | string[]
+  accessibilityIds?: Prisma.TicketUpdateaccessibilityIdsInput | string[]
   boardId?: Prisma.StringFieldUpdateOperationsInput | string
+  columnId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   estimateOriginalHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   estimateSpentHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   estimateRemainingHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -471,9 +534,13 @@ export type TicketCreateManyInput = {
   title: string
   description?: string | null
   status: string
+  sortIndex?: number
   priority: string
   type: string
+  accessibilityRoles?: Prisma.TicketCreateaccessibilityRolesInput | string[]
+  accessibilityIds?: Prisma.TicketCreateaccessibilityIdsInput | string[]
   boardId: string
+  columnId?: string | null
   estimateOriginalHours?: number | null
   estimateSpentHours?: number | null
   estimateRemainingHours?: number | null
@@ -488,8 +555,11 @@ export type TicketUpdateManyMutationInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  sortIndex?: Prisma.IntFieldUpdateOperationsInput | number
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
+  accessibilityRoles?: Prisma.TicketUpdateaccessibilityRolesInput | string[]
+  accessibilityIds?: Prisma.TicketUpdateaccessibilityIdsInput | string[]
   estimateOriginalHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   estimateSpentHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   estimateRemainingHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -504,9 +574,13 @@ export type TicketUncheckedUpdateManyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  sortIndex?: Prisma.IntFieldUpdateOperationsInput | number
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
+  accessibilityRoles?: Prisma.TicketUpdateaccessibilityRolesInput | string[]
+  accessibilityIds?: Prisma.TicketUpdateaccessibilityIdsInput | string[]
   boardId?: Prisma.StringFieldUpdateOperationsInput | string
+  columnId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   estimateOriginalHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   estimateSpentHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   estimateRemainingHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -531,9 +605,13 @@ export type TicketCountOrderByAggregateInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  sortIndex?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   type?: Prisma.SortOrder
+  accessibilityRoles?: Prisma.SortOrder
+  accessibilityIds?: Prisma.SortOrder
   boardId?: Prisma.SortOrder
+  columnId?: Prisma.SortOrder
   estimateOriginalHours?: Prisma.SortOrder
   estimateSpentHours?: Prisma.SortOrder
   estimateRemainingHours?: Prisma.SortOrder
@@ -544,6 +622,7 @@ export type TicketCountOrderByAggregateInput = {
 }
 
 export type TicketAvgOrderByAggregateInput = {
+  sortIndex?: Prisma.SortOrder
   estimateOriginalHours?: Prisma.SortOrder
   estimateSpentHours?: Prisma.SortOrder
   estimateRemainingHours?: Prisma.SortOrder
@@ -555,9 +634,11 @@ export type TicketMaxOrderByAggregateInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  sortIndex?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   type?: Prisma.SortOrder
   boardId?: Prisma.SortOrder
+  columnId?: Prisma.SortOrder
   estimateOriginalHours?: Prisma.SortOrder
   estimateSpentHours?: Prisma.SortOrder
   estimateRemainingHours?: Prisma.SortOrder
@@ -572,9 +653,11 @@ export type TicketMinOrderByAggregateInput = {
   title?: Prisma.SortOrder
   description?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  sortIndex?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   type?: Prisma.SortOrder
   boardId?: Prisma.SortOrder
+  columnId?: Prisma.SortOrder
   estimateOriginalHours?: Prisma.SortOrder
   estimateSpentHours?: Prisma.SortOrder
   estimateRemainingHours?: Prisma.SortOrder
@@ -585,6 +668,7 @@ export type TicketMinOrderByAggregateInput = {
 }
 
 export type TicketSumOrderByAggregateInput = {
+  sortIndex?: Prisma.SortOrder
   estimateOriginalHours?: Prisma.SortOrder
   estimateSpentHours?: Prisma.SortOrder
   estimateRemainingHours?: Prisma.SortOrder
@@ -638,6 +722,66 @@ export type TicketUncheckedUpdateManyWithoutBoardNestedInput = {
   deleteMany?: Prisma.TicketScalarWhereInput | Prisma.TicketScalarWhereInput[]
 }
 
+export type TicketCreateNestedManyWithoutColumnInput = {
+  create?: Prisma.XOR<Prisma.TicketCreateWithoutColumnInput, Prisma.TicketUncheckedCreateWithoutColumnInput> | Prisma.TicketCreateWithoutColumnInput[] | Prisma.TicketUncheckedCreateWithoutColumnInput[]
+  connectOrCreate?: Prisma.TicketCreateOrConnectWithoutColumnInput | Prisma.TicketCreateOrConnectWithoutColumnInput[]
+  createMany?: Prisma.TicketCreateManyColumnInputEnvelope
+  connect?: Prisma.TicketWhereUniqueInput | Prisma.TicketWhereUniqueInput[]
+}
+
+export type TicketUncheckedCreateNestedManyWithoutColumnInput = {
+  create?: Prisma.XOR<Prisma.TicketCreateWithoutColumnInput, Prisma.TicketUncheckedCreateWithoutColumnInput> | Prisma.TicketCreateWithoutColumnInput[] | Prisma.TicketUncheckedCreateWithoutColumnInput[]
+  connectOrCreate?: Prisma.TicketCreateOrConnectWithoutColumnInput | Prisma.TicketCreateOrConnectWithoutColumnInput[]
+  createMany?: Prisma.TicketCreateManyColumnInputEnvelope
+  connect?: Prisma.TicketWhereUniqueInput | Prisma.TicketWhereUniqueInput[]
+}
+
+export type TicketUpdateManyWithoutColumnNestedInput = {
+  create?: Prisma.XOR<Prisma.TicketCreateWithoutColumnInput, Prisma.TicketUncheckedCreateWithoutColumnInput> | Prisma.TicketCreateWithoutColumnInput[] | Prisma.TicketUncheckedCreateWithoutColumnInput[]
+  connectOrCreate?: Prisma.TicketCreateOrConnectWithoutColumnInput | Prisma.TicketCreateOrConnectWithoutColumnInput[]
+  upsert?: Prisma.TicketUpsertWithWhereUniqueWithoutColumnInput | Prisma.TicketUpsertWithWhereUniqueWithoutColumnInput[]
+  createMany?: Prisma.TicketCreateManyColumnInputEnvelope
+  set?: Prisma.TicketWhereUniqueInput | Prisma.TicketWhereUniqueInput[]
+  disconnect?: Prisma.TicketWhereUniqueInput | Prisma.TicketWhereUniqueInput[]
+  delete?: Prisma.TicketWhereUniqueInput | Prisma.TicketWhereUniqueInput[]
+  connect?: Prisma.TicketWhereUniqueInput | Prisma.TicketWhereUniqueInput[]
+  update?: Prisma.TicketUpdateWithWhereUniqueWithoutColumnInput | Prisma.TicketUpdateWithWhereUniqueWithoutColumnInput[]
+  updateMany?: Prisma.TicketUpdateManyWithWhereWithoutColumnInput | Prisma.TicketUpdateManyWithWhereWithoutColumnInput[]
+  deleteMany?: Prisma.TicketScalarWhereInput | Prisma.TicketScalarWhereInput[]
+}
+
+export type TicketUncheckedUpdateManyWithoutColumnNestedInput = {
+  create?: Prisma.XOR<Prisma.TicketCreateWithoutColumnInput, Prisma.TicketUncheckedCreateWithoutColumnInput> | Prisma.TicketCreateWithoutColumnInput[] | Prisma.TicketUncheckedCreateWithoutColumnInput[]
+  connectOrCreate?: Prisma.TicketCreateOrConnectWithoutColumnInput | Prisma.TicketCreateOrConnectWithoutColumnInput[]
+  upsert?: Prisma.TicketUpsertWithWhereUniqueWithoutColumnInput | Prisma.TicketUpsertWithWhereUniqueWithoutColumnInput[]
+  createMany?: Prisma.TicketCreateManyColumnInputEnvelope
+  set?: Prisma.TicketWhereUniqueInput | Prisma.TicketWhereUniqueInput[]
+  disconnect?: Prisma.TicketWhereUniqueInput | Prisma.TicketWhereUniqueInput[]
+  delete?: Prisma.TicketWhereUniqueInput | Prisma.TicketWhereUniqueInput[]
+  connect?: Prisma.TicketWhereUniqueInput | Prisma.TicketWhereUniqueInput[]
+  update?: Prisma.TicketUpdateWithWhereUniqueWithoutColumnInput | Prisma.TicketUpdateWithWhereUniqueWithoutColumnInput[]
+  updateMany?: Prisma.TicketUpdateManyWithWhereWithoutColumnInput | Prisma.TicketUpdateManyWithWhereWithoutColumnInput[]
+  deleteMany?: Prisma.TicketScalarWhereInput | Prisma.TicketScalarWhereInput[]
+}
+
+export type TicketCreateaccessibilityRolesInput = {
+  set: string[]
+}
+
+export type TicketCreateaccessibilityIdsInput = {
+  set: string[]
+}
+
+export type TicketUpdateaccessibilityRolesInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type TicketUpdateaccessibilityIdsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
 export type NullableIntFieldUpdateOperationsInput = {
   set?: number | null
   increment?: number
@@ -679,8 +823,11 @@ export type TicketCreateWithoutBoardInput = {
   title: string
   description?: string | null
   status: string
+  sortIndex?: number
   priority: string
   type: string
+  accessibilityRoles?: Prisma.TicketCreateaccessibilityRolesInput | string[]
+  accessibilityIds?: Prisma.TicketCreateaccessibilityIdsInput | string[]
   estimateOriginalHours?: number | null
   estimateSpentHours?: number | null
   estimateRemainingHours?: number | null
@@ -688,6 +835,7 @@ export type TicketCreateWithoutBoardInput = {
   dueDate?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  column?: Prisma.BoardColumnCreateNestedOneWithoutTicketsInput
   subtasks?: Prisma.SubtaskCreateNestedManyWithoutTicketInput
   comments?: Prisma.CommentCreateNestedManyWithoutTicketInput
 }
@@ -697,8 +845,12 @@ export type TicketUncheckedCreateWithoutBoardInput = {
   title: string
   description?: string | null
   status: string
+  sortIndex?: number
   priority: string
   type: string
+  accessibilityRoles?: Prisma.TicketCreateaccessibilityRolesInput | string[]
+  accessibilityIds?: Prisma.TicketCreateaccessibilityIdsInput | string[]
+  columnId?: string | null
   estimateOriginalHours?: number | null
   estimateSpentHours?: number | null
   estimateRemainingHours?: number | null
@@ -744,9 +896,13 @@ export type TicketScalarWhereInput = {
   title?: Prisma.StringFilter<"Ticket"> | string
   description?: Prisma.StringNullableFilter<"Ticket"> | string | null
   status?: Prisma.StringFilter<"Ticket"> | string
+  sortIndex?: Prisma.IntFilter<"Ticket"> | number
   priority?: Prisma.StringFilter<"Ticket"> | string
   type?: Prisma.StringFilter<"Ticket"> | string
+  accessibilityRoles?: Prisma.StringNullableListFilter<"Ticket">
+  accessibilityIds?: Prisma.StringNullableListFilter<"Ticket">
   boardId?: Prisma.StringFilter<"Ticket"> | string
+  columnId?: Prisma.StringNullableFilter<"Ticket"> | string | null
   estimateOriginalHours?: Prisma.IntNullableFilter<"Ticket"> | number | null
   estimateSpentHours?: Prisma.IntNullableFilter<"Ticket"> | number | null
   estimateRemainingHours?: Prisma.IntNullableFilter<"Ticket"> | number | null
@@ -756,13 +912,16 @@ export type TicketScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Ticket"> | Date | string
 }
 
-export type TicketCreateWithoutSubtasksInput = {
+export type TicketCreateWithoutColumnInput = {
   id: string
   title: string
   description?: string | null
   status: string
+  sortIndex?: number
   priority: string
   type: string
+  accessibilityRoles?: Prisma.TicketCreateaccessibilityRolesInput | string[]
+  accessibilityIds?: Prisma.TicketCreateaccessibilityIdsInput | string[]
   estimateOriginalHours?: number | null
   estimateSpentHours?: number | null
   estimateRemainingHours?: number | null
@@ -771,6 +930,77 @@ export type TicketCreateWithoutSubtasksInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   board: Prisma.BoardCreateNestedOneWithoutTicketsInput
+  subtasks?: Prisma.SubtaskCreateNestedManyWithoutTicketInput
+  comments?: Prisma.CommentCreateNestedManyWithoutTicketInput
+}
+
+export type TicketUncheckedCreateWithoutColumnInput = {
+  id: string
+  title: string
+  description?: string | null
+  status: string
+  sortIndex?: number
+  priority: string
+  type: string
+  accessibilityRoles?: Prisma.TicketCreateaccessibilityRolesInput | string[]
+  accessibilityIds?: Prisma.TicketCreateaccessibilityIdsInput | string[]
+  boardId: string
+  estimateOriginalHours?: number | null
+  estimateSpentHours?: number | null
+  estimateRemainingHours?: number | null
+  storyPoints?: number | null
+  dueDate?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  subtasks?: Prisma.SubtaskUncheckedCreateNestedManyWithoutTicketInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutTicketInput
+}
+
+export type TicketCreateOrConnectWithoutColumnInput = {
+  where: Prisma.TicketWhereUniqueInput
+  create: Prisma.XOR<Prisma.TicketCreateWithoutColumnInput, Prisma.TicketUncheckedCreateWithoutColumnInput>
+}
+
+export type TicketCreateManyColumnInputEnvelope = {
+  data: Prisma.TicketCreateManyColumnInput | Prisma.TicketCreateManyColumnInput[]
+  skipDuplicates?: boolean
+}
+
+export type TicketUpsertWithWhereUniqueWithoutColumnInput = {
+  where: Prisma.TicketWhereUniqueInput
+  update: Prisma.XOR<Prisma.TicketUpdateWithoutColumnInput, Prisma.TicketUncheckedUpdateWithoutColumnInput>
+  create: Prisma.XOR<Prisma.TicketCreateWithoutColumnInput, Prisma.TicketUncheckedCreateWithoutColumnInput>
+}
+
+export type TicketUpdateWithWhereUniqueWithoutColumnInput = {
+  where: Prisma.TicketWhereUniqueInput
+  data: Prisma.XOR<Prisma.TicketUpdateWithoutColumnInput, Prisma.TicketUncheckedUpdateWithoutColumnInput>
+}
+
+export type TicketUpdateManyWithWhereWithoutColumnInput = {
+  where: Prisma.TicketScalarWhereInput
+  data: Prisma.XOR<Prisma.TicketUpdateManyMutationInput, Prisma.TicketUncheckedUpdateManyWithoutColumnInput>
+}
+
+export type TicketCreateWithoutSubtasksInput = {
+  id: string
+  title: string
+  description?: string | null
+  status: string
+  sortIndex?: number
+  priority: string
+  type: string
+  accessibilityRoles?: Prisma.TicketCreateaccessibilityRolesInput | string[]
+  accessibilityIds?: Prisma.TicketCreateaccessibilityIdsInput | string[]
+  estimateOriginalHours?: number | null
+  estimateSpentHours?: number | null
+  estimateRemainingHours?: number | null
+  storyPoints?: number | null
+  dueDate?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  board: Prisma.BoardCreateNestedOneWithoutTicketsInput
+  column?: Prisma.BoardColumnCreateNestedOneWithoutTicketsInput
   comments?: Prisma.CommentCreateNestedManyWithoutTicketInput
 }
 
@@ -779,9 +1009,13 @@ export type TicketUncheckedCreateWithoutSubtasksInput = {
   title: string
   description?: string | null
   status: string
+  sortIndex?: number
   priority: string
   type: string
+  accessibilityRoles?: Prisma.TicketCreateaccessibilityRolesInput | string[]
+  accessibilityIds?: Prisma.TicketCreateaccessibilityIdsInput | string[]
   boardId: string
+  columnId?: string | null
   estimateOriginalHours?: number | null
   estimateSpentHours?: number | null
   estimateRemainingHours?: number | null
@@ -813,8 +1047,11 @@ export type TicketUpdateWithoutSubtasksInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  sortIndex?: Prisma.IntFieldUpdateOperationsInput | number
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
+  accessibilityRoles?: Prisma.TicketUpdateaccessibilityRolesInput | string[]
+  accessibilityIds?: Prisma.TicketUpdateaccessibilityIdsInput | string[]
   estimateOriginalHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   estimateSpentHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   estimateRemainingHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -823,6 +1060,7 @@ export type TicketUpdateWithoutSubtasksInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   board?: Prisma.BoardUpdateOneRequiredWithoutTicketsNestedInput
+  column?: Prisma.BoardColumnUpdateOneWithoutTicketsNestedInput
   comments?: Prisma.CommentUpdateManyWithoutTicketNestedInput
 }
 
@@ -831,9 +1069,13 @@ export type TicketUncheckedUpdateWithoutSubtasksInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  sortIndex?: Prisma.IntFieldUpdateOperationsInput | number
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
+  accessibilityRoles?: Prisma.TicketUpdateaccessibilityRolesInput | string[]
+  accessibilityIds?: Prisma.TicketUpdateaccessibilityIdsInput | string[]
   boardId?: Prisma.StringFieldUpdateOperationsInput | string
+  columnId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   estimateOriginalHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   estimateSpentHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   estimateRemainingHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -849,8 +1091,11 @@ export type TicketCreateWithoutCommentsInput = {
   title: string
   description?: string | null
   status: string
+  sortIndex?: number
   priority: string
   type: string
+  accessibilityRoles?: Prisma.TicketCreateaccessibilityRolesInput | string[]
+  accessibilityIds?: Prisma.TicketCreateaccessibilityIdsInput | string[]
   estimateOriginalHours?: number | null
   estimateSpentHours?: number | null
   estimateRemainingHours?: number | null
@@ -859,6 +1104,7 @@ export type TicketCreateWithoutCommentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   board: Prisma.BoardCreateNestedOneWithoutTicketsInput
+  column?: Prisma.BoardColumnCreateNestedOneWithoutTicketsInput
   subtasks?: Prisma.SubtaskCreateNestedManyWithoutTicketInput
 }
 
@@ -867,9 +1113,13 @@ export type TicketUncheckedCreateWithoutCommentsInput = {
   title: string
   description?: string | null
   status: string
+  sortIndex?: number
   priority: string
   type: string
+  accessibilityRoles?: Prisma.TicketCreateaccessibilityRolesInput | string[]
+  accessibilityIds?: Prisma.TicketCreateaccessibilityIdsInput | string[]
   boardId: string
+  columnId?: string | null
   estimateOriginalHours?: number | null
   estimateSpentHours?: number | null
   estimateRemainingHours?: number | null
@@ -901,8 +1151,11 @@ export type TicketUpdateWithoutCommentsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  sortIndex?: Prisma.IntFieldUpdateOperationsInput | number
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
+  accessibilityRoles?: Prisma.TicketUpdateaccessibilityRolesInput | string[]
+  accessibilityIds?: Prisma.TicketUpdateaccessibilityIdsInput | string[]
   estimateOriginalHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   estimateSpentHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   estimateRemainingHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -911,6 +1164,7 @@ export type TicketUpdateWithoutCommentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   board?: Prisma.BoardUpdateOneRequiredWithoutTicketsNestedInput
+  column?: Prisma.BoardColumnUpdateOneWithoutTicketsNestedInput
   subtasks?: Prisma.SubtaskUpdateManyWithoutTicketNestedInput
 }
 
@@ -919,9 +1173,13 @@ export type TicketUncheckedUpdateWithoutCommentsInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  sortIndex?: Prisma.IntFieldUpdateOperationsInput | number
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
+  accessibilityRoles?: Prisma.TicketUpdateaccessibilityRolesInput | string[]
+  accessibilityIds?: Prisma.TicketUpdateaccessibilityIdsInput | string[]
   boardId?: Prisma.StringFieldUpdateOperationsInput | string
+  columnId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   estimateOriginalHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   estimateSpentHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   estimateRemainingHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -937,8 +1195,12 @@ export type TicketCreateManyBoardInput = {
   title: string
   description?: string | null
   status: string
+  sortIndex?: number
   priority: string
   type: string
+  accessibilityRoles?: Prisma.TicketCreateaccessibilityRolesInput | string[]
+  accessibilityIds?: Prisma.TicketCreateaccessibilityIdsInput | string[]
+  columnId?: string | null
   estimateOriginalHours?: number | null
   estimateSpentHours?: number | null
   estimateRemainingHours?: number | null
@@ -953,8 +1215,11 @@ export type TicketUpdateWithoutBoardInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  sortIndex?: Prisma.IntFieldUpdateOperationsInput | number
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
+  accessibilityRoles?: Prisma.TicketUpdateaccessibilityRolesInput | string[]
+  accessibilityIds?: Prisma.TicketUpdateaccessibilityIdsInput | string[]
   estimateOriginalHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   estimateSpentHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   estimateRemainingHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -962,6 +1227,7 @@ export type TicketUpdateWithoutBoardInput = {
   dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  column?: Prisma.BoardColumnUpdateOneWithoutTicketsNestedInput
   subtasks?: Prisma.SubtaskUpdateManyWithoutTicketNestedInput
   comments?: Prisma.CommentUpdateManyWithoutTicketNestedInput
 }
@@ -971,8 +1237,12 @@ export type TicketUncheckedUpdateWithoutBoardInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  sortIndex?: Prisma.IntFieldUpdateOperationsInput | number
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
+  accessibilityRoles?: Prisma.TicketUpdateaccessibilityRolesInput | string[]
+  accessibilityIds?: Prisma.TicketUpdateaccessibilityIdsInput | string[]
+  columnId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   estimateOriginalHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   estimateSpentHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   estimateRemainingHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -989,8 +1259,96 @@ export type TicketUncheckedUpdateManyWithoutBoardInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  sortIndex?: Prisma.IntFieldUpdateOperationsInput | number
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.StringFieldUpdateOperationsInput | string
+  accessibilityRoles?: Prisma.TicketUpdateaccessibilityRolesInput | string[]
+  accessibilityIds?: Prisma.TicketUpdateaccessibilityIdsInput | string[]
+  columnId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  estimateOriginalHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  estimateSpentHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  estimateRemainingHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storyPoints?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type TicketCreateManyColumnInput = {
+  id: string
+  title: string
+  description?: string | null
+  status: string
+  sortIndex?: number
+  priority: string
+  type: string
+  accessibilityRoles?: Prisma.TicketCreateaccessibilityRolesInput | string[]
+  accessibilityIds?: Prisma.TicketCreateaccessibilityIdsInput | string[]
+  boardId: string
+  estimateOriginalHours?: number | null
+  estimateSpentHours?: number | null
+  estimateRemainingHours?: number | null
+  storyPoints?: number | null
+  dueDate?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type TicketUpdateWithoutColumnInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  sortIndex?: Prisma.IntFieldUpdateOperationsInput | number
+  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  accessibilityRoles?: Prisma.TicketUpdateaccessibilityRolesInput | string[]
+  accessibilityIds?: Prisma.TicketUpdateaccessibilityIdsInput | string[]
+  estimateOriginalHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  estimateSpentHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  estimateRemainingHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storyPoints?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  board?: Prisma.BoardUpdateOneRequiredWithoutTicketsNestedInput
+  subtasks?: Prisma.SubtaskUpdateManyWithoutTicketNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutTicketNestedInput
+}
+
+export type TicketUncheckedUpdateWithoutColumnInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  sortIndex?: Prisma.IntFieldUpdateOperationsInput | number
+  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  accessibilityRoles?: Prisma.TicketUpdateaccessibilityRolesInput | string[]
+  accessibilityIds?: Prisma.TicketUpdateaccessibilityIdsInput | string[]
+  boardId?: Prisma.StringFieldUpdateOperationsInput | string
+  estimateOriginalHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  estimateSpentHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  estimateRemainingHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storyPoints?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subtasks?: Prisma.SubtaskUncheckedUpdateManyWithoutTicketNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutTicketNestedInput
+}
+
+export type TicketUncheckedUpdateManyWithoutColumnInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  sortIndex?: Prisma.IntFieldUpdateOperationsInput | number
+  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  accessibilityRoles?: Prisma.TicketUpdateaccessibilityRolesInput | string[]
+  accessibilityIds?: Prisma.TicketUpdateaccessibilityIdsInput | string[]
+  boardId?: Prisma.StringFieldUpdateOperationsInput | string
   estimateOriginalHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   estimateSpentHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   estimateRemainingHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1045,9 +1403,13 @@ export type TicketSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   title?: boolean
   description?: boolean
   status?: boolean
+  sortIndex?: boolean
   priority?: boolean
   type?: boolean
+  accessibilityRoles?: boolean
+  accessibilityIds?: boolean
   boardId?: boolean
+  columnId?: boolean
   estimateOriginalHours?: boolean
   estimateSpentHours?: boolean
   estimateRemainingHours?: boolean
@@ -1056,6 +1418,7 @@ export type TicketSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   createdAt?: boolean
   updatedAt?: boolean
   board?: boolean | Prisma.BoardDefaultArgs<ExtArgs>
+  column?: boolean | Prisma.Ticket$columnArgs<ExtArgs>
   subtasks?: boolean | Prisma.Ticket$subtasksArgs<ExtArgs>
   comments?: boolean | Prisma.Ticket$commentsArgs<ExtArgs>
   _count?: boolean | Prisma.TicketCountOutputTypeDefaultArgs<ExtArgs>
@@ -1066,9 +1429,13 @@ export type TicketSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   title?: boolean
   description?: boolean
   status?: boolean
+  sortIndex?: boolean
   priority?: boolean
   type?: boolean
+  accessibilityRoles?: boolean
+  accessibilityIds?: boolean
   boardId?: boolean
+  columnId?: boolean
   estimateOriginalHours?: boolean
   estimateSpentHours?: boolean
   estimateRemainingHours?: boolean
@@ -1077,6 +1444,7 @@ export type TicketSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   createdAt?: boolean
   updatedAt?: boolean
   board?: boolean | Prisma.BoardDefaultArgs<ExtArgs>
+  column?: boolean | Prisma.Ticket$columnArgs<ExtArgs>
 }, ExtArgs["result"]["ticket"]>
 
 export type TicketSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1084,9 +1452,13 @@ export type TicketSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   title?: boolean
   description?: boolean
   status?: boolean
+  sortIndex?: boolean
   priority?: boolean
   type?: boolean
+  accessibilityRoles?: boolean
+  accessibilityIds?: boolean
   boardId?: boolean
+  columnId?: boolean
   estimateOriginalHours?: boolean
   estimateSpentHours?: boolean
   estimateRemainingHours?: boolean
@@ -1095,6 +1467,7 @@ export type TicketSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   createdAt?: boolean
   updatedAt?: boolean
   board?: boolean | Prisma.BoardDefaultArgs<ExtArgs>
+  column?: boolean | Prisma.Ticket$columnArgs<ExtArgs>
 }, ExtArgs["result"]["ticket"]>
 
 export type TicketSelectScalar = {
@@ -1102,9 +1475,13 @@ export type TicketSelectScalar = {
   title?: boolean
   description?: boolean
   status?: boolean
+  sortIndex?: boolean
   priority?: boolean
   type?: boolean
+  accessibilityRoles?: boolean
+  accessibilityIds?: boolean
   boardId?: boolean
+  columnId?: boolean
   estimateOriginalHours?: boolean
   estimateSpentHours?: boolean
   estimateRemainingHours?: boolean
@@ -1114,24 +1491,28 @@ export type TicketSelectScalar = {
   updatedAt?: boolean
 }
 
-export type TicketOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "status" | "priority" | "type" | "boardId" | "estimateOriginalHours" | "estimateSpentHours" | "estimateRemainingHours" | "storyPoints" | "dueDate" | "createdAt" | "updatedAt", ExtArgs["result"]["ticket"]>
+export type TicketOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "status" | "sortIndex" | "priority" | "type" | "accessibilityRoles" | "accessibilityIds" | "boardId" | "columnId" | "estimateOriginalHours" | "estimateSpentHours" | "estimateRemainingHours" | "storyPoints" | "dueDate" | "createdAt" | "updatedAt", ExtArgs["result"]["ticket"]>
 export type TicketInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   board?: boolean | Prisma.BoardDefaultArgs<ExtArgs>
+  column?: boolean | Prisma.Ticket$columnArgs<ExtArgs>
   subtasks?: boolean | Prisma.Ticket$subtasksArgs<ExtArgs>
   comments?: boolean | Prisma.Ticket$commentsArgs<ExtArgs>
   _count?: boolean | Prisma.TicketCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TicketIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   board?: boolean | Prisma.BoardDefaultArgs<ExtArgs>
+  column?: boolean | Prisma.Ticket$columnArgs<ExtArgs>
 }
 export type TicketIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   board?: boolean | Prisma.BoardDefaultArgs<ExtArgs>
+  column?: boolean | Prisma.Ticket$columnArgs<ExtArgs>
 }
 
 export type $TicketPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Ticket"
   objects: {
     board: Prisma.$BoardPayload<ExtArgs>
+    column: Prisma.$BoardColumnPayload<ExtArgs> | null
     subtasks: Prisma.$SubtaskPayload<ExtArgs>[]
     comments: Prisma.$CommentPayload<ExtArgs>[]
   }
@@ -1140,9 +1521,13 @@ export type $TicketPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     title: string
     description: string | null
     status: string
+    sortIndex: number
     priority: string
     type: string
+    accessibilityRoles: string[]
+    accessibilityIds: string[]
     boardId: string
+    columnId: string | null
     estimateOriginalHours: number | null
     estimateSpentHours: number | null
     estimateRemainingHours: number | null
@@ -1545,6 +1930,7 @@ readonly fields: TicketFieldRefs;
 export interface Prisma__TicketClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   board<T extends Prisma.BoardDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BoardDefaultArgs<ExtArgs>>): Prisma.Prisma__BoardClient<runtime.Types.Result.GetResult<Prisma.$BoardPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  column<T extends Prisma.Ticket$columnArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Ticket$columnArgs<ExtArgs>>): Prisma.Prisma__BoardColumnClient<runtime.Types.Result.GetResult<Prisma.$BoardColumnPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   subtasks<T extends Prisma.Ticket$subtasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Ticket$subtasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SubtaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   comments<T extends Prisma.Ticket$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Ticket$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1580,9 +1966,13 @@ export interface TicketFieldRefs {
   readonly title: Prisma.FieldRef<"Ticket", 'String'>
   readonly description: Prisma.FieldRef<"Ticket", 'String'>
   readonly status: Prisma.FieldRef<"Ticket", 'String'>
+  readonly sortIndex: Prisma.FieldRef<"Ticket", 'Int'>
   readonly priority: Prisma.FieldRef<"Ticket", 'String'>
   readonly type: Prisma.FieldRef<"Ticket", 'String'>
+  readonly accessibilityRoles: Prisma.FieldRef<"Ticket", 'String[]'>
+  readonly accessibilityIds: Prisma.FieldRef<"Ticket", 'String[]'>
   readonly boardId: Prisma.FieldRef<"Ticket", 'String'>
+  readonly columnId: Prisma.FieldRef<"Ticket", 'String'>
   readonly estimateOriginalHours: Prisma.FieldRef<"Ticket", 'Int'>
   readonly estimateSpentHours: Prisma.FieldRef<"Ticket", 'Int'>
   readonly estimateRemainingHours: Prisma.FieldRef<"Ticket", 'Int'>
@@ -1988,6 +2378,25 @@ export type TicketDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Limit how many Tickets to delete.
    */
   limit?: number
+}
+
+/**
+ * Ticket.column
+ */
+export type Ticket$columnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BoardColumn
+   */
+  select?: Prisma.BoardColumnSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BoardColumn
+   */
+  omit?: Prisma.BoardColumnOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BoardColumnInclude<ExtArgs> | null
+  where?: Prisma.BoardColumnWhereInput
 }
 
 /**
