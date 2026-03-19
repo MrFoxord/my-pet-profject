@@ -29,7 +29,16 @@ export const apiRoutes = {
     `${PROXY_BASE}/boards/${boardId}/columns/order`,
   boardColumnById: (boardId: string, columnId: string) =>
     `${PROXY_BASE}/boards/${boardId}/columns/${columnId}`,
-    boardRoles: (boardId: string) => `${PROXY_BASE}/boards/${boardId}/roles`,
-    boardRoleById: (boardId: string, roleId: string) =>
-      `${PROXY_BASE}/boards/${boardId}/roles/${roleId}`,
+  boardMembers: (boardId: string) => `${PROXY_BASE}/boards/${boardId}/members`,
+  boardMemberCustomRole: (boardId: string, memberId: string) =>
+    `${PROXY_BASE}/boards/${boardId}/members/${memberId}/custom-role`,
+  boardRoles: (boardId: string) => `${PROXY_BASE}/boards/${boardId}/roles`,
+  boardRoleById: (boardId: string, roleId: string) =>
+    `${PROXY_BASE}/boards/${boardId}/roles/${roleId}`,
+  boardInvitations: (boardId: string) =>
+    `${PROXY_BASE}/boards/${boardId}/invitations`,
+  invitationByToken: (token: string) =>
+    `${PROXY_BASE}/invitations/${token}`,
+  acceptInvitationByToken: (token: string) =>
+    `${PROXY_BASE}/invitations/${token}/accept`,
 };

@@ -1,4 +1,4 @@
-import { Board, BoardDto, Ticket } from "@/types";
+import { Board, BoardDto, Ticket, TicketAccessPolicy } from "@/types";
 import { apiRoutes } from "@/lib/api/routes";
 
 export type BoardRole = {
@@ -10,6 +10,18 @@ export type BoardRole = {
   updatedAt: string;
 };
 
+export type BoardMember = {
+  id: string;
+  boardId: string;
+  userId: string;
+  role: "OWNER" | "ADMIN" | "MEMBER" | "VIEWER";
+  customRoleId: string | null;
+  customRoleName: string | null;
+  email: string | null;
+  name: string | null;
+  nickname: string | null;
+};
+
 export type CreateBoardRoleInput = {
   name: string;
   permissions?: string[];
@@ -18,6 +30,36 @@ export type CreateBoardRoleInput = {
 export type UpdateBoardRoleInput = {
   name?: string;
   permissions?: string[];
+};
+
+export type BoardInvitation = {
+  id: string;
+  boardId: string;
+  email: string;
+  role: "OWNER" | "ADMIN" | "MEMBER" | "VIEWER";
+  status: "pending" | "accepted" | "declined";
+  token: string;
+  shareUrl: string;
+  expiresAt: string;
+  createdAt: string;
+};
+
+export type BoardInvitationPublic = {
+  id: string;
+  email: string;
+  role: "OWNER" | "ADMIN" | "MEMBER" | "VIEWER";
+  status: "pending" | "accepted" | "declined";
+  expiresAt: string;
+  board: {
+    id: string;
+    title: string;
+    logoUrl: string | null;
+  };
+};
+
+export type CreateBoardInvitationInput = {
+  email: string;
+  role: "OWNER" | "ADMIN" | "MEMBER" | "VIEWER";
 };
 
 export type CreateBoardInput = {
@@ -46,8 +88,7 @@ export type CreateTicketInput = {
   description?: string;
   priority?: "low" | "medium" | "high" | "critical";
   columnId?: string;
-  accessibilityRoles?: string[];
-  accessibilityIds?: string[];
+  accessPolicy?: TicketAccessPolicy;
 };
 
 export type UpdateTicketInput = {
@@ -58,13 +99,13 @@ export type UpdateTicketInput = {
   priority?: "low" | "medium" | "high" | "critical";
   columnId?: string;
   sortIndex?: number;
-  accessibilityRoles?: string[];
-  accessibilityIds?: string[];
+  accessPolicy?: TicketAccessPolicy;
 };
 
 export type ApiTicketReorderPayload = {
   items: ApiTicketReorderItem[];
 };
+
 export type ApiBoardColumn = {
   id: string;
   title: string;
@@ -75,6 +116,52 @@ export type ApiBoardResponse = Omit<Board, "columns"> & {
   columns?: ApiBoardColumn[];
   currentUserRole?: string | null;
 };
+
+export type UserDefaultStateResponse = {
+  id: string;
+  name: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  nickname: string | null;
+  workRole: "CLIENT" | "EXECUTOR" | "ORGANIZER" | "CEO";
+  isDefault: boolean;
+};
+
+export type UpdateDefaultProfileInput = {
+  firstName: string;
+  lastName: string;
+  nickname?: string;
+  workRole: "CLIENT" | "EXECUTOR" | "ORGANIZER" | "CEO";
+};
+
+async function apiRequest<T>(
+  input: string,
+  init?: RequestInit,
+  options?: { allowNotFound?: boolean }
+): Promise<T | null> {
+  const response = await fetch(input, init);
+
+  if (options?.allowNotFound && response.status === 404) {
+    return null;
+  }
+
+  if (!response.ok) {
+    let message = `API request failed: ${response.status}`;
+    try {
+      const body = (await response.json()) as { message?: string; error?: string };
+      if (body?.message) message += ` — ${body.message}`;
+    } catch {
+      // non-JSON error body, keep generic message
+    }
+    throw new Error(message);
+  }
+
+  if (response.status === 204) {
+    return null;
+  }
+
+  return (await response.json()) as T;
+}
 
 export async function createTicket(input: CreateTicketInput): Promise<Ticket | null> {
   return apiRequest<Ticket>(apiRoutes.boardTickets(input.boardId), {
@@ -89,8 +176,7 @@ export async function createTicket(input: CreateTicketInput): Promise<Ticket | n
       type: input.type,
       priority: input.priority,
       columnId: input.columnId,
-      accessibilityRoles: input.accessibilityRoles,
-      accessibilityIds: input.accessibilityIds,
+      accessPolicy: input.accessPolicy,
     }),
   });
 }
@@ -127,44 +213,6 @@ export async function deleteTicket(boardId: string, ticketId: string): Promise<v
     method: "DELETE",
   });
 }
-export type UserDefaultStateResponse = {
-  id: string;
-  name: string | null;
-  firstName: string | null;
-  lastName: string | null;
-  nickname: string | null;
-  workRole: "CLIENT" | "EXECUTOR" | "ORGANIZER" | "CEO";
-  isDefault: boolean;
-};
-
-export type UpdateDefaultProfileInput = {
-  firstName: string;
-  lastName: string;
-  nickname?: string;
-  workRole: "CLIENT" | "EXECUTOR" | "ORGANIZER" | "CEO";
-};
-
-async function apiRequest<T>(
-  input: string,
-  init?: RequestInit,
-  options?: { allowNotFound?: boolean }
-): Promise<T | null> {
-  const response = await fetch(input, init);
-
-  if (options?.allowNotFound && response.status === 404) {
-    return null;
-  }
-
-  if (!response.ok) {
-    throw new Error(`API request failed: ${response.status}`);
-  }
-
-  if (response.status === 204) {
-    return null;
-  }
-
-  return (await response.json()) as T;
-}
 
 export async function getBoards(): Promise<BoardDto[]> {
   const data = await apiRequest<BoardDto[]>(apiRoutes.boards());
@@ -181,9 +229,7 @@ export async function createBoard(input: CreateBoardInput): Promise<BoardDto | n
   });
 }
 
-export async function getBoardById(
-  boardId: string
-): Promise<ApiBoardResponse | null> {
+export async function getBoardById(boardId: string): Promise<ApiBoardResponse | null> {
   return apiRequest<ApiBoardResponse>(
     apiRoutes.boardById(boardId),
     { cache: "no-store" },
@@ -194,6 +240,25 @@ export async function getBoardById(
 export async function getBoardRoles(boardId: string): Promise<BoardRole[]> {
   const data = await apiRequest<BoardRole[]>(apiRoutes.boardRoles(boardId));
   return data ?? [];
+}
+
+export async function getBoardMembers(boardId: string): Promise<BoardMember[]> {
+  const data = await apiRequest<BoardMember[]>(apiRoutes.boardMembers(boardId));
+  return data ?? [];
+}
+
+export async function updateBoardMemberCustomRole(
+  boardId: string,
+  memberId: string,
+  customRoleId: string | null
+): Promise<BoardMember | null> {
+  return apiRequest<BoardMember>(apiRoutes.boardMemberCustomRole(boardId, memberId), {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ customRoleId }),
+  });
 }
 
 export async function createBoardRole(
@@ -294,4 +359,48 @@ export async function deleteBoardColumn(
     },
     body: JSON.stringify({ ticketIds }),
   });
+}
+
+export async function createBoardInvitation(
+  boardId: string,
+  input: CreateBoardInvitationInput
+): Promise<BoardInvitation | null> {
+  return apiRequest<BoardInvitation>(apiRoutes.boardInvitations(boardId), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
+  });
+}
+
+export async function getBoardInvitations(boardId: string): Promise<BoardInvitation[]> {
+  const data = await apiRequest<BoardInvitation[]>(apiRoutes.boardInvitations(boardId));
+  return data ?? [];
+}
+
+export async function getInvitationByToken(
+  token: string
+): Promise<BoardInvitationPublic | null> {
+  return apiRequest<BoardInvitationPublic>(
+    apiRoutes.invitationByToken(token),
+    { cache: "no-store" },
+    { allowNotFound: true }
+  );
+}
+
+export async function acceptInvitationByToken(
+  token: string,
+  userId?: string
+): Promise<{ success: boolean; boardId: string } | null> {
+  return apiRequest<{ success: boolean; boardId: string }>(
+    apiRoutes.acceptInvitationByToken(token),
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId }),
+    }
+  );
 }

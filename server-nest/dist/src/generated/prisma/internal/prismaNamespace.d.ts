@@ -1061,6 +1061,7 @@ export declare const BoardMemberScalarFieldEnum: {
     readonly role: "role";
     readonly boardId: "boardId";
     readonly userId: "userId";
+    readonly customRoleId: "customRoleId";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
 };
@@ -1076,6 +1077,7 @@ export declare const BoardRoleScalarFieldEnum: {
 export type BoardRoleScalarFieldEnum = (typeof BoardRoleScalarFieldEnum)[keyof typeof BoardRoleScalarFieldEnum];
 export declare const BoardInvitationScalarFieldEnum: {
     readonly id: "id";
+    readonly token: "token";
     readonly email: "email";
     readonly boardId: "boardId";
     readonly role: "role";
@@ -1101,8 +1103,7 @@ export declare const TicketScalarFieldEnum: {
     readonly sortIndex: "sortIndex";
     readonly priority: "priority";
     readonly type: "type";
-    readonly accessibilityRoles: "accessibilityRoles";
-    readonly accessibilityIds: "accessibilityIds";
+    readonly accessPolicy: "accessPolicy";
     readonly boardId: "boardId";
     readonly columnId: "columnId";
     readonly estimateOriginalHours: "estimateOriginalHours";
@@ -1156,6 +1157,10 @@ export declare const SortOrder: {
     readonly desc: "desc";
 };
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder];
+export declare const JsonNullValueInput: {
+    readonly JsonNull: runtime.JsonNullClass;
+};
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput];
 export declare const QueryMode: {
     readonly default: "default";
     readonly insensitive: "insensitive";
@@ -1166,6 +1171,12 @@ export declare const NullsOrder: {
     readonly last: "last";
 };
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder];
+export declare const JsonNullValueFilter: {
+    readonly DbNull: runtime.DbNullClass;
+    readonly JsonNull: runtime.JsonNullClass;
+    readonly AnyNull: runtime.AnyNullClass;
+};
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter];
 export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String'>;
 export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>;
 export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>;
@@ -1179,6 +1190,8 @@ export type EnumBoardMemberRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$
 export type ListEnumBoardMemberRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BoardMemberRole[]'>;
 export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>;
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>;
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>;
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>;
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>;
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>;
 export type BatchPayload = {

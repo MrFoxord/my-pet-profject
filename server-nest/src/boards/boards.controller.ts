@@ -24,6 +24,7 @@ import { ReorderTicketsDto } from './dto/reorder-tickets.dto';
 import { CreateBoardRoleDto } from './dto/create-board-role.dto';
 import { UpdateBoardRoleDto } from './dto/update-board-role.dto';
 import { CreateBoardInvitationDto } from './dto/create-board-invitation.dto';
+import { UpdateBoardMemberCustomRoleDto } from './dto/update-board-member-custom-role.dto';
 import { InternalAuthGuard, ServiceJwtPayload } from '../auth/internal-auth.guard';
 
 type AuthRequest = Request & { serviceUser?: ServiceJwtPayload };
@@ -120,6 +121,24 @@ export class BoardsController {
   ) {
     await this.boardsService.deleteTicket(boardId, ticketId, req.serviceUser?.sub);
     return { ok: true };
+  }
+
+  @Get(':boardId/members')
+  listBoardMembers(
+    @Param('boardId') boardId: string,
+    @Req() req: AuthRequest,
+  ) {
+    return this.boardsService.listBoardMembers(boardId, req.serviceUser?.sub);
+  }
+
+  @Patch(':boardId/members/:memberId/custom-role')
+  updateBoardMemberCustomRole(
+    @Param('boardId') boardId: string,
+    @Param('memberId') memberId: string,
+    @Body() dto: UpdateBoardMemberCustomRoleDto,
+    @Req() req: AuthRequest,
+  ) {
+    return this.boardsService.updateBoardMemberCustomRole(boardId, memberId, dto, req.serviceUser?.sub);
   }
 
   @Post(':boardId/roles')

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Ticket, TicketModalProps } from "@/types";
+import { Ticket, TicketModalProps, TicketAccessPolicy, DEFAULT_ACCESS_POLICY } from "@/types";
 import {
   Avatar,
   Button,
@@ -76,7 +76,7 @@ interface TicketModalContentProps {
       status: Ticket["status"];
       priority: Ticket["priority"];
       type: Ticket["type"];
-      accessibilityRoles: string[];
+      accessPolicy: TicketAccessPolicy;
     }
   ) => Promise<Ticket | null>;
   onDeleteTicket?: (ticketId: string) => Promise<boolean>;
@@ -98,8 +98,8 @@ const TicketModalContent = ({
   const [status, setStatus] = useState<Ticket["status"]>(ticket.status);
   const [type, setType] = useState<Ticket["type"]>(ticket.type);
   const [priority, setPriority] = useState<Ticket["priority"]>(ticket.priority);
-  const [accessibilityRoles, setAccessibilityRoles] = useState<string[]>(
-    ticket.accessibilityRoles ?? []
+  const [accessPolicy, setAccessPolicy] = useState<TicketAccessPolicy>(
+    ticket.accessPolicy ?? DEFAULT_ACCESS_POLICY
   );
   const [commentDraft, setCommentDraft] = useState("");
   const [comments, setComments] = useState(ticket.comments ?? []);
@@ -134,7 +134,7 @@ const TicketModalContent = ({
     setStatus(ticket.status);
     setType(ticket.type);
     setPriority(ticket.priority);
-    setAccessibilityRoles(ticket.accessibilityRoles ?? []);
+    setAccessPolicy(ticket.accessPolicy ?? DEFAULT_ACCESS_POLICY);
     setSubtasks(ticket.subtasks ?? []);
     setComments(ticket.comments ?? []);
     setEstimate(
@@ -158,7 +158,7 @@ const TicketModalContent = ({
       status,
       priority,
       type,
-      accessibilityRoles,
+      accessPolicy,
     });
     setIsSaving(false);
     if (updated) setIsEditing(false);
@@ -227,8 +227,8 @@ const TicketModalContent = ({
                 <Typography variant="caption" color="text.secondary">
                   Доступ:&nbsp;
                 </Typography>
-                {accessibilityRoles.length > 0 ? (
-                  accessibilityRoles.map((role) => (
+                {accessPolicy.view && accessPolicy.view.length > 0 ? (
+                  accessPolicy.view.map((role) => (
                     <Chip
                       key={role}
                       size="small"
@@ -304,8 +304,8 @@ const TicketModalContent = ({
                 <TicketPrioritySelect value={priority} onChange={setPriority} />
               </EstimatesRow>
               <RolesSelect
-                value={accessibilityRoles}
-                onChange={setAccessibilityRoles}
+                value={accessPolicy.view}
+                onChange={(roles) => setAccessPolicy({ ...accessPolicy, view: roles })}
                 boardRoleNames={boardRoleNames}
                 label="Роли доступа"
               />

@@ -1,4 +1,4 @@
-import { Ticket } from "@/types";
+import { Ticket, DEFAULT_ACCESS_POLICY } from "@/types";
 
 export const mockTickets: Ticket[] = [
   {
@@ -31,7 +31,8 @@ export const mockTickets: Ticket[] = [
         message: "Blocked on refresh token API design.",
         createdAt: "2025-10-10T09:05:00.000Z"
       }
-    ]
+    ],
+    accessPolicy: DEFAULT_ACCESS_POLICY
   },
   {
     id: "PROJ-102",
@@ -62,7 +63,8 @@ export const mockTickets: Ticket[] = [
         message: "QA verified across iOS and Android.",
         createdAt: "2025-10-01T16:45:00.000Z"
       }
-    ]
+    ],
+    accessPolicy: DEFAULT_ACCESS_POLICY
   },
   {
     id: "PROJ-103",
@@ -81,7 +83,8 @@ export const mockTickets: Ticket[] = [
       { id: "1", title: "Design switch component", done: false },
       { id: "2", title: "Store theme in localStorage", done: false }
     ],
-    comments: []
+    comments: [],
+    accessPolicy: DEFAULT_ACCESS_POLICY
   },
   {
     id: "PROJ-104",
@@ -108,6 +111,7 @@ export const mockTickets: Ticket[] = [
         message: "Waiting on copy review.",
         createdAt: "2025-10-08T13:22:00.000Z"
       }
-    ]
+    ],
+    accessPolicy: DEFAULT_ACCESS_POLICY
   }
 ];

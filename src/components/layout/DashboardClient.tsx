@@ -83,7 +83,7 @@ export default function DashboardClient({
       status: Ticket["status"];
       priority: Ticket["priority"];
       type: Ticket["type"];
-      accessibilityRoles: string[];
+      accessPolicy: Ticket["accessPolicy"];
     }
   ) => {
     try {
@@ -92,7 +92,7 @@ export default function DashboardClient({
         status: payload.status,
         priority: payload.priority,
         type: payload.type,
-        accessibilityRoles: payload.accessibilityRoles,
+        accessPolicy: payload.accessPolicy,
       });
 
       if (updated) {
@@ -167,8 +167,7 @@ export default function DashboardClient({
     description?: string;
     type: Ticket["type"];
     priority: Ticket["priority"];
-    accessibilityRoles: string[];
-    accessibilityIds: string[];
+    accessPolicy?: Ticket["accessPolicy"];
   }) => {
     if (input.columnId.startsWith("fallback-")) {
       window.alert("Сначала создайте реальные колонки в базе данных для этой доски.");
@@ -184,8 +183,7 @@ export default function DashboardClient({
         type: input.type,
         priority: input.priority,
         columnId: input.columnId,
-        accessibilityRoles: input.accessibilityRoles,
-        accessibilityIds: input.accessibilityIds,
+        accessPolicy: input.accessPolicy,
       });
     } catch (error) {
       console.error("failed to create ticket", error);

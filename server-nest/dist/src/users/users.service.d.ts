@@ -6,18 +6,18 @@ export declare class UsersService {
     getDefaultState(userId: string): Promise<{
         id: string;
         name: string;
-        nickname: string;
         firstName: string;
         lastName: string;
+        nickname: string;
         isDefault: boolean;
         workRole: import("../generated/prisma/enums").WorkRole;
     }>;
     updateDefaultProfile(userId: string, dto: UpdateDefaultProfileDto): Promise<{
         id: string;
         name: string;
-        nickname: string;
         firstName: string;
         lastName: string;
+        nickname: string;
         isDefault: boolean;
         workRole: import("../generated/prisma/enums").WorkRole;
     }>;

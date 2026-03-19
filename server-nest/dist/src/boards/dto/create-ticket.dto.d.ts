@@ -5,6 +5,12 @@ export declare class CreateTicketDto {
     type: string;
     priority?: string;
     columnId?: string;
-    accessibilityRoles?: string[];
-    accessibilityIds?: string[];
+    accessPolicy?: {
+        view?: string[];
+        edit?: string[];
+        delete?: string[];
+        estimate?: string[];
+        comment?: string[];
+        manageAccess?: string[];
+    };
 }

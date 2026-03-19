@@ -18,8 +18,12 @@ export {
 
 // ── MUI pass-throughs (centralized — add custom styles here when needed) ──────
 export {
+  Alert,
   Avatar,
   Box,
+  Card as MuiCard,
+  CardActions,
+  CardContent,
   Checkbox,
   Chip,
   CircularProgress,
@@ -35,7 +39,16 @@ export {
   ListItemText,
   MenuItem,
   OutlinedInput,
+  Paper,
   Select,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";

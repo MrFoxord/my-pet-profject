@@ -54,8 +54,10 @@ model BoardMember {
   role      BoardMemberRole    @default(MEMBER)
   boardId   String
   userId    String
+  customRoleId String?
   board     Board              @relation(fields: [boardId], references: [id], onDelete: Cascade)
   user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  customRole BoardRole?        @relation(fields: [customRoleId], references: [id], onDelete: SetNull)
   createdAt DateTime           @default(now())
   updatedAt DateTime           @updatedAt
 
@@ -69,6 +71,7 @@ model BoardRole {
   board       Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
   name        String
   permissions String[] @default([])
+  members     BoardMember[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -78,6 +81,7 @@ model BoardRole {
 
 model BoardInvitation {
   id        String   @id @default(cuid())
+  token     String   @unique // URL-safe token for public invitation link
   email     String
   boardId   String
   board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
@@ -89,6 +93,7 @@ model BoardInvitation {
   @@unique([boardId, email])
   @@index([boardId])
   @@index([email])
+  @@index([token])
 }
 
 model BoardColumn {
@@ -117,8 +122,7 @@ model Ticket {
   priority  String
   type      String
 
-  accessibilityRoles String[] @default([])
-  accessibilityIds   String[] @default([])
+  accessPolicy Json @default("{\"view\":[],\"edit\":[],\"delete\":[],\"estimate\":[],\"comment\":[],\"manageAccess\": []}")
 
   boardId String
   board   Board   @relation(fields: [boardId], references: [id], onDelete: Cascade)

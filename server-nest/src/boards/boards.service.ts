@@ -1,6 +1,7 @@
 import {
   Injectable,
   BadRequestException,
+  NotFoundException,
 } from '@nestjs/common';
 import * as crypto from 'crypto';
 import { BoardMemberRole } from '../generated/prisma/client';
@@ -13,6 +14,7 @@ import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { ReorderTicketsDto } from './dto/reorder-tickets.dto';
 import { CreateBoardInvitationDto } from './dto/create-board-invitation.dto';
+import { UpdateBoardMemberCustomRoleDto } from './dto/update-board-member-custom-role.dto';
 
 const DEFAULT_THEME_COLOR = '#f3f4f6';
 const DEFAULT_ASSIGNEE = {
@@ -20,9 +22,16 @@ const DEFAULT_ASSIGNEE = {
   avatar: 'https://i.pravatar.cc/100?img=1',
 };
 
+type BoardMembershipContext = {
+  role: BoardMemberRole;
+  customRoleName: string | null;
+};
+
 @Injectable()
 export class BoardsService {
   constructor(private readonly prisma: PrismaService) {}
+
+  private readonly standardTicketAccessRoles = new Set(['owner', 'admin', 'member', 'viewer']);
 
   async findAll(userId?: string) {
     const boards = await this.prisma.board.findMany({
@@ -42,27 +51,38 @@ export class BoardsService {
         memberships: userId
           ? {
               where: { userId },
-              select: { role: true },
+              select: { role: true, customRole: { select: { name: true } } },
               take: 1,
             }
           : false,
         tickets: {
-          select: { id: true },
+          select: { id: true, accessPolicy: true },
           orderBy: { createdAt: 'asc' },
         },
       },
       orderBy: { createdAt: 'asc' },
     });
 
-    return boards.map((b) => ({
-      id: b.id,
-      title: b.title,
-      description: b.description ?? null,
-      logoUrl: b.logoUrl ?? null,
-      themeColor: b.themeColor ?? null,
-      dashboardRole: b.memberships?.[0]?.role ?? null,
-      tickets: b.tickets.map((t) => ({ id: t.id })),
-    }));
+    return boards.map((b) => {
+      const membership = b.memberships?.[0] as
+        | { role: BoardMemberRole; customRole?: { name: string } | null }
+        | undefined;
+      const membershipRole = membership?.role ?? null;
+      const customRoleName = membership?.customRole?.name ?? null;
+      const visibleTickets = b.tickets.filter((t) =>
+        this.canAccessTicket(t.accessPolicy, { role: membershipRole, customRoleName })
+      );
+
+      return {
+        id: b.id,
+        title: b.title,
+        description: b.description ?? null,
+        logoUrl: b.logoUrl ?? null,
+        themeColor: b.themeColor ?? null,
+        dashboardRole: membershipRole,
+        tickets: visibleTickets.map((t) => ({ id: t.id })),
+      };
+    });
   }
 
   async findById(boardId: string, userId?: string) {
@@ -86,7 +106,7 @@ export class BoardsService {
         memberships: userId
           ? {
               where: { userId },
-              select: { role: true },
+              select: { role: true, customRole: { select: { name: true } } },
               take: 1,
             }
           : false,
@@ -105,8 +125,7 @@ export class BoardsService {
             priority: true,
             type: true,
             columnId: true,
-            accessibilityRoles: true,
-            accessibilityIds: true,
+            accessPolicy: true,
             createdAt: true,
             updatedAt: true,
             dueDate: true,
@@ -121,15 +140,24 @@ export class BoardsService {
 
     if (!board) return null;
 
+    const membership = board.memberships?.[0] as
+      | { role: BoardMemberRole; customRole?: { name: string } | null }
+      | undefined;
+    const currentUserRole = membership?.role ?? null;
+    const currentUserCustomRole = membership?.customRole?.name ?? null;
+    const visibleTickets = board.tickets.filter((ticket) =>
+      this.canAccessTicket(ticket.accessPolicy, { role: currentUserRole, customRoleName: currentUserCustomRole })
+    );
+
     return {
       id: board.id,
       title: board.title,
       description: board.description ?? '',
       logoUrl: board.logoUrl ?? null,
       themeColor: board.themeColor || DEFAULT_THEME_COLOR,
-      currentUserRole: board.memberships?.[0]?.role ?? null,
+      currentUserRole,
       columns: board.columns,
-      tickets: board.tickets.map((t) => ({
+      tickets: visibleTickets.map((t) => ({
         id: t.id,
         title: t.title,
         description: t.description ?? '',
@@ -138,8 +166,7 @@ export class BoardsService {
         status: t.status,
         sortIndex: t.sortIndex,
         columnId: t.columnId,
-        accessibilityRoles: t.accessibilityRoles,
-        accessibilityIds: t.accessibilityIds,
+        accessPolicy: t.accessPolicy,
         createdAt: t.createdAt.toISOString(),
         updatedAt: t.updatedAt.toISOString(),
         dueDate: t.dueDate?.toISOString() ?? '',
@@ -160,7 +187,7 @@ export class BoardsService {
     const columns = this.normalizeColumnTitles(dto.columns ?? []);
     const customRoles = this.normalizeRoleTitles(dto.customRoles ?? []);
     const ownerId = dto.ownerId?.trim() || null;
-      const dashboardRole: BoardMemberRole = (dto.dashboardRole?.trim() || 'OWNER') as BoardMemberRole;
+    const dashboardRole: BoardMemberRole = (dto.dashboardRole?.trim() || 'OWNER') as BoardMemberRole;
 
     await this.prisma.$transaction(async (tx) => {
       if (ownerId) {
@@ -297,7 +324,7 @@ export class BoardsService {
   }
 
   async createTicket(boardId: string, dto: CreateTicketDto, userId?: string) {
-    await this.ensureBoardMembership(boardId, userId);
+    const membership = await this.ensureBoardMembership(boardId, userId);
 
     const title = dto.title?.trim();
     if (!title) {
@@ -309,6 +336,12 @@ export class BoardsService {
     const priority = dto.priority?.trim() || 'medium';
     const description = dto.description?.trim() || null;
     const columnId = dto.columnId?.trim() || null;
+
+    if (dto.accessPolicy !== undefined && !this.canManageTicketAccess(membership)) {
+      throw new BadRequestException('only OWNER or ADMIN can set ticket access policy');
+    }
+
+    const accessPolicy = dto.accessPolicy ?? {};
 
     if (columnId) {
       const column = await this.prisma.boardColumn.findFirst({
@@ -339,8 +372,7 @@ export class BoardsService {
         priority,
         type,
         columnId,
-        accessibilityRoles: dto.accessibilityRoles ?? [],
-        accessibilityIds: dto.accessibilityIds ?? [],
+        accessPolicy,
       },
       select: {
         id: true,
@@ -351,8 +383,7 @@ export class BoardsService {
         priority: true,
         type: true,
         columnId: true,
-        accessibilityRoles: true,
-        accessibilityIds: true,
+        accessPolicy: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -370,7 +401,7 @@ export class BoardsService {
   }
 
   async reorderTickets(boardId: string, dto: ReorderTicketsDto, userId?: string) {
-    await this.ensureBoardMembership(boardId, userId);
+    const membership = await this.ensureBoardMembership(boardId, userId);
 
     if (!dto.items?.length) {
       throw new BadRequestException('items are required');
@@ -384,11 +415,17 @@ export class BoardsService {
 
     const existing = await this.prisma.ticket.findMany({
       where: { boardId, id: { in: ids } },
-      select: { id: true },
+      select: { id: true, accessPolicy: true },
     });
 
     if (existing.length !== ids.length) {
       throw new BadRequestException('ticket ids mismatch');
+    }
+
+    for (const ticket of existing) {
+      if (!this.canAccessTicket(ticket.accessPolicy, membership)) {
+        throw new BadRequestException('ticket access denied');
+      }
     }
 
     await this.prisma.$transaction(
@@ -407,15 +444,23 @@ export class BoardsService {
   }
 
   async updateTicket(boardId: string, ticketId: string, dto: UpdateTicketDto, userId?: string) {
-    await this.ensureBoardMembership(boardId, userId);
+    const membership = await this.ensureBoardMembership(boardId, userId);
 
     const existing = await this.prisma.ticket.findFirst({
       where: { id: ticketId, boardId },
-      select: { id: true, status: true, columnId: true, sortIndex: true },
+      select: { id: true, status: true, columnId: true, sortIndex: true, accessPolicy: true },
     });
 
     if (!existing) {
       throw new BadRequestException('ticket not found');
+    }
+
+    if (!this.canAccessTicket(existing.accessPolicy, membership)) {
+      throw new BadRequestException('ticket access denied');
+    }
+
+    if (dto.accessPolicy !== undefined && !this.canManageTicketAccess(membership)) {
+      throw new BadRequestException('only OWNER or ADMIN can update ticket access policy');
     }
 
     const nextStatus = dto.status?.trim() ?? existing.status;
@@ -440,6 +485,10 @@ export class BoardsService {
       sortIndex = (maxIndex._max.sortIndex ?? -1) + 1;
     }
 
+    const accessPolicy = dto.accessPolicy !== undefined
+      ? dto.accessPolicy
+      : undefined;
+
     const ticket = await this.prisma.ticket.update({
       where: { id: ticketId },
       data: {
@@ -450,8 +499,7 @@ export class BoardsService {
         priority: dto.priority?.trim(),
         columnId: dto.columnId !== undefined ? nextColumnId : undefined,
         sortIndex,
-        accessibilityRoles: dto.accessibilityRoles,
-        accessibilityIds: dto.accessibilityIds,
+        accessPolicy,
         updatedAt: new Date(),
       },
       select: {
@@ -463,8 +511,7 @@ export class BoardsService {
         priority: true,
         type: true,
         columnId: true,
-        accessibilityRoles: true,
-        accessibilityIds: true,
+        accessPolicy: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -482,15 +529,19 @@ export class BoardsService {
   }
 
   async deleteTicket(boardId: string, ticketId: string, userId?: string) {
-    await this.ensureBoardMembership(boardId, userId);
+    const membership = await this.ensureBoardMembership(boardId, userId);
 
     const existing = await this.prisma.ticket.findFirst({
       where: { id: ticketId, boardId },
-      select: { id: true },
+      select: { id: true, accessPolicy: true },
     });
 
     if (!existing) {
       throw new BadRequestException('ticket not found');
+    }
+
+    if (!this.canAccessTicket(existing.accessPolicy, membership)) {
+      throw new BadRequestException('ticket access denied');
     }
 
     await this.prisma.ticket.delete({ where: { id: ticketId } });
@@ -499,6 +550,12 @@ export class BoardsService {
   private generateBoardId(): string {
     const randomHex = crypto.randomBytes(4).toString('hex');
     return `board-${Date.now()}-${randomHex}`;
+  }
+
+  private generateInvitationToken(): string {
+    // Generate URL-safe token: "inv_" + random 24 hex chars
+    const randomHex = crypto.randomBytes(12).toString('hex');
+    return `inv_${randomHex}`;
   }
 
   private normalizeColumnTitles(columns: string[]): string[] {
@@ -535,19 +592,158 @@ export class BoardsService {
     return normalized;
   }
 
-  private async ensureBoardMembership(boardId: string, userId?: string) {
+  private async ensureBoardMembership(boardId: string, userId?: string): Promise<BoardMembershipContext> {
     if (!userId) {
       throw new BadRequestException('user is required');
     }
 
     const membership = await this.prisma.boardMember.findUnique({
       where: { boardId_userId: { boardId, userId } },
-      select: { id: true },
+      select: { id: true, role: true, customRole: { select: { name: true } } },
     });
 
     if (!membership) {
       throw new BadRequestException('board access denied');
     }
+
+    return {
+      role: membership.role,
+      customRoleName: membership.customRole?.name ?? null,
+    };
+  }
+
+  private canAccessTicket(accessPolicy: any, membership: BoardMembershipContext | { role: BoardMemberRole | null; customRoleName: string | null }): boolean {
+    if (!membership.role) {
+      return false;
+    }
+
+    if (this.canManageTicketAccess(membership)) {
+      return true;
+    }
+
+    const viewRoles = accessPolicy?.view ?? [];
+    if (!viewRoles.length) {
+      return true;
+    }
+
+    const effectiveRoles = this.getEffectiveTicketRoles(membership);
+    return viewRoles.some((role: string) => effectiveRoles.has(role));
+  }
+
+  private canManageTicketAccess(membership: BoardMembershipContext | { role: BoardMemberRole | null }): boolean {
+    return membership.role === BoardMemberRole.OWNER || membership.role === BoardMemberRole.ADMIN;
+  }
+
+  private getEffectiveTicketRoles(membership: { role: BoardMemberRole | null; customRoleName: string | null }): Set<string> {
+    const roles = new Set<string>();
+    if (membership.role) {
+      roles.add(membership.role.toLowerCase());
+    }
+    const customRoleName = membership.customRoleName?.trim().toLowerCase();
+    if (customRoleName) {
+      roles.add(customRoleName);
+    }
+    return roles;
+  }
+
+  async listBoardMembers(boardId: string, userId?: string) {
+    await this.ensureBoardMembership(boardId, userId);
+
+    const members = await this.prisma.boardMember.findMany({
+      where: { boardId },
+      orderBy: { createdAt: 'asc' },
+      select: {
+        id: true,
+        boardId: true,
+        userId: true,
+        role: true,
+        customRoleId: true,
+        customRole: { select: { name: true } },
+        user: {
+          select: {
+            email: true,
+            name: true,
+            nickname: true,
+          },
+        },
+      },
+    });
+
+    return members.map((member) => ({
+      id: member.id,
+      boardId: member.boardId,
+      userId: member.userId,
+      role: member.role,
+      customRoleId: member.customRoleId,
+      customRoleName: member.customRole?.name ?? null,
+      email: member.user.email ?? null,
+      name: member.user.name ?? null,
+      nickname: member.user.nickname ?? null,
+    }));
+  }
+
+  async updateBoardMemberCustomRole(
+    boardId: string,
+    memberId: string,
+    dto: UpdateBoardMemberCustomRoleDto,
+    userId?: string,
+  ) {
+    const membership = await this.ensureBoardMembership(boardId, userId);
+    if (!this.canManageTicketAccess(membership)) {
+      throw new BadRequestException('only OWNER or ADMIN can assign custom roles');
+    }
+
+    const member = await this.prisma.boardMember.findFirst({
+      where: { id: memberId, boardId },
+      select: { id: true, boardId: true, userId: true, role: true },
+    });
+    if (!member) {
+      throw new BadRequestException('board member not found');
+    }
+
+    let customRoleId: string | null = null;
+    if (dto.customRoleId !== undefined && dto.customRoleId !== null && dto.customRoleId.trim() !== '') {
+      const customRole = await this.prisma.boardRole.findFirst({
+        where: { id: dto.customRoleId.trim(), boardId },
+        select: { id: true },
+      });
+      if (!customRole) {
+        throw new BadRequestException('custom role not found');
+      }
+      customRoleId = customRole.id;
+    }
+
+    const updated = await this.prisma.boardMember.update({
+      where: { id: memberId },
+      data: { customRoleId },
+      select: {
+        id: true,
+        boardId: true,
+        userId: true,
+        role: true,
+        customRoleId: true,
+        customRole: { select: { name: true } },
+        user: {
+          select: {
+            email: true,
+            name: true,
+            nickname: true,
+          },
+        },
+      },
+    });
+
+    return {
+      id: updated.id,
+      boardId: updated.boardId,
+      userId: updated.userId,
+      role: updated.role,
+      customRoleId: updated.customRoleId,
+      customRoleName: updated.customRole?.name ?? null,
+      email: updated.user.email ?? null,
+      name: updated.user.name ?? null,
+      nickname: updated.user.nickname ?? null,
+    };
   }
 
   async createBoardRole(boardId: string, dto: any, userId?: string) {
@@ -644,6 +840,7 @@ export class BoardsService {
 
     const email = dto.email.trim().toLowerCase();
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    const token = this.generateInvitationToken();
 
     const invitation = await this.prisma.boardInvitation.upsert({
       where: { boardId_email: { boardId, email } },
@@ -653,15 +850,25 @@ export class BoardsService {
         role: dto.role,
         status: 'pending',
         expiresAt,
+        token,
       },
       update: {
         role: dto.role,
         status: 'pending',
         expiresAt,
+        token,
       },
     });
 
-    return invitation;
+    return {
+      id: invitation.id,
+      email: invitation.email,
+      role: invitation.role,
+      status: invitation.status,
+      expiresAt: invitation.expiresAt,
+      token: invitation.token,
+      shareUrl: `/invite/${invitation.token}`,
+    };
   }
 
   async listBoardInvitations(boardId: string, userId?: string) {
@@ -744,5 +951,95 @@ export class BoardsService {
       where: { id: invitationId },
       data: { status: 'declined' },
     });
+  }
+
+  async getInvitationByToken(token: string) {
+    const invitation = await this.prisma.boardInvitation.findUnique({
+      where: { token },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        status: true,
+        expiresAt: true,
+        board: {
+          select: {
+            id: true,
+            title: true,
+            logoUrl: true,
+          },
+        },
+      },
+    });
+
+    if (!invitation) {
+      throw new NotFoundException('invitation not found');
+    }
+
+    if (invitation.status !== 'pending') {
+      throw new BadRequestException('invitation is not pending');
+    }
+
+    if (invitation.expiresAt.getTime() < Date.now()) {
+      throw new BadRequestException('invitation is expired');
+    }
+
+    return invitation;
+  }
+
+  async acceptInvitationByToken(token: string, userId?: string) {
+    if (!userId) {
+      throw new BadRequestException('user is required to accept invitation');
+    }
+
+    const invitation = await this.prisma.boardInvitation.findUnique({
+      where: { token },
+    });
+
+    if (!invitation) {
+      throw new NotFoundException('invitation not found');
+    }
+
+    if (invitation.status !== 'pending') {
+      throw new BadRequestException('invitation is not pending');
+    }
+
+    if (invitation.expiresAt.getTime() < Date.now()) {
+      throw new BadRequestException('invitation is expired');
+    }
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { email: true },
+    });
+
+    if (!user?.email) {
+      throw new BadRequestException('user email is required');
+    }
+
+    if (user.email.toLowerCase() !== invitation.email.toLowerCase()) {
+      throw new BadRequestException('invitation email mismatch');
+    }
+
+    await this.prisma.$transaction(async (tx) => {
+      await tx.boardMember.upsert({
+        where: { boardId_userId: { boardId: invitation.boardId, userId } },
+        create: {
+          boardId: invitation.boardId,
+          userId,
+          role: invitation.role,
+        },
+        update: {
+          role: invitation.role,
+        },
+      });
+
+      await tx.boardInvitation.update({
+        where: { id: invitation.id },
+        data: { status: 'accepted' },
+      });
+    });
+
+    return { success: true, boardId: invitation.boardId };
   }
 }

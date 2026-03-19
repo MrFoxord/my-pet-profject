@@ -28,7 +28,7 @@ import {
   arrayMove,
   horizontalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { Board, Ticket } from "@/types";
+import { Board, Ticket, TicketAccessPolicy, DEFAULT_ACCESS_POLICY } from "@/types";
 import { ColumnsContainer } from "./styled";
 import { BoardColumnView } from "./BoardColumnView";
 
@@ -46,8 +46,7 @@ interface BoardColumnsProps {
     description?: string;
     type: Ticket["type"];
     priority: Ticket["priority"];
-    accessibilityRoles: string[];
-    accessibilityIds: string[];
+    accessPolicy?: TicketAccessPolicy;
   }) => Promise<Ticket | null>;
   onTicketsReorder?: (
     items: { id: string; status: Ticket["status"]; sortIndex: number; columnId?: string }[]
@@ -74,7 +73,7 @@ export function BoardColumns({
   const [createDescription, setCreateDescription] = useState("");
   const [createType, setCreateType] = useState<Ticket["type"]>("task");
   const [createPriority, setCreatePriority] = useState<Ticket["priority"]>("medium");
-  const [createRoleAccess, setCreateRoleAccess] = useState<string[]>([]);
+  const [createAccessPolicy, setCreateAccessPolicy] = useState<TicketAccessPolicy>(DEFAULT_ACCESS_POLICY);
 
   const ticketsById = useMemo(
     () =>
@@ -318,7 +317,7 @@ export function BoardColumns({
     setCreateDescription("");
     setCreateType("task");
     setCreatePriority("medium");
-    setCreateRoleAccess([]);
+    setCreateAccessPolicy(DEFAULT_ACCESS_POLICY);
     setCreateOpen(true);
   };
 
@@ -335,8 +334,7 @@ export function BoardColumns({
       description: createDescription.trim() || undefined,
       type: createType,
       priority: createPriority,
-      accessibilityRoles: createRoleAccess,
-      accessibilityIds: [],
+      accessPolicy: createAccessPolicy,
     });
     setCreating(false);
 
@@ -404,8 +402,8 @@ export function BoardColumns({
             <TicketTypeSelect value={createType} onChange={setCreateType} />
             <TicketPrioritySelect value={createPriority} onChange={setCreatePriority} />
             <RolesSelect
-              value={createRoleAccess}
-              onChange={setCreateRoleAccess}
+              value={createAccessPolicy.view}
+              onChange={(roles) => setCreateAccessPolicy({ ...createAccessPolicy, view: roles })}
               boardRoleNames={boardRoleNames}
               label="Доступ по ролям"
             />

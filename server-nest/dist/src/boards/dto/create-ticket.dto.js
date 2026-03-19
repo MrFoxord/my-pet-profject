@@ -43,14 +43,7 @@ __decorate([
 ], CreateTicketDto.prototype, "columnId", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsArray)(),
-    (0, class_validator_1.IsString)({ each: true }),
-    __metadata("design:type", Array)
-], CreateTicketDto.prototype, "accessibilityRoles", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsArray)(),
-    (0, class_validator_1.IsString)({ each: true }),
-    __metadata("design:type", Array)
-], CreateTicketDto.prototype, "accessibilityIds", void 0);
+    (0, class_validator_1.IsObject)(),
+    __metadata("design:type", Object)
+], CreateTicketDto.prototype, "accessPolicy", void 0);
 //# sourceMappingURL=create-ticket.dto.js.map

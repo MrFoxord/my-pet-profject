@@ -29,6 +29,7 @@ export type BoardMemberMinAggregateOutputType = {
   role: $Enums.BoardMemberRole | null
   boardId: string | null
   userId: string | null
+  customRoleId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -38,6 +39,7 @@ export type BoardMemberMaxAggregateOutputType = {
   role: $Enums.BoardMemberRole | null
   boardId: string | null
   userId: string | null
+  customRoleId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -47,6 +49,7 @@ export type BoardMemberCountAggregateOutputType = {
   role: number
   boardId: number
   userId: number
+  customRoleId: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -58,6 +61,7 @@ export type BoardMemberMinAggregateInputType = {
   role?: true
   boardId?: true
   userId?: true
+  customRoleId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -67,6 +71,7 @@ export type BoardMemberMaxAggregateInputType = {
   role?: true
   boardId?: true
   userId?: true
+  customRoleId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -76,6 +81,7 @@ export type BoardMemberCountAggregateInputType = {
   role?: true
   boardId?: true
   userId?: true
+  customRoleId?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -158,6 +164,7 @@ export type BoardMemberGroupByOutputType = {
   role: $Enums.BoardMemberRole
   boardId: string
   userId: string
+  customRoleId: string | null
   createdAt: Date
   updatedAt: Date
   _count: BoardMemberCountAggregateOutputType | null
@@ -188,10 +195,12 @@ export type BoardMemberWhereInput = {
   role?: Prisma.EnumBoardMemberRoleFilter<"BoardMember"> | $Enums.BoardMemberRole
   boardId?: Prisma.StringFilter<"BoardMember"> | string
   userId?: Prisma.StringFilter<"BoardMember"> | string
+  customRoleId?: Prisma.StringNullableFilter<"BoardMember"> | string | null
   createdAt?: Prisma.DateTimeFilter<"BoardMember"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BoardMember"> | Date | string
   board?: Prisma.XOR<Prisma.BoardScalarRelationFilter, Prisma.BoardWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  customRole?: Prisma.XOR<Prisma.BoardRoleNullableScalarRelationFilter, Prisma.BoardRoleWhereInput> | null
 }
 
 export type BoardMemberOrderByWithRelationInput = {
@@ -199,10 +208,12 @@ export type BoardMemberOrderByWithRelationInput = {
   role?: Prisma.SortOrder
   boardId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  customRoleId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   board?: Prisma.BoardOrderByWithRelationInput
   user?: Prisma.UserOrderByWithRelationInput
+  customRole?: Prisma.BoardRoleOrderByWithRelationInput
 }
 
 export type BoardMemberWhereUniqueInput = Prisma.AtLeast<{
@@ -214,10 +225,12 @@ export type BoardMemberWhereUniqueInput = Prisma.AtLeast<{
   role?: Prisma.EnumBoardMemberRoleFilter<"BoardMember"> | $Enums.BoardMemberRole
   boardId?: Prisma.StringFilter<"BoardMember"> | string
   userId?: Prisma.StringFilter<"BoardMember"> | string
+  customRoleId?: Prisma.StringNullableFilter<"BoardMember"> | string | null
   createdAt?: Prisma.DateTimeFilter<"BoardMember"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BoardMember"> | Date | string
   board?: Prisma.XOR<Prisma.BoardScalarRelationFilter, Prisma.BoardWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  customRole?: Prisma.XOR<Prisma.BoardRoleNullableScalarRelationFilter, Prisma.BoardRoleWhereInput> | null
 }, "id" | "boardId_userId">
 
 export type BoardMemberOrderByWithAggregationInput = {
@@ -225,6 +238,7 @@ export type BoardMemberOrderByWithAggregationInput = {
   role?: Prisma.SortOrder
   boardId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  customRoleId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.BoardMemberCountOrderByAggregateInput
@@ -240,6 +254,7 @@ export type BoardMemberScalarWhereWithAggregatesInput = {
   role?: Prisma.EnumBoardMemberRoleWithAggregatesFilter<"BoardMember"> | $Enums.BoardMemberRole
   boardId?: Prisma.StringWithAggregatesFilter<"BoardMember"> | string
   userId?: Prisma.StringWithAggregatesFilter<"BoardMember"> | string
+  customRoleId?: Prisma.StringNullableWithAggregatesFilter<"BoardMember"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"BoardMember"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"BoardMember"> | Date | string
 }
@@ -251,6 +266,7 @@ export type BoardMemberCreateInput = {
   updatedAt?: Date | string
   board: Prisma.BoardCreateNestedOneWithoutMembershipsInput
   user: Prisma.UserCreateNestedOneWithoutBoardMembershipsInput
+  customRole?: Prisma.BoardRoleCreateNestedOneWithoutMembersInput
 }
 
 export type BoardMemberUncheckedCreateInput = {
@@ -258,6 +274,7 @@ export type BoardMemberUncheckedCreateInput = {
   role?: $Enums.BoardMemberRole
   boardId: string
   userId: string
+  customRoleId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -269,6 +286,7 @@ export type BoardMemberUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   board?: Prisma.BoardUpdateOneRequiredWithoutMembershipsNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutBoardMembershipsNestedInput
+  customRole?: Prisma.BoardRoleUpdateOneWithoutMembersNestedInput
 }
 
 export type BoardMemberUncheckedUpdateInput = {
@@ -276,6 +294,7 @@ export type BoardMemberUncheckedUpdateInput = {
   role?: Prisma.EnumBoardMemberRoleFieldUpdateOperationsInput | $Enums.BoardMemberRole
   boardId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  customRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -285,6 +304,7 @@ export type BoardMemberCreateManyInput = {
   role?: $Enums.BoardMemberRole
   boardId: string
   userId: string
+  customRoleId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -301,6 +321,7 @@ export type BoardMemberUncheckedUpdateManyInput = {
   role?: Prisma.EnumBoardMemberRoleFieldUpdateOperationsInput | $Enums.BoardMemberRole
   boardId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  customRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -325,6 +346,7 @@ export type BoardMemberCountOrderByAggregateInput = {
   role?: Prisma.SortOrder
   boardId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  customRoleId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -334,6 +356,7 @@ export type BoardMemberMaxOrderByAggregateInput = {
   role?: Prisma.SortOrder
   boardId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  customRoleId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -343,6 +366,7 @@ export type BoardMemberMinOrderByAggregateInput = {
   role?: Prisma.SortOrder
   boardId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  customRoleId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -435,18 +459,62 @@ export type EnumBoardMemberRoleFieldUpdateOperationsInput = {
   set?: $Enums.BoardMemberRole
 }
 
+export type BoardMemberCreateNestedManyWithoutCustomRoleInput = {
+  create?: Prisma.XOR<Prisma.BoardMemberCreateWithoutCustomRoleInput, Prisma.BoardMemberUncheckedCreateWithoutCustomRoleInput> | Prisma.BoardMemberCreateWithoutCustomRoleInput[] | Prisma.BoardMemberUncheckedCreateWithoutCustomRoleInput[]
+  connectOrCreate?: Prisma.BoardMemberCreateOrConnectWithoutCustomRoleInput | Prisma.BoardMemberCreateOrConnectWithoutCustomRoleInput[]
+  createMany?: Prisma.BoardMemberCreateManyCustomRoleInputEnvelope
+  connect?: Prisma.BoardMemberWhereUniqueInput | Prisma.BoardMemberWhereUniqueInput[]
+}
+
+export type BoardMemberUncheckedCreateNestedManyWithoutCustomRoleInput = {
+  create?: Prisma.XOR<Prisma.BoardMemberCreateWithoutCustomRoleInput, Prisma.BoardMemberUncheckedCreateWithoutCustomRoleInput> | Prisma.BoardMemberCreateWithoutCustomRoleInput[] | Prisma.BoardMemberUncheckedCreateWithoutCustomRoleInput[]
+  connectOrCreate?: Prisma.BoardMemberCreateOrConnectWithoutCustomRoleInput | Prisma.BoardMemberCreateOrConnectWithoutCustomRoleInput[]
+  createMany?: Prisma.BoardMemberCreateManyCustomRoleInputEnvelope
+  connect?: Prisma.BoardMemberWhereUniqueInput | Prisma.BoardMemberWhereUniqueInput[]
+}
+
+export type BoardMemberUpdateManyWithoutCustomRoleNestedInput = {
+  create?: Prisma.XOR<Prisma.BoardMemberCreateWithoutCustomRoleInput, Prisma.BoardMemberUncheckedCreateWithoutCustomRoleInput> | Prisma.BoardMemberCreateWithoutCustomRoleInput[] | Prisma.BoardMemberUncheckedCreateWithoutCustomRoleInput[]
+  connectOrCreate?: Prisma.BoardMemberCreateOrConnectWithoutCustomRoleInput | Prisma.BoardMemberCreateOrConnectWithoutCustomRoleInput[]
+  upsert?: Prisma.BoardMemberUpsertWithWhereUniqueWithoutCustomRoleInput | Prisma.BoardMemberUpsertWithWhereUniqueWithoutCustomRoleInput[]
+  createMany?: Prisma.BoardMemberCreateManyCustomRoleInputEnvelope
+  set?: Prisma.BoardMemberWhereUniqueInput | Prisma.BoardMemberWhereUniqueInput[]
+  disconnect?: Prisma.BoardMemberWhereUniqueInput | Prisma.BoardMemberWhereUniqueInput[]
+  delete?: Prisma.BoardMemberWhereUniqueInput | Prisma.BoardMemberWhereUniqueInput[]
+  connect?: Prisma.BoardMemberWhereUniqueInput | Prisma.BoardMemberWhereUniqueInput[]
+  update?: Prisma.BoardMemberUpdateWithWhereUniqueWithoutCustomRoleInput | Prisma.BoardMemberUpdateWithWhereUniqueWithoutCustomRoleInput[]
+  updateMany?: Prisma.BoardMemberUpdateManyWithWhereWithoutCustomRoleInput | Prisma.BoardMemberUpdateManyWithWhereWithoutCustomRoleInput[]
+  deleteMany?: Prisma.BoardMemberScalarWhereInput | Prisma.BoardMemberScalarWhereInput[]
+}
+
+export type BoardMemberUncheckedUpdateManyWithoutCustomRoleNestedInput = {
+  create?: Prisma.XOR<Prisma.BoardMemberCreateWithoutCustomRoleInput, Prisma.BoardMemberUncheckedCreateWithoutCustomRoleInput> | Prisma.BoardMemberCreateWithoutCustomRoleInput[] | Prisma.BoardMemberUncheckedCreateWithoutCustomRoleInput[]
+  connectOrCreate?: Prisma.BoardMemberCreateOrConnectWithoutCustomRoleInput | Prisma.BoardMemberCreateOrConnectWithoutCustomRoleInput[]
+  upsert?: Prisma.BoardMemberUpsertWithWhereUniqueWithoutCustomRoleInput | Prisma.BoardMemberUpsertWithWhereUniqueWithoutCustomRoleInput[]
+  createMany?: Prisma.BoardMemberCreateManyCustomRoleInputEnvelope
+  set?: Prisma.BoardMemberWhereUniqueInput | Prisma.BoardMemberWhereUniqueInput[]
+  disconnect?: Prisma.BoardMemberWhereUniqueInput | Prisma.BoardMemberWhereUniqueInput[]
+  delete?: Prisma.BoardMemberWhereUniqueInput | Prisma.BoardMemberWhereUniqueInput[]
+  connect?: Prisma.BoardMemberWhereUniqueInput | Prisma.BoardMemberWhereUniqueInput[]
+  update?: Prisma.BoardMemberUpdateWithWhereUniqueWithoutCustomRoleInput | Prisma.BoardMemberUpdateWithWhereUniqueWithoutCustomRoleInput[]
+  updateMany?: Prisma.BoardMemberUpdateManyWithWhereWithoutCustomRoleInput | Prisma.BoardMemberUpdateManyWithWhereWithoutCustomRoleInput[]
+  deleteMany?: Prisma.BoardMemberScalarWhereInput | Prisma.BoardMemberScalarWhereInput[]
+}
+
 export type BoardMemberCreateWithoutUserInput = {
   id?: string
   role?: $Enums.BoardMemberRole
   createdAt?: Date | string
   updatedAt?: Date | string
   board: Prisma.BoardCreateNestedOneWithoutMembershipsInput
+  customRole?: Prisma.BoardRoleCreateNestedOneWithoutMembersInput
 }
 
 export type BoardMemberUncheckedCreateWithoutUserInput = {
   id?: string
   role?: $Enums.BoardMemberRole
   boardId: string
+  customRoleId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -485,6 +553,7 @@ export type BoardMemberScalarWhereInput = {
   role?: Prisma.EnumBoardMemberRoleFilter<"BoardMember"> | $Enums.BoardMemberRole
   boardId?: Prisma.StringFilter<"BoardMember"> | string
   userId?: Prisma.StringFilter<"BoardMember"> | string
+  customRoleId?: Prisma.StringNullableFilter<"BoardMember"> | string | null
   createdAt?: Prisma.DateTimeFilter<"BoardMember"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BoardMember"> | Date | string
 }
@@ -495,12 +564,14 @@ export type BoardMemberCreateWithoutBoardInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutBoardMembershipsInput
+  customRole?: Prisma.BoardRoleCreateNestedOneWithoutMembersInput
 }
 
 export type BoardMemberUncheckedCreateWithoutBoardInput = {
   id?: string
   role?: $Enums.BoardMemberRole
   userId: string
+  customRoleId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -531,10 +602,55 @@ export type BoardMemberUpdateManyWithWhereWithoutBoardInput = {
   data: Prisma.XOR<Prisma.BoardMemberUpdateManyMutationInput, Prisma.BoardMemberUncheckedUpdateManyWithoutBoardInput>
 }
 
+export type BoardMemberCreateWithoutCustomRoleInput = {
+  id?: string
+  role?: $Enums.BoardMemberRole
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  board: Prisma.BoardCreateNestedOneWithoutMembershipsInput
+  user: Prisma.UserCreateNestedOneWithoutBoardMembershipsInput
+}
+
+export type BoardMemberUncheckedCreateWithoutCustomRoleInput = {
+  id?: string
+  role?: $Enums.BoardMemberRole
+  boardId: string
+  userId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type BoardMemberCreateOrConnectWithoutCustomRoleInput = {
+  where: Prisma.BoardMemberWhereUniqueInput
+  create: Prisma.XOR<Prisma.BoardMemberCreateWithoutCustomRoleInput, Prisma.BoardMemberUncheckedCreateWithoutCustomRoleInput>
+}
+
+export type BoardMemberCreateManyCustomRoleInputEnvelope = {
+  data: Prisma.BoardMemberCreateManyCustomRoleInput | Prisma.BoardMemberCreateManyCustomRoleInput[]
+  skipDuplicates?: boolean
+}
+
+export type BoardMemberUpsertWithWhereUniqueWithoutCustomRoleInput = {
+  where: Prisma.BoardMemberWhereUniqueInput
+  update: Prisma.XOR<Prisma.BoardMemberUpdateWithoutCustomRoleInput, Prisma.BoardMemberUncheckedUpdateWithoutCustomRoleInput>
+  create: Prisma.XOR<Prisma.BoardMemberCreateWithoutCustomRoleInput, Prisma.BoardMemberUncheckedCreateWithoutCustomRoleInput>
+}
+
+export type BoardMemberUpdateWithWhereUniqueWithoutCustomRoleInput = {
+  where: Prisma.BoardMemberWhereUniqueInput
+  data: Prisma.XOR<Prisma.BoardMemberUpdateWithoutCustomRoleInput, Prisma.BoardMemberUncheckedUpdateWithoutCustomRoleInput>
+}
+
+export type BoardMemberUpdateManyWithWhereWithoutCustomRoleInput = {
+  where: Prisma.BoardMemberScalarWhereInput
+  data: Prisma.XOR<Prisma.BoardMemberUpdateManyMutationInput, Prisma.BoardMemberUncheckedUpdateManyWithoutCustomRoleInput>
+}
+
 export type BoardMemberCreateManyUserInput = {
   id?: string
   role?: $Enums.BoardMemberRole
   boardId: string
+  customRoleId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -545,12 +661,14 @@ export type BoardMemberUpdateWithoutUserInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   board?: Prisma.BoardUpdateOneRequiredWithoutMembershipsNestedInput
+  customRole?: Prisma.BoardRoleUpdateOneWithoutMembersNestedInput
 }
 
 export type BoardMemberUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumBoardMemberRoleFieldUpdateOperationsInput | $Enums.BoardMemberRole
   boardId?: Prisma.StringFieldUpdateOperationsInput | string
+  customRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -559,6 +677,7 @@ export type BoardMemberUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumBoardMemberRoleFieldUpdateOperationsInput | $Enums.BoardMemberRole
   boardId?: Prisma.StringFieldUpdateOperationsInput | string
+  customRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -567,6 +686,7 @@ export type BoardMemberCreateManyBoardInput = {
   id?: string
   role?: $Enums.BoardMemberRole
   userId: string
+  customRoleId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -577,12 +697,14 @@ export type BoardMemberUpdateWithoutBoardInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutBoardMembershipsNestedInput
+  customRole?: Prisma.BoardRoleUpdateOneWithoutMembersNestedInput
 }
 
 export type BoardMemberUncheckedUpdateWithoutBoardInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumBoardMemberRoleFieldUpdateOperationsInput | $Enums.BoardMemberRole
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  customRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -590,6 +712,43 @@ export type BoardMemberUncheckedUpdateWithoutBoardInput = {
 export type BoardMemberUncheckedUpdateManyWithoutBoardInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumBoardMemberRoleFieldUpdateOperationsInput | $Enums.BoardMemberRole
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  customRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type BoardMemberCreateManyCustomRoleInput = {
+  id?: string
+  role?: $Enums.BoardMemberRole
+  boardId: string
+  userId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type BoardMemberUpdateWithoutCustomRoleInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumBoardMemberRoleFieldUpdateOperationsInput | $Enums.BoardMemberRole
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  board?: Prisma.BoardUpdateOneRequiredWithoutMembershipsNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutBoardMembershipsNestedInput
+}
+
+export type BoardMemberUncheckedUpdateWithoutCustomRoleInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumBoardMemberRoleFieldUpdateOperationsInput | $Enums.BoardMemberRole
+  boardId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type BoardMemberUncheckedUpdateManyWithoutCustomRoleInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumBoardMemberRoleFieldUpdateOperationsInput | $Enums.BoardMemberRole
+  boardId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -602,10 +761,12 @@ export type BoardMemberSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   role?: boolean
   boardId?: boolean
   userId?: boolean
+  customRoleId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   board?: boolean | Prisma.BoardDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  customRole?: boolean | Prisma.BoardMember$customRoleArgs<ExtArgs>
 }, ExtArgs["result"]["boardMember"]>
 
 export type BoardMemberSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -613,10 +774,12 @@ export type BoardMemberSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   role?: boolean
   boardId?: boolean
   userId?: boolean
+  customRoleId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   board?: boolean | Prisma.BoardDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  customRole?: boolean | Prisma.BoardMember$customRoleArgs<ExtArgs>
 }, ExtArgs["result"]["boardMember"]>
 
 export type BoardMemberSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -624,10 +787,12 @@ export type BoardMemberSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   role?: boolean
   boardId?: boolean
   userId?: boolean
+  customRoleId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   board?: boolean | Prisma.BoardDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  customRole?: boolean | Prisma.BoardMember$customRoleArgs<ExtArgs>
 }, ExtArgs["result"]["boardMember"]>
 
 export type BoardMemberSelectScalar = {
@@ -635,22 +800,26 @@ export type BoardMemberSelectScalar = {
   role?: boolean
   boardId?: boolean
   userId?: boolean
+  customRoleId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type BoardMemberOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "role" | "boardId" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["boardMember"]>
+export type BoardMemberOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "role" | "boardId" | "userId" | "customRoleId" | "createdAt" | "updatedAt", ExtArgs["result"]["boardMember"]>
 export type BoardMemberInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   board?: boolean | Prisma.BoardDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  customRole?: boolean | Prisma.BoardMember$customRoleArgs<ExtArgs>
 }
 export type BoardMemberIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   board?: boolean | Prisma.BoardDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  customRole?: boolean | Prisma.BoardMember$customRoleArgs<ExtArgs>
 }
 export type BoardMemberIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   board?: boolean | Prisma.BoardDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  customRole?: boolean | Prisma.BoardMember$customRoleArgs<ExtArgs>
 }
 
 export type $BoardMemberPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -658,12 +827,14 @@ export type $BoardMemberPayload<ExtArgs extends runtime.Types.Extensions.Interna
   objects: {
     board: Prisma.$BoardPayload<ExtArgs>
     user: Prisma.$UserPayload<ExtArgs>
+    customRole: Prisma.$BoardRolePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     role: $Enums.BoardMemberRole
     boardId: string
     userId: string
+    customRoleId: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["boardMember"]>
@@ -1062,6 +1233,7 @@ export interface Prisma__BoardMemberClient<T, Null = never, ExtArgs extends runt
   readonly [Symbol.toStringTag]: "PrismaPromise"
   board<T extends Prisma.BoardDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BoardDefaultArgs<ExtArgs>>): Prisma.Prisma__BoardClient<runtime.Types.Result.GetResult<Prisma.$BoardPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  customRole<T extends Prisma.BoardMember$customRoleArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BoardMember$customRoleArgs<ExtArgs>>): Prisma.Prisma__BoardRoleClient<runtime.Types.Result.GetResult<Prisma.$BoardRolePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1095,6 +1267,7 @@ export interface BoardMemberFieldRefs {
   readonly role: Prisma.FieldRef<"BoardMember", 'BoardMemberRole'>
   readonly boardId: Prisma.FieldRef<"BoardMember", 'String'>
   readonly userId: Prisma.FieldRef<"BoardMember", 'String'>
+  readonly customRoleId: Prisma.FieldRef<"BoardMember", 'String'>
   readonly createdAt: Prisma.FieldRef<"BoardMember", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"BoardMember", 'DateTime'>
 }
@@ -1495,6 +1668,25 @@ export type BoardMemberDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Limit how many BoardMembers to delete.
    */
   limit?: number
+}
+
+/**
+ * BoardMember.customRole
+ */
+export type BoardMember$customRoleArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BoardRole
+   */
+  select?: Prisma.BoardRoleSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BoardRole
+   */
+  omit?: Prisma.BoardRoleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BoardRoleInclude<ExtArgs> | null
+  where?: Prisma.BoardRoleWhereInput
 }
 
 /**

@@ -54,6 +54,24 @@ export interface BoardMockProps {
   themeColor?: string;
 }
 
+export type TicketAccessPolicy = {
+  view: string[];
+  edit: string[];
+  delete: string[];
+  estimate: string[];
+  comment: string[];
+  manageAccess: string[];
+};
+
+export const DEFAULT_ACCESS_POLICY: TicketAccessPolicy = {
+  view: [],
+  edit: [],
+  delete: [],
+  estimate: [],
+  comment: [],
+  manageAccess: [],
+};
+
 export interface TicketEstimate {
   originalHours?: number;
   spentHours?: number;
@@ -70,8 +88,7 @@ export interface Ticket {
   status: "todo" | "in-progress" | "done";
   sortIndex?: number;
   columnId?: string | null;
-  accessibilityRoles?: string[];
-  accessibilityIds?: string[];
+  accessPolicy: TicketAccessPolicy;
   createdAt: string;
   dueDate?: string;
   updatedAt?: string;
@@ -108,7 +125,7 @@ export interface TicketModalProps {
       status: Ticket["status"];
       priority: Ticket["priority"];
       type: Ticket["type"];
-      accessibilityRoles: string[];
+      accessPolicy: TicketAccessPolicy;
     }
   ) => Promise<Ticket | null>;
   onDeleteTicket?: (ticketId: string) => Promise<boolean>;

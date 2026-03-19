@@ -11,18 +11,18 @@ export declare class UsersController {
     getDefaultState(req: AuthRequest): Promise<{
         id: string;
         name: string;
-        nickname: string;
         firstName: string;
         lastName: string;
+        nickname: string;
         isDefault: boolean;
         workRole: import("../generated/prisma/enums").WorkRole;
     }>;
     updateDefaultProfile(req: AuthRequest, dto: UpdateDefaultProfileDto): Promise<{
         id: string;
         name: string;
-        nickname: string;
         firstName: string;
         lastName: string;
+        nickname: string;
         isDefault: boolean;
         workRole: import("../generated/prisma/enums").WorkRole;
     }>;

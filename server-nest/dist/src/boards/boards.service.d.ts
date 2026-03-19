@@ -8,9 +8,11 @@ import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { ReorderTicketsDto } from './dto/reorder-tickets.dto';
 import { CreateBoardInvitationDto } from './dto/create-board-invitation.dto';
+import { UpdateBoardMemberCustomRoleDto } from './dto/update-board-member-custom-role.dto';
 export declare class BoardsService {
     private readonly prisma;
     constructor(prisma: PrismaService);
+    private readonly standardTicketAccessRoles;
     findAll(userId?: string): Promise<{
         id: string;
         title: string;
@@ -43,8 +45,7 @@ export declare class BoardsService {
             status: string;
             sortIndex: number;
             columnId: string;
-            accessibilityRoles: string[];
-            accessibilityIds: string[];
+            accessPolicy: import("@prisma/client/runtime/client").JsonValue;
             createdAt: string;
             updatedAt: string;
             dueDate: string;
@@ -86,8 +87,7 @@ export declare class BoardsService {
         type: string;
         priority: string;
         columnId: string;
-        accessibilityRoles: string[];
-        accessibilityIds: string[];
+        accessPolicy: import("@prisma/client/runtime/client").JsonValue;
         sortIndex: number;
         id: string;
     }>;
@@ -107,16 +107,41 @@ export declare class BoardsService {
         type: string;
         priority: string;
         columnId: string;
-        accessibilityRoles: string[];
-        accessibilityIds: string[];
+        accessPolicy: import("@prisma/client/runtime/client").JsonValue;
         sortIndex: number;
         id: string;
     }>;
     deleteTicket(boardId: string, ticketId: string, userId?: string): Promise<void>;
     private generateBoardId;
+    private generateInvitationToken;
     private normalizeColumnTitles;
     private normalizeRoleTitles;
     private ensureBoardMembership;
+    private canAccessTicket;
+    private canManageTicketAccess;
+    private getEffectiveTicketRoles;
+    listBoardMembers(boardId: string, userId?: string): Promise<{
+        id: string;
+        boardId: string;
+        userId: string;
+        role: BoardMemberRole;
+        customRoleId: string;
+        customRoleName: string;
+        email: string;
+        name: string;
+        nickname: string;
+    }[]>;
+    updateBoardMemberCustomRole(boardId: string, memberId: string, dto: UpdateBoardMemberCustomRoleDto, userId?: string): Promise<{
+        id: string;
+        boardId: string;
+        userId: string;
+        role: BoardMemberRole;
+        customRoleId: string;
+        customRoleName: string;
+        email: string;
+        name: string;
+        nickname: string;
+    }>;
     createBoardRole(boardId: string, dto: any, userId?: string): Promise<{
         id: string;
         createdAt: Date;
@@ -143,13 +168,13 @@ export declare class BoardsService {
         permissions: string[];
     }[]>;
     createBoardInvitation(boardId: string, dto: CreateBoardInvitationDto, userId?: string): Promise<{
-        status: string;
         id: string;
         email: string;
         role: BoardMemberRole;
-        createdAt: Date;
-        boardId: string;
+        status: string;
         expiresAt: Date;
+        token: string;
+        shareUrl: string;
     }>;
     listBoardInvitations(boardId: string, userId?: string): Promise<{
         status: string;
@@ -158,10 +183,27 @@ export declare class BoardsService {
         role: BoardMemberRole;
         createdAt: Date;
         boardId: string;
+        token: string;
         expiresAt: Date;
     }[]>;
     acceptBoardInvitation(boardId: string, invitationId: string, userId?: string): Promise<{
         ok: boolean;
     }>;
     revokeBoardInvitation(boardId: string, invitationId: string, userId?: string): Promise<void>;
+    getInvitationByToken(token: string): Promise<{
+        board: {
+            title: string;
+            logoUrl: string;
+            id: string;
+        };
+        status: string;
+        id: string;
+        email: string;
+        role: BoardMemberRole;
+        expiresAt: Date;
+    }>;
+    acceptInvitationByToken(token: string, userId?: string): Promise<{
+        success: boolean;
+        boardId: string;
+    }>;
 }

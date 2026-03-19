@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.defineExtension = exports.NullsOrder = exports.QueryMode = exports.SortOrder = exports.VerificationTokenScalarFieldEnum = exports.AccountScalarFieldEnum = exports.CommentScalarFieldEnum = exports.SubtaskScalarFieldEnum = exports.TicketScalarFieldEnum = exports.BoardColumnScalarFieldEnum = exports.BoardInvitationScalarFieldEnum = exports.BoardRoleScalarFieldEnum = exports.BoardMemberScalarFieldEnum = exports.BoardScalarFieldEnum = exports.UserScalarFieldEnum = exports.TransactionIsolationLevel = exports.ModelName = exports.AnyNull = exports.JsonNull = exports.DbNull = exports.NullTypes = exports.prismaVersion = exports.getExtensionContext = exports.Decimal = exports.Sql = exports.raw = exports.join = exports.empty = exports.sql = exports.PrismaClientValidationError = exports.PrismaClientInitializationError = exports.PrismaClientRustPanicError = exports.PrismaClientUnknownRequestError = exports.PrismaClientKnownRequestError = void 0;
+exports.defineExtension = exports.JsonNullValueFilter = exports.NullsOrder = exports.QueryMode = exports.JsonNullValueInput = exports.SortOrder = exports.VerificationTokenScalarFieldEnum = exports.AccountScalarFieldEnum = exports.CommentScalarFieldEnum = exports.SubtaskScalarFieldEnum = exports.TicketScalarFieldEnum = exports.BoardColumnScalarFieldEnum = exports.BoardInvitationScalarFieldEnum = exports.BoardRoleScalarFieldEnum = exports.BoardMemberScalarFieldEnum = exports.BoardScalarFieldEnum = exports.UserScalarFieldEnum = exports.TransactionIsolationLevel = exports.ModelName = exports.AnyNull = exports.JsonNull = exports.DbNull = exports.NullTypes = exports.prismaVersion = exports.getExtensionContext = exports.Decimal = exports.Sql = exports.raw = exports.join = exports.empty = exports.sql = exports.PrismaClientValidationError = exports.PrismaClientInitializationError = exports.PrismaClientRustPanicError = exports.PrismaClientUnknownRequestError = exports.PrismaClientKnownRequestError = void 0;
 const runtime = require("@prisma/client/runtime/client");
 exports.PrismaClientKnownRequestError = runtime.PrismaClientKnownRequestError;
 exports.PrismaClientUnknownRequestError = runtime.PrismaClientUnknownRequestError;
@@ -75,6 +75,7 @@ exports.BoardMemberScalarFieldEnum = {
     role: 'role',
     boardId: 'boardId',
     userId: 'userId',
+    customRoleId: 'customRoleId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
 };
@@ -88,6 +89,7 @@ exports.BoardRoleScalarFieldEnum = {
 };
 exports.BoardInvitationScalarFieldEnum = {
     id: 'id',
+    token: 'token',
     email: 'email',
     boardId: 'boardId',
     role: 'role',
@@ -111,8 +113,7 @@ exports.TicketScalarFieldEnum = {
     sortIndex: 'sortIndex',
     priority: 'priority',
     type: 'type',
-    accessibilityRoles: 'accessibilityRoles',
-    accessibilityIds: 'accessibilityIds',
+    accessPolicy: 'accessPolicy',
     boardId: 'boardId',
     columnId: 'columnId',
     estimateOriginalHours: 'estimateOriginalHours',
@@ -160,6 +161,9 @@ exports.SortOrder = {
     asc: 'asc',
     desc: 'desc'
 };
+exports.JsonNullValueInput = {
+    JsonNull: exports.JsonNull
+};
 exports.QueryMode = {
     default: 'default',
     insensitive: 'insensitive'
@@ -167,6 +171,11 @@ exports.QueryMode = {
 exports.NullsOrder = {
     first: 'first',
     last: 'last'
+};
+exports.JsonNullValueFilter = {
+    DbNull: exports.DbNull,
+    JsonNull: exports.JsonNull,
+    AnyNull: exports.AnyNull
 };
 exports.defineExtension = runtime.Extensions.defineExtension;
 //# sourceMappingURL=prismaNamespace.js.map

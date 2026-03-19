@@ -1,4 +1,4 @@
-import { IsArray, IsInt, IsOptional, IsString, Min } from 'class-validator';
+import { IsInt, IsOptional, IsString, IsObject, Min } from 'class-validator';
 
 export class UpdateTicketDto {
   @IsOptional()
@@ -31,12 +31,13 @@ export class UpdateTicketDto {
   sortIndex?: number;
 
   @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  accessibilityRoles?: string[];
-
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  accessibilityIds?: string[];
+  @IsObject()
+  accessPolicy?: {
+    view?: string[];
+    edit?: string[];
+    delete?: string[];
+    estimate?: string[];
+    comment?: string[];
+    manageAccess?: string[];
+  };
 }

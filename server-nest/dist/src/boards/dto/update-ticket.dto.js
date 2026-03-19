@@ -52,14 +52,7 @@ __decorate([
 ], UpdateTicketDto.prototype, "sortIndex", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsArray)(),
-    (0, class_validator_1.IsString)({ each: true }),
-    __metadata("design:type", Array)
-], UpdateTicketDto.prototype, "accessibilityRoles", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsArray)(),
-    (0, class_validator_1.IsString)({ each: true }),
-    __metadata("design:type", Array)
-], UpdateTicketDto.prototype, "accessibilityIds", void 0);
+    (0, class_validator_1.IsObject)(),
+    __metadata("design:type", Object)
+], UpdateTicketDto.prototype, "accessPolicy", void 0);
 //# sourceMappingURL=update-ticket.dto.js.map

@@ -25,6 +25,7 @@ const reorder_tickets_dto_1 = require("./dto/reorder-tickets.dto");
 const create_board_role_dto_1 = require("./dto/create-board-role.dto");
 const update_board_role_dto_1 = require("./dto/update-board-role.dto");
 const create_board_invitation_dto_1 = require("./dto/create-board-invitation.dto");
+const update_board_member_custom_role_dto_1 = require("./dto/update-board-member-custom-role.dto");
 const internal_auth_guard_1 = require("../auth/internal-auth.guard");
 let BoardsController = class BoardsController {
     constructor(boardsService) {
@@ -67,6 +68,12 @@ let BoardsController = class BoardsController {
     async deleteTicket(boardId, ticketId, req) {
         await this.boardsService.deleteTicket(boardId, ticketId, req.serviceUser?.sub);
         return { ok: true };
+    }
+    listBoardMembers(boardId, req) {
+        return this.boardsService.listBoardMembers(boardId, req.serviceUser?.sub);
+    }
+    updateBoardMemberCustomRole(boardId, memberId, dto, req) {
+        return this.boardsService.updateBoardMemberCustomRole(boardId, memberId, dto, req.serviceUser?.sub);
     }
     createBoardRole(boardId, dto, req) {
         return this.boardsService.createBoardRole(boardId, dto, req.serviceUser?.sub);
@@ -182,6 +189,24 @@ __decorate([
     __metadata("design:paramtypes", [String, String, Object]),
     __metadata("design:returntype", Promise)
 ], BoardsController.prototype, "deleteTicket", null);
+__decorate([
+    (0, common_1.Get)(':boardId/members'),
+    __param(0, (0, common_1.Param)('boardId')),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", void 0)
+], BoardsController.prototype, "listBoardMembers", null);
+__decorate([
+    (0, common_1.Patch)(':boardId/members/:memberId/custom-role'),
+    __param(0, (0, common_1.Param)('boardId')),
+    __param(1, (0, common_1.Param)('memberId')),
+    __param(2, (0, common_1.Body)()),
+    __param(3, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, update_board_member_custom_role_dto_1.UpdateBoardMemberCustomRoleDto, Object]),
+    __metadata("design:returntype", void 0)
+], BoardsController.prototype, "updateBoardMemberCustomRole", null);
 __decorate([
     (0, common_1.Post)(':boardId/roles'),
     (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),

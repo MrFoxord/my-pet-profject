@@ -1,4 +1,4 @@
-import { IsArray, IsOptional, IsString } from 'class-validator';
+import { IsObject, IsOptional, IsString, IsArray } from 'class-validator';
 
 export class CreateTicketDto {
   @IsString()
@@ -23,12 +23,13 @@ export class CreateTicketDto {
   columnId?: string;
 
   @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  accessibilityRoles?: string[];
-
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  accessibilityIds?: string[];
+  @IsObject()
+  accessPolicy?: {
+    view?: string[];
+    edit?: string[];
+    delete?: string[];
+    estimate?: string[];
+    comment?: string[];
+    manageAccess?: string[];
+  };
 }

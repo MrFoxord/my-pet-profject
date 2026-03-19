@@ -10,6 +10,7 @@ import { ReorderTicketsDto } from './dto/reorder-tickets.dto';
 import { CreateBoardRoleDto } from './dto/create-board-role.dto';
 import { UpdateBoardRoleDto } from './dto/update-board-role.dto';
 import { CreateBoardInvitationDto } from './dto/create-board-invitation.dto';
+import { UpdateBoardMemberCustomRoleDto } from './dto/update-board-member-custom-role.dto';
 import { ServiceJwtPayload } from '../auth/internal-auth.guard';
 type AuthRequest = Request & {
     serviceUser?: ServiceJwtPayload;
@@ -58,8 +59,7 @@ export declare class BoardsController {
             status: string;
             sortIndex: number;
             columnId: string;
-            accessibilityRoles: string[];
-            accessibilityIds: string[];
+            accessPolicy: import("@prisma/client/runtime/client").JsonValue;
             createdAt: string;
             updatedAt: string;
             dueDate: string;
@@ -98,8 +98,7 @@ export declare class BoardsController {
         type: string;
         priority: string;
         columnId: string;
-        accessibilityRoles: string[];
-        accessibilityIds: string[];
+        accessPolicy: import("@prisma/client/runtime/client").JsonValue;
         sortIndex: number;
         id: string;
     }>;
@@ -121,13 +120,34 @@ export declare class BoardsController {
         type: string;
         priority: string;
         columnId: string;
-        accessibilityRoles: string[];
-        accessibilityIds: string[];
+        accessPolicy: import("@prisma/client/runtime/client").JsonValue;
         sortIndex: number;
         id: string;
     }>;
     deleteTicket(boardId: string, ticketId: string, req: AuthRequest): Promise<{
         ok: boolean;
+    }>;
+    listBoardMembers(boardId: string, req: AuthRequest): Promise<{
+        id: string;
+        boardId: string;
+        userId: string;
+        role: import("../generated/prisma/enums").BoardMemberRole;
+        customRoleId: string;
+        customRoleName: string;
+        email: string;
+        name: string;
+        nickname: string;
+    }[]>;
+    updateBoardMemberCustomRole(boardId: string, memberId: string, dto: UpdateBoardMemberCustomRoleDto, req: AuthRequest): Promise<{
+        id: string;
+        boardId: string;
+        userId: string;
+        role: import("../generated/prisma/enums").BoardMemberRole;
+        customRoleId: string;
+        customRoleName: string;
+        email: string;
+        name: string;
+        nickname: string;
     }>;
     createBoardRole(boardId: string, dto: CreateBoardRoleDto, req: AuthRequest): Promise<{
         id: string;
@@ -155,13 +175,13 @@ export declare class BoardsController {
     }>;
     deleteBoardRole(boardId: string, roleId: string, req: AuthRequest): Promise<void>;
     createBoardInvitation(boardId: string, dto: CreateBoardInvitationDto, req: AuthRequest): Promise<{
-        status: string;
         id: string;
         email: string;
         role: import("../generated/prisma/enums").BoardMemberRole;
-        createdAt: Date;
-        boardId: string;
+        status: string;
         expiresAt: Date;
+        token: string;
+        shareUrl: string;
     }>;
     listBoardInvitations(boardId: string, req: AuthRequest): Promise<{
         status: string;
@@ -170,6 +190,7 @@ export declare class BoardsController {
         role: import("../generated/prisma/enums").BoardMemberRole;
         createdAt: Date;
         boardId: string;
+        token: string;
         expiresAt: Date;
     }[]>;
     acceptBoardInvitation(boardId: string, invitationId: string, req: AuthRequest): Promise<{

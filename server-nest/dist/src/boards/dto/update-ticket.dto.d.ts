@@ -6,6 +6,12 @@ export declare class UpdateTicketDto {
     priority?: string;
     columnId?: string;
     sortIndex?: number;
-    accessibilityRoles?: string[];
-    accessibilityIds?: string[];
+    accessPolicy?: {
+        view?: string[];
+        edit?: string[];
+        delete?: string[];
+        estimate?: string[];
+        comment?: string[];
+        manageAccess?: string[];
+    };
 }

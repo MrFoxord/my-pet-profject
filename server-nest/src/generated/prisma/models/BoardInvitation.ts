@@ -26,6 +26,7 @@ export type AggregateBoardInvitation = {
 
 export type BoardInvitationMinAggregateOutputType = {
   id: string | null
+  token: string | null
   email: string | null
   boardId: string | null
   role: $Enums.BoardMemberRole | null
@@ -36,6 +37,7 @@ export type BoardInvitationMinAggregateOutputType = {
 
 export type BoardInvitationMaxAggregateOutputType = {
   id: string | null
+  token: string | null
   email: string | null
   boardId: string | null
   role: $Enums.BoardMemberRole | null
@@ -46,6 +48,7 @@ export type BoardInvitationMaxAggregateOutputType = {
 
 export type BoardInvitationCountAggregateOutputType = {
   id: number
+  token: number
   email: number
   boardId: number
   role: number
@@ -58,6 +61,7 @@ export type BoardInvitationCountAggregateOutputType = {
 
 export type BoardInvitationMinAggregateInputType = {
   id?: true
+  token?: true
   email?: true
   boardId?: true
   role?: true
@@ -68,6 +72,7 @@ export type BoardInvitationMinAggregateInputType = {
 
 export type BoardInvitationMaxAggregateInputType = {
   id?: true
+  token?: true
   email?: true
   boardId?: true
   role?: true
@@ -78,6 +83,7 @@ export type BoardInvitationMaxAggregateInputType = {
 
 export type BoardInvitationCountAggregateInputType = {
   id?: true
+  token?: true
   email?: true
   boardId?: true
   role?: true
@@ -161,6 +167,7 @@ export type BoardInvitationGroupByArgs<ExtArgs extends runtime.Types.Extensions.
 
 export type BoardInvitationGroupByOutputType = {
   id: string
+  token: string
   email: string
   boardId: string
   role: $Enums.BoardMemberRole
@@ -192,6 +199,7 @@ export type BoardInvitationWhereInput = {
   OR?: Prisma.BoardInvitationWhereInput[]
   NOT?: Prisma.BoardInvitationWhereInput | Prisma.BoardInvitationWhereInput[]
   id?: Prisma.StringFilter<"BoardInvitation"> | string
+  token?: Prisma.StringFilter<"BoardInvitation"> | string
   email?: Prisma.StringFilter<"BoardInvitation"> | string
   boardId?: Prisma.StringFilter<"BoardInvitation"> | string
   role?: Prisma.EnumBoardMemberRoleFilter<"BoardInvitation"> | $Enums.BoardMemberRole
@@ -203,6 +211,7 @@ export type BoardInvitationWhereInput = {
 
 export type BoardInvitationOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  token?: Prisma.SortOrder
   email?: Prisma.SortOrder
   boardId?: Prisma.SortOrder
   role?: Prisma.SortOrder
@@ -214,6 +223,7 @@ export type BoardInvitationOrderByWithRelationInput = {
 
 export type BoardInvitationWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  token?: string
   boardId_email?: Prisma.BoardInvitationBoardIdEmailCompoundUniqueInput
   AND?: Prisma.BoardInvitationWhereInput | Prisma.BoardInvitationWhereInput[]
   OR?: Prisma.BoardInvitationWhereInput[]
@@ -225,10 +235,11 @@ export type BoardInvitationWhereUniqueInput = Prisma.AtLeast<{
   expiresAt?: Prisma.DateTimeFilter<"BoardInvitation"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"BoardInvitation"> | Date | string
   board?: Prisma.XOR<Prisma.BoardScalarRelationFilter, Prisma.BoardWhereInput>
-}, "id" | "boardId_email">
+}, "id" | "token" | "boardId_email">
 
 export type BoardInvitationOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  token?: Prisma.SortOrder
   email?: Prisma.SortOrder
   boardId?: Prisma.SortOrder
   role?: Prisma.SortOrder
@@ -245,6 +256,7 @@ export type BoardInvitationScalarWhereWithAggregatesInput = {
   OR?: Prisma.BoardInvitationScalarWhereWithAggregatesInput[]
   NOT?: Prisma.BoardInvitationScalarWhereWithAggregatesInput | Prisma.BoardInvitationScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"BoardInvitation"> | string
+  token?: Prisma.StringWithAggregatesFilter<"BoardInvitation"> | string
   email?: Prisma.StringWithAggregatesFilter<"BoardInvitation"> | string
   boardId?: Prisma.StringWithAggregatesFilter<"BoardInvitation"> | string
   role?: Prisma.EnumBoardMemberRoleWithAggregatesFilter<"BoardInvitation"> | $Enums.BoardMemberRole
@@ -255,6 +267,7 @@ export type BoardInvitationScalarWhereWithAggregatesInput = {
 
 export type BoardInvitationCreateInput = {
   id?: string
+  token: string
   email: string
   role: $Enums.BoardMemberRole
   status?: string
@@ -265,6 +278,7 @@ export type BoardInvitationCreateInput = {
 
 export type BoardInvitationUncheckedCreateInput = {
   id?: string
+  token: string
   email: string
   boardId: string
   role: $Enums.BoardMemberRole
@@ -275,6 +289,7 @@ export type BoardInvitationUncheckedCreateInput = {
 
 export type BoardInvitationUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  token?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumBoardMemberRoleFieldUpdateOperationsInput | $Enums.BoardMemberRole
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -285,6 +300,7 @@ export type BoardInvitationUpdateInput = {
 
 export type BoardInvitationUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  token?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   boardId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumBoardMemberRoleFieldUpdateOperationsInput | $Enums.BoardMemberRole
@@ -295,6 +311,7 @@ export type BoardInvitationUncheckedUpdateInput = {
 
 export type BoardInvitationCreateManyInput = {
   id?: string
+  token: string
   email: string
   boardId: string
   role: $Enums.BoardMemberRole
@@ -305,6 +322,7 @@ export type BoardInvitationCreateManyInput = {
 
 export type BoardInvitationUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  token?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumBoardMemberRoleFieldUpdateOperationsInput | $Enums.BoardMemberRole
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -314,6 +332,7 @@ export type BoardInvitationUpdateManyMutationInput = {
 
 export type BoardInvitationUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  token?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   boardId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumBoardMemberRoleFieldUpdateOperationsInput | $Enums.BoardMemberRole
@@ -339,6 +358,7 @@ export type BoardInvitationBoardIdEmailCompoundUniqueInput = {
 
 export type BoardInvitationCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  token?: Prisma.SortOrder
   email?: Prisma.SortOrder
   boardId?: Prisma.SortOrder
   role?: Prisma.SortOrder
@@ -349,6 +369,7 @@ export type BoardInvitationCountOrderByAggregateInput = {
 
 export type BoardInvitationMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  token?: Prisma.SortOrder
   email?: Prisma.SortOrder
   boardId?: Prisma.SortOrder
   role?: Prisma.SortOrder
@@ -359,6 +380,7 @@ export type BoardInvitationMaxOrderByAggregateInput = {
 
 export type BoardInvitationMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  token?: Prisma.SortOrder
   email?: Prisma.SortOrder
   boardId?: Prisma.SortOrder
   role?: Prisma.SortOrder
@@ -411,6 +433,7 @@ export type BoardInvitationUncheckedUpdateManyWithoutBoardNestedInput = {
 
 export type BoardInvitationCreateWithoutBoardInput = {
   id?: string
+  token: string
   email: string
   role: $Enums.BoardMemberRole
   status?: string
@@ -420,6 +443,7 @@ export type BoardInvitationCreateWithoutBoardInput = {
 
 export type BoardInvitationUncheckedCreateWithoutBoardInput = {
   id?: string
+  token: string
   email: string
   role: $Enums.BoardMemberRole
   status?: string
@@ -458,6 +482,7 @@ export type BoardInvitationScalarWhereInput = {
   OR?: Prisma.BoardInvitationScalarWhereInput[]
   NOT?: Prisma.BoardInvitationScalarWhereInput | Prisma.BoardInvitationScalarWhereInput[]
   id?: Prisma.StringFilter<"BoardInvitation"> | string
+  token?: Prisma.StringFilter<"BoardInvitation"> | string
   email?: Prisma.StringFilter<"BoardInvitation"> | string
   boardId?: Prisma.StringFilter<"BoardInvitation"> | string
   role?: Prisma.EnumBoardMemberRoleFilter<"BoardInvitation"> | $Enums.BoardMemberRole
@@ -468,6 +493,7 @@ export type BoardInvitationScalarWhereInput = {
 
 export type BoardInvitationCreateManyBoardInput = {
   id?: string
+  token: string
   email: string
   role: $Enums.BoardMemberRole
   status?: string
@@ -477,6 +503,7 @@ export type BoardInvitationCreateManyBoardInput = {
 
 export type BoardInvitationUpdateWithoutBoardInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  token?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumBoardMemberRoleFieldUpdateOperationsInput | $Enums.BoardMemberRole
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -486,6 +513,7 @@ export type BoardInvitationUpdateWithoutBoardInput = {
 
 export type BoardInvitationUncheckedUpdateWithoutBoardInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  token?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumBoardMemberRoleFieldUpdateOperationsInput | $Enums.BoardMemberRole
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -495,6 +523,7 @@ export type BoardInvitationUncheckedUpdateWithoutBoardInput = {
 
 export type BoardInvitationUncheckedUpdateManyWithoutBoardInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  token?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumBoardMemberRoleFieldUpdateOperationsInput | $Enums.BoardMemberRole
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -506,6 +535,7 @@ export type BoardInvitationUncheckedUpdateManyWithoutBoardInput = {
 
 export type BoardInvitationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  token?: boolean
   email?: boolean
   boardId?: boolean
   role?: boolean
@@ -517,6 +547,7 @@ export type BoardInvitationSelect<ExtArgs extends runtime.Types.Extensions.Inter
 
 export type BoardInvitationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  token?: boolean
   email?: boolean
   boardId?: boolean
   role?: boolean
@@ -528,6 +559,7 @@ export type BoardInvitationSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
 
 export type BoardInvitationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  token?: boolean
   email?: boolean
   boardId?: boolean
   role?: boolean
@@ -539,6 +571,7 @@ export type BoardInvitationSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
 
 export type BoardInvitationSelectScalar = {
   id?: boolean
+  token?: boolean
   email?: boolean
   boardId?: boolean
   role?: boolean
@@ -547,7 +580,7 @@ export type BoardInvitationSelectScalar = {
   createdAt?: boolean
 }
 
-export type BoardInvitationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "boardId" | "role" | "status" | "expiresAt" | "createdAt", ExtArgs["result"]["boardInvitation"]>
+export type BoardInvitationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "token" | "email" | "boardId" | "role" | "status" | "expiresAt" | "createdAt", ExtArgs["result"]["boardInvitation"]>
 export type BoardInvitationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   board?: boolean | Prisma.BoardDefaultArgs<ExtArgs>
 }
@@ -565,6 +598,7 @@ export type $BoardInvitationPayload<ExtArgs extends runtime.Types.Extensions.Int
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    token: string
     email: string
     boardId: string
     role: $Enums.BoardMemberRole
@@ -996,6 +1030,7 @@ export interface Prisma__BoardInvitationClient<T, Null = never, ExtArgs extends 
  */
 export interface BoardInvitationFieldRefs {
   readonly id: Prisma.FieldRef<"BoardInvitation", 'String'>
+  readonly token: Prisma.FieldRef<"BoardInvitation", 'String'>
   readonly email: Prisma.FieldRef<"BoardInvitation", 'String'>
   readonly boardId: Prisma.FieldRef<"BoardInvitation", 'String'>
   readonly role: Prisma.FieldRef<"BoardInvitation", 'BoardMemberRole'>
