@@ -166,6 +166,7 @@ export declare const ModelName: {
     readonly Ticket: "Ticket";
     readonly Subtask: "Subtask";
     readonly Comment: "Comment";
+    readonly Notification: "Notification";
     readonly Account: "Account";
     readonly VerificationToken: "VerificationToken";
 };
@@ -180,7 +181,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         omit: GlobalOmitOptions;
     };
     meta: {
-        modelProps: "user" | "board" | "boardMember" | "boardRole" | "boardInvitation" | "boardColumn" | "ticket" | "subtask" | "comment" | "account" | "verificationToken";
+        modelProps: "user" | "board" | "boardMember" | "boardRole" | "boardInvitation" | "boardColumn" | "ticket" | "subtask" | "comment" | "notification" | "account" | "verificationToken";
         txIsolationLevel: TransactionIsolationLevel;
     };
     model: {
@@ -850,6 +851,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
                 };
             };
         };
+        Notification: {
+            payload: Prisma.$NotificationPayload<ExtArgs>;
+            fields: Prisma.NotificationFieldRefs;
+            operations: {
+                findUnique: {
+                    args: Prisma.NotificationFindUniqueArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload> | null;
+                };
+                findUniqueOrThrow: {
+                    args: Prisma.NotificationFindUniqueOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload>;
+                };
+                findFirst: {
+                    args: Prisma.NotificationFindFirstArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload> | null;
+                };
+                findFirstOrThrow: {
+                    args: Prisma.NotificationFindFirstOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload>;
+                };
+                findMany: {
+                    args: Prisma.NotificationFindManyArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload>[];
+                };
+                create: {
+                    args: Prisma.NotificationCreateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload>;
+                };
+                createMany: {
+                    args: Prisma.NotificationCreateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                createManyAndReturn: {
+                    args: Prisma.NotificationCreateManyAndReturnArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload>[];
+                };
+                delete: {
+                    args: Prisma.NotificationDeleteArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload>;
+                };
+                update: {
+                    args: Prisma.NotificationUpdateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload>;
+                };
+                deleteMany: {
+                    args: Prisma.NotificationDeleteManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                updateMany: {
+                    args: Prisma.NotificationUpdateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                updateManyAndReturn: {
+                    args: Prisma.NotificationUpdateManyAndReturnArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload>[];
+                };
+                upsert: {
+                    args: Prisma.NotificationUpsertArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificationPayload>;
+                };
+                aggregate: {
+                    args: Prisma.NotificationAggregateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.AggregateNotification>;
+                };
+                groupBy: {
+                    args: Prisma.NotificationGroupByArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.NotificationGroupByOutputType>[];
+                };
+                count: {
+                    args: Prisma.NotificationCountArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.NotificationCountAggregateOutputType> | number;
+                };
+            };
+        };
         Account: {
             payload: Prisma.$AccountPayload<ExtArgs>;
             fields: Prisma.AccountFieldRefs;
@@ -1078,10 +1153,15 @@ export type BoardRoleScalarFieldEnum = (typeof BoardRoleScalarFieldEnum)[keyof t
 export declare const BoardInvitationScalarFieldEnum: {
     readonly id: "id";
     readonly token: "token";
+    readonly type: "type";
     readonly email: "email";
     readonly boardId: "boardId";
-    readonly role: "role";
+    readonly customRoleId: "customRoleId";
+    readonly customRoleName: "customRoleName";
+    readonly createdByUserId: "createdByUserId";
     readonly status: "status";
+    readonly maxUses: "maxUses";
+    readonly usedCount: "usedCount";
     readonly expiresAt: "expiresAt";
     readonly createdAt: "createdAt";
 };
@@ -1131,6 +1211,19 @@ export declare const CommentScalarFieldEnum: {
     readonly updatedAt: "updatedAt";
 };
 export type CommentScalarFieldEnum = (typeof CommentScalarFieldEnum)[keyof typeof CommentScalarFieldEnum];
+export declare const NotificationScalarFieldEnum: {
+    readonly id: "id";
+    readonly userId: "userId";
+    readonly boardId: "boardId";
+    readonly ticketId: "ticketId";
+    readonly kind: "kind";
+    readonly title: "title";
+    readonly message: "message";
+    readonly isRead: "isRead";
+    readonly readAt: "readAt";
+    readonly createdAt: "createdAt";
+};
+export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum];
 export declare const AccountScalarFieldEnum: {
     readonly id: "id";
     readonly userId: "userId";
@@ -1188,6 +1281,8 @@ export type EnumWorkRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 export type ListEnumWorkRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkRole[]'>;
 export type EnumBoardMemberRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BoardMemberRole'>;
 export type ListEnumBoardMemberRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BoardMemberRole[]'>;
+export type EnumInvitationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InvitationType'>;
+export type ListEnumInvitationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InvitationType[]'>;
 export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>;
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>;
 export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>;
@@ -1227,6 +1322,7 @@ export type GlobalOmitConfig = {
     ticket?: Prisma.TicketOmit;
     subtask?: Prisma.SubtaskOmit;
     comment?: Prisma.CommentOmit;
+    notification?: Prisma.NotificationOmit;
     account?: Prisma.AccountOmit;
     verificationToken?: Prisma.VerificationTokenOmit;
 };

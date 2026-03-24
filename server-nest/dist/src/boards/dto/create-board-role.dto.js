@@ -11,14 +11,20 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateBoardRoleDto = void 0;
 const class_validator_1 = require("class-validator");
+const swagger_1 = require("@nestjs/swagger");
 class CreateBoardRoleDto {
 }
 exports.CreateBoardRoleDto = CreateBoardRoleDto;
 __decorate([
+    (0, swagger_1.ApiProperty)({ example: 'Support Engineer' }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateBoardRoleDto.prototype, "name", void 0);
 __decorate([
+    (0, swagger_1.ApiPropertyOptional)({
+        type: [String],
+        example: ['tickets:view', 'tickets:comment'],
+    }),
     (0, class_validator_1.IsArray)(),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Array)

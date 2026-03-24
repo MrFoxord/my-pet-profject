@@ -20,17 +20,34 @@ export type BoardInvitationModel = runtime.Types.Result.DefaultSelection<Prisma.
 
 export type AggregateBoardInvitation = {
   _count: BoardInvitationCountAggregateOutputType | null
+  _avg: BoardInvitationAvgAggregateOutputType | null
+  _sum: BoardInvitationSumAggregateOutputType | null
   _min: BoardInvitationMinAggregateOutputType | null
   _max: BoardInvitationMaxAggregateOutputType | null
+}
+
+export type BoardInvitationAvgAggregateOutputType = {
+  maxUses: number | null
+  usedCount: number | null
+}
+
+export type BoardInvitationSumAggregateOutputType = {
+  maxUses: number | null
+  usedCount: number | null
 }
 
 export type BoardInvitationMinAggregateOutputType = {
   id: string | null
   token: string | null
+  type: $Enums.InvitationType | null
   email: string | null
   boardId: string | null
-  role: $Enums.BoardMemberRole | null
+  customRoleId: string | null
+  customRoleName: string | null
+  createdByUserId: string | null
   status: string | null
+  maxUses: number | null
+  usedCount: number | null
   expiresAt: Date | null
   createdAt: Date | null
 }
@@ -38,10 +55,15 @@ export type BoardInvitationMinAggregateOutputType = {
 export type BoardInvitationMaxAggregateOutputType = {
   id: string | null
   token: string | null
+  type: $Enums.InvitationType | null
   email: string | null
   boardId: string | null
-  role: $Enums.BoardMemberRole | null
+  customRoleId: string | null
+  customRoleName: string | null
+  createdByUserId: string | null
   status: string | null
+  maxUses: number | null
+  usedCount: number | null
   expiresAt: Date | null
   createdAt: Date | null
 }
@@ -49,23 +71,43 @@ export type BoardInvitationMaxAggregateOutputType = {
 export type BoardInvitationCountAggregateOutputType = {
   id: number
   token: number
+  type: number
   email: number
   boardId: number
-  role: number
+  customRoleId: number
+  customRoleName: number
+  createdByUserId: number
   status: number
+  maxUses: number
+  usedCount: number
   expiresAt: number
   createdAt: number
   _all: number
 }
 
 
+export type BoardInvitationAvgAggregateInputType = {
+  maxUses?: true
+  usedCount?: true
+}
+
+export type BoardInvitationSumAggregateInputType = {
+  maxUses?: true
+  usedCount?: true
+}
+
 export type BoardInvitationMinAggregateInputType = {
   id?: true
   token?: true
+  type?: true
   email?: true
   boardId?: true
-  role?: true
+  customRoleId?: true
+  customRoleName?: true
+  createdByUserId?: true
   status?: true
+  maxUses?: true
+  usedCount?: true
   expiresAt?: true
   createdAt?: true
 }
@@ -73,10 +115,15 @@ export type BoardInvitationMinAggregateInputType = {
 export type BoardInvitationMaxAggregateInputType = {
   id?: true
   token?: true
+  type?: true
   email?: true
   boardId?: true
-  role?: true
+  customRoleId?: true
+  customRoleName?: true
+  createdByUserId?: true
   status?: true
+  maxUses?: true
+  usedCount?: true
   expiresAt?: true
   createdAt?: true
 }
@@ -84,10 +131,15 @@ export type BoardInvitationMaxAggregateInputType = {
 export type BoardInvitationCountAggregateInputType = {
   id?: true
   token?: true
+  type?: true
   email?: true
   boardId?: true
-  role?: true
+  customRoleId?: true
+  customRoleName?: true
+  createdByUserId?: true
   status?: true
+  maxUses?: true
+  usedCount?: true
   expiresAt?: true
   createdAt?: true
   _all?: true
@@ -131,6 +183,18 @@ export type BoardInvitationAggregateArgs<ExtArgs extends runtime.Types.Extension
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: BoardInvitationAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: BoardInvitationSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: BoardInvitationMinAggregateInputType
@@ -161,6 +225,8 @@ export type BoardInvitationGroupByArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   _count?: BoardInvitationCountAggregateInputType | true
+  _avg?: BoardInvitationAvgAggregateInputType
+  _sum?: BoardInvitationSumAggregateInputType
   _min?: BoardInvitationMinAggregateInputType
   _max?: BoardInvitationMaxAggregateInputType
 }
@@ -168,13 +234,20 @@ export type BoardInvitationGroupByArgs<ExtArgs extends runtime.Types.Extensions.
 export type BoardInvitationGroupByOutputType = {
   id: string
   token: string
-  email: string
+  type: $Enums.InvitationType
+  email: string | null
   boardId: string
-  role: $Enums.BoardMemberRole
+  customRoleId: string | null
+  customRoleName: string | null
+  createdByUserId: string | null
   status: string
+  maxUses: number
+  usedCount: number
   expiresAt: Date
   createdAt: Date
   _count: BoardInvitationCountAggregateOutputType | null
+  _avg: BoardInvitationAvgAggregateOutputType | null
+  _sum: BoardInvitationSumAggregateOutputType | null
   _min: BoardInvitationMinAggregateOutputType | null
   _max: BoardInvitationMaxAggregateOutputType | null
 }
@@ -200,10 +273,15 @@ export type BoardInvitationWhereInput = {
   NOT?: Prisma.BoardInvitationWhereInput | Prisma.BoardInvitationWhereInput[]
   id?: Prisma.StringFilter<"BoardInvitation"> | string
   token?: Prisma.StringFilter<"BoardInvitation"> | string
-  email?: Prisma.StringFilter<"BoardInvitation"> | string
+  type?: Prisma.EnumInvitationTypeFilter<"BoardInvitation"> | $Enums.InvitationType
+  email?: Prisma.StringNullableFilter<"BoardInvitation"> | string | null
   boardId?: Prisma.StringFilter<"BoardInvitation"> | string
-  role?: Prisma.EnumBoardMemberRoleFilter<"BoardInvitation"> | $Enums.BoardMemberRole
+  customRoleId?: Prisma.StringNullableFilter<"BoardInvitation"> | string | null
+  customRoleName?: Prisma.StringNullableFilter<"BoardInvitation"> | string | null
+  createdByUserId?: Prisma.StringNullableFilter<"BoardInvitation"> | string | null
   status?: Prisma.StringFilter<"BoardInvitation"> | string
+  maxUses?: Prisma.IntFilter<"BoardInvitation"> | number
+  usedCount?: Prisma.IntFilter<"BoardInvitation"> | number
   expiresAt?: Prisma.DateTimeFilter<"BoardInvitation"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"BoardInvitation"> | Date | string
   board?: Prisma.XOR<Prisma.BoardScalarRelationFilter, Prisma.BoardWhereInput>
@@ -212,10 +290,15 @@ export type BoardInvitationWhereInput = {
 export type BoardInvitationOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   token?: Prisma.SortOrder
-  email?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  email?: Prisma.SortOrderInput | Prisma.SortOrder
   boardId?: Prisma.SortOrder
-  role?: Prisma.SortOrder
+  customRoleId?: Prisma.SortOrderInput | Prisma.SortOrder
+  customRoleName?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  maxUses?: Prisma.SortOrder
+  usedCount?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   board?: Prisma.BoardOrderByWithRelationInput
@@ -224,31 +307,42 @@ export type BoardInvitationOrderByWithRelationInput = {
 export type BoardInvitationWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   token?: string
-  boardId_email?: Prisma.BoardInvitationBoardIdEmailCompoundUniqueInput
   AND?: Prisma.BoardInvitationWhereInput | Prisma.BoardInvitationWhereInput[]
   OR?: Prisma.BoardInvitationWhereInput[]
   NOT?: Prisma.BoardInvitationWhereInput | Prisma.BoardInvitationWhereInput[]
-  email?: Prisma.StringFilter<"BoardInvitation"> | string
+  type?: Prisma.EnumInvitationTypeFilter<"BoardInvitation"> | $Enums.InvitationType
+  email?: Prisma.StringNullableFilter<"BoardInvitation"> | string | null
   boardId?: Prisma.StringFilter<"BoardInvitation"> | string
-  role?: Prisma.EnumBoardMemberRoleFilter<"BoardInvitation"> | $Enums.BoardMemberRole
+  customRoleId?: Prisma.StringNullableFilter<"BoardInvitation"> | string | null
+  customRoleName?: Prisma.StringNullableFilter<"BoardInvitation"> | string | null
+  createdByUserId?: Prisma.StringNullableFilter<"BoardInvitation"> | string | null
   status?: Prisma.StringFilter<"BoardInvitation"> | string
+  maxUses?: Prisma.IntFilter<"BoardInvitation"> | number
+  usedCount?: Prisma.IntFilter<"BoardInvitation"> | number
   expiresAt?: Prisma.DateTimeFilter<"BoardInvitation"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"BoardInvitation"> | Date | string
   board?: Prisma.XOR<Prisma.BoardScalarRelationFilter, Prisma.BoardWhereInput>
-}, "id" | "token" | "boardId_email">
+}, "id" | "token">
 
 export type BoardInvitationOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   token?: Prisma.SortOrder
-  email?: Prisma.SortOrder
+  type?: Prisma.SortOrder
+  email?: Prisma.SortOrderInput | Prisma.SortOrder
   boardId?: Prisma.SortOrder
-  role?: Prisma.SortOrder
+  customRoleId?: Prisma.SortOrderInput | Prisma.SortOrder
+  customRoleName?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  maxUses?: Prisma.SortOrder
+  usedCount?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.BoardInvitationCountOrderByAggregateInput
+  _avg?: Prisma.BoardInvitationAvgOrderByAggregateInput
   _max?: Prisma.BoardInvitationMaxOrderByAggregateInput
   _min?: Prisma.BoardInvitationMinOrderByAggregateInput
+  _sum?: Prisma.BoardInvitationSumOrderByAggregateInput
 }
 
 export type BoardInvitationScalarWhereWithAggregatesInput = {
@@ -257,10 +351,15 @@ export type BoardInvitationScalarWhereWithAggregatesInput = {
   NOT?: Prisma.BoardInvitationScalarWhereWithAggregatesInput | Prisma.BoardInvitationScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"BoardInvitation"> | string
   token?: Prisma.StringWithAggregatesFilter<"BoardInvitation"> | string
-  email?: Prisma.StringWithAggregatesFilter<"BoardInvitation"> | string
+  type?: Prisma.EnumInvitationTypeWithAggregatesFilter<"BoardInvitation"> | $Enums.InvitationType
+  email?: Prisma.StringNullableWithAggregatesFilter<"BoardInvitation"> | string | null
   boardId?: Prisma.StringWithAggregatesFilter<"BoardInvitation"> | string
-  role?: Prisma.EnumBoardMemberRoleWithAggregatesFilter<"BoardInvitation"> | $Enums.BoardMemberRole
+  customRoleId?: Prisma.StringNullableWithAggregatesFilter<"BoardInvitation"> | string | null
+  customRoleName?: Prisma.StringNullableWithAggregatesFilter<"BoardInvitation"> | string | null
+  createdByUserId?: Prisma.StringNullableWithAggregatesFilter<"BoardInvitation"> | string | null
   status?: Prisma.StringWithAggregatesFilter<"BoardInvitation"> | string
+  maxUses?: Prisma.IntWithAggregatesFilter<"BoardInvitation"> | number
+  usedCount?: Prisma.IntWithAggregatesFilter<"BoardInvitation"> | number
   expiresAt?: Prisma.DateTimeWithAggregatesFilter<"BoardInvitation"> | Date | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"BoardInvitation"> | Date | string
 }
@@ -268,9 +367,14 @@ export type BoardInvitationScalarWhereWithAggregatesInput = {
 export type BoardInvitationCreateInput = {
   id?: string
   token: string
-  email: string
-  role: $Enums.BoardMemberRole
+  type?: $Enums.InvitationType
+  email?: string | null
+  customRoleId?: string | null
+  customRoleName?: string | null
+  createdByUserId?: string | null
   status?: string
+  maxUses?: number
+  usedCount?: number
   expiresAt: Date | string
   createdAt?: Date | string
   board: Prisma.BoardCreateNestedOneWithoutInvitationsInput
@@ -279,10 +383,15 @@ export type BoardInvitationCreateInput = {
 export type BoardInvitationUncheckedCreateInput = {
   id?: string
   token: string
-  email: string
+  type?: $Enums.InvitationType
+  email?: string | null
   boardId: string
-  role: $Enums.BoardMemberRole
+  customRoleId?: string | null
+  customRoleName?: string | null
+  createdByUserId?: string | null
   status?: string
+  maxUses?: number
+  usedCount?: number
   expiresAt: Date | string
   createdAt?: Date | string
 }
@@ -290,9 +399,14 @@ export type BoardInvitationUncheckedCreateInput = {
 export type BoardInvitationUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   token?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumBoardMemberRoleFieldUpdateOperationsInput | $Enums.BoardMemberRole
+  type?: Prisma.EnumInvitationTypeFieldUpdateOperationsInput | $Enums.InvitationType
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customRoleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  maxUses?: Prisma.IntFieldUpdateOperationsInput | number
+  usedCount?: Prisma.IntFieldUpdateOperationsInput | number
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   board?: Prisma.BoardUpdateOneRequiredWithoutInvitationsNestedInput
@@ -301,10 +415,15 @@ export type BoardInvitationUpdateInput = {
 export type BoardInvitationUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   token?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumInvitationTypeFieldUpdateOperationsInput | $Enums.InvitationType
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   boardId?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumBoardMemberRoleFieldUpdateOperationsInput | $Enums.BoardMemberRole
+  customRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customRoleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  maxUses?: Prisma.IntFieldUpdateOperationsInput | number
+  usedCount?: Prisma.IntFieldUpdateOperationsInput | number
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -312,10 +431,15 @@ export type BoardInvitationUncheckedUpdateInput = {
 export type BoardInvitationCreateManyInput = {
   id?: string
   token: string
-  email: string
+  type?: $Enums.InvitationType
+  email?: string | null
   boardId: string
-  role: $Enums.BoardMemberRole
+  customRoleId?: string | null
+  customRoleName?: string | null
+  createdByUserId?: string | null
   status?: string
+  maxUses?: number
+  usedCount?: number
   expiresAt: Date | string
   createdAt?: Date | string
 }
@@ -323,9 +447,14 @@ export type BoardInvitationCreateManyInput = {
 export type BoardInvitationUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   token?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumBoardMemberRoleFieldUpdateOperationsInput | $Enums.BoardMemberRole
+  type?: Prisma.EnumInvitationTypeFieldUpdateOperationsInput | $Enums.InvitationType
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customRoleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  maxUses?: Prisma.IntFieldUpdateOperationsInput | number
+  usedCount?: Prisma.IntFieldUpdateOperationsInput | number
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -333,10 +462,15 @@ export type BoardInvitationUpdateManyMutationInput = {
 export type BoardInvitationUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   token?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumInvitationTypeFieldUpdateOperationsInput | $Enums.InvitationType
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   boardId?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumBoardMemberRoleFieldUpdateOperationsInput | $Enums.BoardMemberRole
+  customRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customRoleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  maxUses?: Prisma.IntFieldUpdateOperationsInput | number
+  usedCount?: Prisma.IntFieldUpdateOperationsInput | number
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -351,29 +485,39 @@ export type BoardInvitationOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type BoardInvitationBoardIdEmailCompoundUniqueInput = {
-  boardId: string
-  email: string
-}
-
 export type BoardInvitationCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   token?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   email?: Prisma.SortOrder
   boardId?: Prisma.SortOrder
-  role?: Prisma.SortOrder
+  customRoleId?: Prisma.SortOrder
+  customRoleName?: Prisma.SortOrder
+  createdByUserId?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  maxUses?: Prisma.SortOrder
+  usedCount?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+}
+
+export type BoardInvitationAvgOrderByAggregateInput = {
+  maxUses?: Prisma.SortOrder
+  usedCount?: Prisma.SortOrder
 }
 
 export type BoardInvitationMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   token?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   email?: Prisma.SortOrder
   boardId?: Prisma.SortOrder
-  role?: Prisma.SortOrder
+  customRoleId?: Prisma.SortOrder
+  customRoleName?: Prisma.SortOrder
+  createdByUserId?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  maxUses?: Prisma.SortOrder
+  usedCount?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -381,12 +525,22 @@ export type BoardInvitationMaxOrderByAggregateInput = {
 export type BoardInvitationMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   token?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   email?: Prisma.SortOrder
   boardId?: Prisma.SortOrder
-  role?: Prisma.SortOrder
+  customRoleId?: Prisma.SortOrder
+  customRoleName?: Prisma.SortOrder
+  createdByUserId?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  maxUses?: Prisma.SortOrder
+  usedCount?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+}
+
+export type BoardInvitationSumOrderByAggregateInput = {
+  maxUses?: Prisma.SortOrder
+  usedCount?: Prisma.SortOrder
 }
 
 export type BoardInvitationCreateNestedManyWithoutBoardInput = {
@@ -431,12 +585,29 @@ export type BoardInvitationUncheckedUpdateManyWithoutBoardNestedInput = {
   deleteMany?: Prisma.BoardInvitationScalarWhereInput | Prisma.BoardInvitationScalarWhereInput[]
 }
 
+export type EnumInvitationTypeFieldUpdateOperationsInput = {
+  set?: $Enums.InvitationType
+}
+
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type BoardInvitationCreateWithoutBoardInput = {
   id?: string
   token: string
-  email: string
-  role: $Enums.BoardMemberRole
+  type?: $Enums.InvitationType
+  email?: string | null
+  customRoleId?: string | null
+  customRoleName?: string | null
+  createdByUserId?: string | null
   status?: string
+  maxUses?: number
+  usedCount?: number
   expiresAt: Date | string
   createdAt?: Date | string
 }
@@ -444,9 +615,14 @@ export type BoardInvitationCreateWithoutBoardInput = {
 export type BoardInvitationUncheckedCreateWithoutBoardInput = {
   id?: string
   token: string
-  email: string
-  role: $Enums.BoardMemberRole
+  type?: $Enums.InvitationType
+  email?: string | null
+  customRoleId?: string | null
+  customRoleName?: string | null
+  createdByUserId?: string | null
   status?: string
+  maxUses?: number
+  usedCount?: number
   expiresAt: Date | string
   createdAt?: Date | string
 }
@@ -483,10 +659,15 @@ export type BoardInvitationScalarWhereInput = {
   NOT?: Prisma.BoardInvitationScalarWhereInput | Prisma.BoardInvitationScalarWhereInput[]
   id?: Prisma.StringFilter<"BoardInvitation"> | string
   token?: Prisma.StringFilter<"BoardInvitation"> | string
-  email?: Prisma.StringFilter<"BoardInvitation"> | string
+  type?: Prisma.EnumInvitationTypeFilter<"BoardInvitation"> | $Enums.InvitationType
+  email?: Prisma.StringNullableFilter<"BoardInvitation"> | string | null
   boardId?: Prisma.StringFilter<"BoardInvitation"> | string
-  role?: Prisma.EnumBoardMemberRoleFilter<"BoardInvitation"> | $Enums.BoardMemberRole
+  customRoleId?: Prisma.StringNullableFilter<"BoardInvitation"> | string | null
+  customRoleName?: Prisma.StringNullableFilter<"BoardInvitation"> | string | null
+  createdByUserId?: Prisma.StringNullableFilter<"BoardInvitation"> | string | null
   status?: Prisma.StringFilter<"BoardInvitation"> | string
+  maxUses?: Prisma.IntFilter<"BoardInvitation"> | number
+  usedCount?: Prisma.IntFilter<"BoardInvitation"> | number
   expiresAt?: Prisma.DateTimeFilter<"BoardInvitation"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"BoardInvitation"> | Date | string
 }
@@ -494,9 +675,14 @@ export type BoardInvitationScalarWhereInput = {
 export type BoardInvitationCreateManyBoardInput = {
   id?: string
   token: string
-  email: string
-  role: $Enums.BoardMemberRole
+  type?: $Enums.InvitationType
+  email?: string | null
+  customRoleId?: string | null
+  customRoleName?: string | null
+  createdByUserId?: string | null
   status?: string
+  maxUses?: number
+  usedCount?: number
   expiresAt: Date | string
   createdAt?: Date | string
 }
@@ -504,9 +690,14 @@ export type BoardInvitationCreateManyBoardInput = {
 export type BoardInvitationUpdateWithoutBoardInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   token?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumBoardMemberRoleFieldUpdateOperationsInput | $Enums.BoardMemberRole
+  type?: Prisma.EnumInvitationTypeFieldUpdateOperationsInput | $Enums.InvitationType
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customRoleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  maxUses?: Prisma.IntFieldUpdateOperationsInput | number
+  usedCount?: Prisma.IntFieldUpdateOperationsInput | number
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -514,9 +705,14 @@ export type BoardInvitationUpdateWithoutBoardInput = {
 export type BoardInvitationUncheckedUpdateWithoutBoardInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   token?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumBoardMemberRoleFieldUpdateOperationsInput | $Enums.BoardMemberRole
+  type?: Prisma.EnumInvitationTypeFieldUpdateOperationsInput | $Enums.InvitationType
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customRoleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  maxUses?: Prisma.IntFieldUpdateOperationsInput | number
+  usedCount?: Prisma.IntFieldUpdateOperationsInput | number
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -524,9 +720,14 @@ export type BoardInvitationUncheckedUpdateWithoutBoardInput = {
 export type BoardInvitationUncheckedUpdateManyWithoutBoardInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   token?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumBoardMemberRoleFieldUpdateOperationsInput | $Enums.BoardMemberRole
+  type?: Prisma.EnumInvitationTypeFieldUpdateOperationsInput | $Enums.InvitationType
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customRoleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  maxUses?: Prisma.IntFieldUpdateOperationsInput | number
+  usedCount?: Prisma.IntFieldUpdateOperationsInput | number
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -536,10 +737,15 @@ export type BoardInvitationUncheckedUpdateManyWithoutBoardInput = {
 export type BoardInvitationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   token?: boolean
+  type?: boolean
   email?: boolean
   boardId?: boolean
-  role?: boolean
+  customRoleId?: boolean
+  customRoleName?: boolean
+  createdByUserId?: boolean
   status?: boolean
+  maxUses?: boolean
+  usedCount?: boolean
   expiresAt?: boolean
   createdAt?: boolean
   board?: boolean | Prisma.BoardDefaultArgs<ExtArgs>
@@ -548,10 +754,15 @@ export type BoardInvitationSelect<ExtArgs extends runtime.Types.Extensions.Inter
 export type BoardInvitationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   token?: boolean
+  type?: boolean
   email?: boolean
   boardId?: boolean
-  role?: boolean
+  customRoleId?: boolean
+  customRoleName?: boolean
+  createdByUserId?: boolean
   status?: boolean
+  maxUses?: boolean
+  usedCount?: boolean
   expiresAt?: boolean
   createdAt?: boolean
   board?: boolean | Prisma.BoardDefaultArgs<ExtArgs>
@@ -560,10 +771,15 @@ export type BoardInvitationSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
 export type BoardInvitationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   token?: boolean
+  type?: boolean
   email?: boolean
   boardId?: boolean
-  role?: boolean
+  customRoleId?: boolean
+  customRoleName?: boolean
+  createdByUserId?: boolean
   status?: boolean
+  maxUses?: boolean
+  usedCount?: boolean
   expiresAt?: boolean
   createdAt?: boolean
   board?: boolean | Prisma.BoardDefaultArgs<ExtArgs>
@@ -572,15 +788,20 @@ export type BoardInvitationSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
 export type BoardInvitationSelectScalar = {
   id?: boolean
   token?: boolean
+  type?: boolean
   email?: boolean
   boardId?: boolean
-  role?: boolean
+  customRoleId?: boolean
+  customRoleName?: boolean
+  createdByUserId?: boolean
   status?: boolean
+  maxUses?: boolean
+  usedCount?: boolean
   expiresAt?: boolean
   createdAt?: boolean
 }
 
-export type BoardInvitationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "token" | "email" | "boardId" | "role" | "status" | "expiresAt" | "createdAt", ExtArgs["result"]["boardInvitation"]>
+export type BoardInvitationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "token" | "type" | "email" | "boardId" | "customRoleId" | "customRoleName" | "createdByUserId" | "status" | "maxUses" | "usedCount" | "expiresAt" | "createdAt", ExtArgs["result"]["boardInvitation"]>
 export type BoardInvitationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   board?: boolean | Prisma.BoardDefaultArgs<ExtArgs>
 }
@@ -599,10 +820,15 @@ export type $BoardInvitationPayload<ExtArgs extends runtime.Types.Extensions.Int
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     token: string
-    email: string
+    type: $Enums.InvitationType
+    email: string | null
     boardId: string
-    role: $Enums.BoardMemberRole
+    customRoleId: string | null
+    customRoleName: string | null
+    createdByUserId: string | null
     status: string
+    maxUses: number
+    usedCount: number
     expiresAt: Date
     createdAt: Date
   }, ExtArgs["result"]["boardInvitation"]>
@@ -1031,10 +1257,15 @@ export interface Prisma__BoardInvitationClient<T, Null = never, ExtArgs extends 
 export interface BoardInvitationFieldRefs {
   readonly id: Prisma.FieldRef<"BoardInvitation", 'String'>
   readonly token: Prisma.FieldRef<"BoardInvitation", 'String'>
+  readonly type: Prisma.FieldRef<"BoardInvitation", 'InvitationType'>
   readonly email: Prisma.FieldRef<"BoardInvitation", 'String'>
   readonly boardId: Prisma.FieldRef<"BoardInvitation", 'String'>
-  readonly role: Prisma.FieldRef<"BoardInvitation", 'BoardMemberRole'>
+  readonly customRoleId: Prisma.FieldRef<"BoardInvitation", 'String'>
+  readonly customRoleName: Prisma.FieldRef<"BoardInvitation", 'String'>
+  readonly createdByUserId: Prisma.FieldRef<"BoardInvitation", 'String'>
   readonly status: Prisma.FieldRef<"BoardInvitation", 'String'>
+  readonly maxUses: Prisma.FieldRef<"BoardInvitation", 'Int'>
+  readonly usedCount: Prisma.FieldRef<"BoardInvitation", 'Int'>
   readonly expiresAt: Prisma.FieldRef<"BoardInvitation", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"BoardInvitation", 'DateTime'>
 }

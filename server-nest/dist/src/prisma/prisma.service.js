@@ -79,6 +79,9 @@ let PrismaService = class PrismaService {
     get comment() {
         return this._client.comment;
     }
+    get notification() {
+        return this._client.notification;
+    }
     get user() {
         return this._client.user;
     }

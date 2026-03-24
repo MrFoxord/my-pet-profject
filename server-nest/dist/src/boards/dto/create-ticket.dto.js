@@ -11,39 +11,87 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateTicketDto = void 0;
 const class_validator_1 = require("class-validator");
+const swagger_1 = require("@nestjs/swagger");
 class CreateTicketDto {
 }
 exports.CreateTicketDto = CreateTicketDto;
 __decorate([
+    (0, swagger_1.ApiProperty)({ example: 'Implement OAuth callback' }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateTicketDto.prototype, "title", void 0);
 __decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: 'Handle provider token exchange and session creation' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateTicketDto.prototype, "description", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({ example: 'todo' }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateTicketDto.prototype, "status", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({ example: 'task' }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateTicketDto.prototype, "type", void 0);
 __decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: 'high' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateTicketDto.prototype, "priority", void 0);
 __decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: 'col_todo' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateTicketDto.prototype, "columnId", void 0);
 __decorate([
+    (0, swagger_1.ApiPropertyOptional)({
+        type: 'object',
+        additionalProperties: true,
+        example: {
+            view: ['owner', 'admin', 'member'],
+            fill: ['owner', 'admin'],
+            edit: ['owner', 'admin'],
+            delete: ['owner'],
+            estimate: ['owner', 'admin'],
+            comment: ['owner', 'admin', 'member'],
+            manageAccess: ['owner'],
+        },
+    }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsObject)(),
     __metadata("design:type", Object)
 ], CreateTicketDto.prototype, "accessPolicy", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: 8, nullable: true }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsInt)(),
+    (0, class_validator_1.Min)(0),
+    __metadata("design:type", Number)
+], CreateTicketDto.prototype, "estimateOriginalHours", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: 3, nullable: true }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsInt)(),
+    (0, class_validator_1.Min)(0),
+    __metadata("design:type", Number)
+], CreateTicketDto.prototype, "estimateSpentHours", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: 5, nullable: true }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsInt)(),
+    (0, class_validator_1.Min)(0),
+    __metadata("design:type", Number)
+], CreateTicketDto.prototype, "estimateRemainingHours", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: 5, nullable: true }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsInt)(),
+    (0, class_validator_1.Min)(0),
+    __metadata("design:type", Number)
+], CreateTicketDto.prototype, "storyPoints", void 0);
 //# sourceMappingURL=create-ticket.dto.js.map

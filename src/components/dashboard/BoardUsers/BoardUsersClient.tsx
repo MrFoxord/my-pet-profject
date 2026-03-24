@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useTranslations } from "next-intl";
 import {
   Alert,
   Box,
+  Checkbox,
   Chip,
   FormControl,
   InputLabel,
@@ -14,9 +16,9 @@ import {
 import {
   BoardMember,
   BoardRole,
-  getBoardMembers,
-  getBoardRoles,
-  updateBoardMemberCustomRole,
+  CreateBoardInvitationInput,
+  InvitationType,
+  SharedInvitationMode,
 } from "@/lib/api/client";
 import {
   TextField,
@@ -38,93 +40,72 @@ import {
   Stack,
 } from "@/components/ui";
 import {
-  createBoardInvitation,
-  getBoardInvitations,
   BoardInvitation,
 } from "@/lib/api/client";
+import {
+  useCreateBoardInvitationMutation,
+  useDeleteBoardInvitationMutation,
+  useDeleteBoardMemberMutation,
+  useGetBoardInvitationsQuery,
+  useGetBoardMembersQuery,
+  useGetBoardRolesQuery,
+  useUpdateBoardMemberCustomRoleMutation,
+} from "@/store/api";
 
 interface BoardUsersClientProps {
   boardId: string;
 }
 
 export default function BoardUsersClient({ boardId }: BoardUsersClientProps) {
-  const [members, setMembers] = useState<BoardMember[]>([]);
-  const [roles, setRoles] = useState<BoardRole[]>([]);
-  const [loading, setLoading] = useState(true);
+  const t = useTranslations("boardUsers");
   const [error, setError] = useState<string | null>(null);
   const [savingMemberId, setSavingMemberId] = useState<string | null>(null);
-  const [invitations, setInvitations] = useState<BoardInvitation[]>([]);
+  const [removingMemberId, setRemovingMemberId] = useState<string | null>(null);
   const [showInviteForm, setShowInviteForm] = useState(false);
+  const [inviteType, setInviteType] = useState<InvitationType>("PERSONAL");
   const [inviteEmail, setInviteEmail] = useState("");
-  const [inviteRole, setInviteRole] = useState<"MEMBER">("MEMBER");
+  const [inviteCustomRoleId, setInviteCustomRoleId] = useState("");
+  const [sharedInvitationMode, setSharedInvitationMode] = useState<SharedInvitationMode>("SINGLE_USE");
   const [inviting, setInviting] = useState(false);
+  const [removingInvitationId, setRemovingInvitationId] = useState<string | null>(null);
   const [copiedTokenId, setCopiedTokenId] = useState<string | null>(null);
 
-  useEffect(() => {
-    let active = true;
+  const {
+    data: membersData = [],
+    isLoading: isMembersLoading,
+    error: membersError,
+  } = useGetBoardMembersQuery(boardId);
+  const {
+    data: rolesData = [],
+    isLoading: isRolesLoading,
+    error: rolesError,
+  } = useGetBoardRolesQuery(boardId);
+  const {
+    data: invitationsData = [],
+    isLoading: isInvitationsLoading,
+    error: invitationsError,
+  } = useGetBoardInvitationsQuery(boardId);
 
-    const load = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const [nextMembers, nextRoles] = await Promise.all([
-          getBoardMembers(boardId),
-          getBoardRoles(boardId),
-        ]);
-        if (!active) return;
-        setMembers(nextMembers);
-        setRoles(nextRoles);
-      } catch (loadError) {
-        console.error("failed to load board users", loadError);
-        if (!active) return;
-        setError("Не удалось загрузить участников доски.");
-      } finally {
-        if (active) {
-          setLoading(false);
-        }
-      }
-    };
+  const [updateBoardMemberCustomRoleMutation] = useUpdateBoardMemberCustomRoleMutation();
+  const [deleteBoardMemberMutation] = useDeleteBoardMemberMutation();
+  const [createBoardInvitationMutation] = useCreateBoardInvitationMutation();
+  const [deleteBoardInvitationMutation] = useDeleteBoardInvitationMutation();
 
-    void load();
-
-    return () => {
-      active = false;
-    };
-  }, [boardId]);
-
-  useEffect(() => {
-    let active = true;
-
-    const loadInvitations = async () => {
-      try {
-        const nextInvitations = await getBoardInvitations(boardId);
-        if (!active) return;
-        setInvitations(nextInvitations);
-      } catch (loadError) {
-        console.error("failed to load board invitations", loadError);
-      }
-    };
-
-    void loadInvitations();
-
-    return () => {
-      active = false;
-    };
-  }, [boardId]);
+  const members: BoardMember[] = membersData;
+  const roles: BoardRole[] = rolesData;
+  const invitations: BoardInvitation[] = invitationsData;
+  const loading = isMembersLoading || isRolesLoading || isInvitationsLoading;
+  const hasLoadError = Boolean(membersError || rolesError || invitationsError);
 
   const handleRoleChange = async (memberId: string, customRoleId: string) => {
     try {
       setSavingMemberId(memberId);
       setError(null);
-      const updated = await updateBoardMemberCustomRole(
+      await updateBoardMemberCustomRoleMutation({
         boardId,
         memberId,
-        customRoleId || null,
-      );
-      if (!updated) return;
-      setMembers((prev) =>
-        prev.map((member) => (member.id === memberId ? updated : member)),
-      );
+        customRoleId: customRoleId || null,
+      }).unwrap();
     } catch (saveError) {
       console.error("failed to update custom role", saveError);
       setError("Не удалось обновить кастомную роль участника.");
@@ -134,30 +115,61 @@ export default function BoardUsersClient({ boardId }: BoardUsersClientProps) {
   };
 
   const handleCreateInvitation = async () => {
-    if (!inviteEmail.trim()) {
-      setError("Пожалуйста, введите email адрес.");
+    if (inviteType === "PERSONAL" && !inviteEmail.trim()) {
+      setError(t("errorEmailRequired"));
       return;
     }
 
     try {
       setInviting(true);
       setError(null);
-      const invitation = await createBoardInvitation(boardId, {
-        email: inviteEmail,
-        role: inviteRole,
-      });
+      const input: CreateBoardInvitationInput = {
+        type: inviteType,
+        customRoleId: inviteCustomRoleId || null,
+      };
+
+      if (inviteType === "PERSONAL") {
+        input.email = inviteEmail.trim();
+      } else {
+        input.sharedInvitationMode = sharedInvitationMode;
+      }
+
+      const invitation = await createBoardInvitationMutation({ boardId, input }).unwrap();
 
       if (invitation) {
-        setInvitations((prev) => [...prev, invitation]);
+        setInviteType("PERSONAL");
         setInviteEmail("");
-        setInviteRole("MEMBER");
+        setInviteCustomRoleId("");
+        setSharedInvitationMode("SINGLE_USE");
         setShowInviteForm(false);
       }
     } catch (createError) {
       console.error("failed to create invitation", createError);
-      setError("Не удалось отправить приглашение.");
+      setError(t("errorCreateInvitation"));
     } finally {
       setInviting(false);
+    }
+  };
+
+  const handleRemoveMember = async (member: BoardMember) => {
+    const displayName = member.name || member.nickname || member.email || member.userId;
+    const confirmed = window.confirm(
+      t("removeMemberConfirm", { name: displayName }),
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setRemovingMemberId(member.id);
+      setError(null);
+      await deleteBoardMemberMutation({ boardId, memberId: member.id }).unwrap();
+    } catch (removeError) {
+      console.error("failed to remove board member", removeError);
+      setError(t("errorRemoveMember"));
+    } finally {
+      setRemovingMemberId(null);
     }
   };
 
@@ -170,7 +182,62 @@ export default function BoardUsersClient({ boardId }: BoardUsersClientProps) {
       setTimeout(() => setCopiedTokenId(null), 2000);
     } catch (copyError) {
       console.error("failed to copy invite link", copyError);
-      setError("Не удалось скопировать ссылку.");
+      setError(t("errorCopyLink"));
+    }
+  };
+
+  const handleDeleteInvitation = async (invitation: BoardInvitation) => {
+    const confirmed = window.confirm(
+      t("deleteInvitationConfirm"),
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setRemovingInvitationId(invitation.id);
+      setError(null);
+      await deleteBoardInvitationMutation({
+        boardId,
+        invitationId: invitation.id,
+      }).unwrap();
+    } catch (deleteError) {
+      console.error("failed to delete invitation", deleteError);
+      setError(t("errorDeleteInvitation"));
+    } finally {
+      setRemovingInvitationId(null);
+    }
+  };
+
+  const getInvitationTypeLabel = (type: InvitationType) =>
+    type === "PERSONAL" ? t("typePersonal") : t("typeShared");
+
+  const getInvitationStateLabel = (invitation: BoardInvitation) => {
+    switch (invitation.state) {
+      case "expired":
+        return t("stateExpired");
+      case "revoked":
+        return t("stateRevoked");
+      case "limit_reached":
+        return t("stateLimitReached");
+      case "accepted":
+        return invitation.type === "PERSONAL" ? t("stateAccepted") : t("stateCompleted");
+      default:
+        return t("statePending");
+    }
+  };
+
+  const getInvitationStateColor = (invitation: BoardInvitation) => {
+    switch (invitation.state) {
+      case "expired":
+      case "revoked":
+      case "limit_reached":
+        return "error" as const;
+      case "accepted":
+        return "success" as const;
+      default:
+        return "warning" as const;
     }
   };
 
@@ -178,30 +245,30 @@ export default function BoardUsersClient({ boardId }: BoardUsersClientProps) {
     <Box sx={{ display: "flex", flexDirection: "column", gap: 3, p: 3 }}>
       <Box>
         <Typography variant="h5" sx={{ mb: 1 }}>
-          Участники доски
+          {t("title")}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Здесь можно назначать кастомные роли участникам. Базовая роль в доске
-          остается отдельной: OWNER / ADMIN / MEMBER / VIEWER.
+          {t("subtitle")}
         </Typography>
       </Box>
 
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <Typography variant="h6">Участники и приглашения</Typography>
+        <Typography variant="h6">{t("membersAndInvitations")}</Typography>
         <Button
           variant="contained"
           color="primary"
           onClick={() => setShowInviteForm(true)}
         >
-          Пригласить участника
+          {t("inviteMember")}
         </Button>
       </Box>
 
       {error ? <Alert severity="error">{error}</Alert> : null}
-      {loading ? <Typography>Загрузка...</Typography> : null}
+      {hasLoadError ? <Alert severity="error">{t("errorLoadData")}</Alert> : null}
+      {loading ? <Typography>{t("loading")}</Typography> : null}
 
       {!loading && members.length === 0 ? (
-        <Alert severity="info">Участники доски пока не найдены.</Alert>
+        <Alert severity="info">{t("noMembers")}</Alert>
       ) : null}
 
       {!loading && members.length > 0 ? (
@@ -231,7 +298,7 @@ export default function BoardUsersClient({ boardId }: BoardUsersClientProps) {
                     {member.name || member.nickname || member.email || member.userId}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {member.email || "Email не указан"}
+                    {member.email || t("emailNotProvided")}
                   </Typography>
                   <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
                     <Chip label={`Board role: ${member.role}`} size="small" />
@@ -249,14 +316,14 @@ export default function BoardUsersClient({ boardId }: BoardUsersClientProps) {
                 </Box>
 
                 <FormControl fullWidth size="small" disabled={savingMemberId === member.id}>
-                  <InputLabel id={`member-custom-role-${member.id}`}>Кастомная роль</InputLabel>
+                  <InputLabel id={`member-custom-role-${member.id}`}>{t("customRoleLabel")}</InputLabel>
                   <Select
                     labelId={`member-custom-role-${member.id}`}
                     value={member.customRoleId ?? ""}
-                    label="Кастомная роль"
+                    label={t("customRoleLabel")}
                     onChange={(event) => void handleRoleChange(member.id, String(event.target.value))}
                   >
-                    <MenuItem value="">Без кастомной роли</MenuItem>
+                    <MenuItem value="">{t("noCustomRole")}</MenuItem>
                     {roles.map((role) => (
                       <MenuItem key={role.id} value={role.id}>
                         {role.name}
@@ -264,6 +331,23 @@ export default function BoardUsersClient({ boardId }: BoardUsersClientProps) {
                     ))}
                   </Select>
                 </FormControl>
+
+                <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
+                  <Button
+                    size="small"
+                    color="error"
+                    variant="contained"
+                    sx={{ color: "common.white" }}
+                    disabled={savingMemberId === member.id || removingMemberId === member.id}
+                    onClick={() => void handleRemoveMember(member)}
+                  >
+                    {removingMemberId === member.id ? (
+                      <CircularProgress size={16} />
+                    ) : (
+                      t("removeAccess")
+                    )}
+                  </Button>
+                </Box>
               </Box>
             </Box>
           ))}
@@ -273,47 +357,62 @@ export default function BoardUsersClient({ boardId }: BoardUsersClientProps) {
         {!loading && invitations.length > 0 ? (
           <Box>
             <Typography variant="h6" sx={{ mb: 2, mt: 2 }}>
-              Ожидающие приглашения
+              {t("pendingInvitations")}
             </Typography>
             <TableContainer component={Paper}>
               <Table size="small">
                 <TableHead>
                   <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
-                    <TableCell>Email</TableCell>
-                    <TableCell>Роль</TableCell>
-                    <TableCell>Статус</TableCell>
-                    <TableCell>Истекает</TableCell>
-                    <TableCell align="right">Действия</TableCell>
+                    <TableCell>{t("tableType")}</TableCell>
+                    <TableCell>{t("tableRecipient")}</TableCell>
+                    <TableCell>{t("tableCustomRole")}</TableCell>
+                    <TableCell>{t("tableStatus")}</TableCell>
+                    <TableCell>{t("tableUsage")}</TableCell>
+                    <TableCell>{t("tableLink")}</TableCell>
+                    <TableCell>{t("tableExpires")}</TableCell>
+                    <TableCell align="right">{t("tableActions")}</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {invitations.map((invitation) => (
                     <TableRow key={invitation.id}>
-                      <TableCell>{invitation.email}</TableCell>
-                      <TableCell>{invitation.role}</TableCell>
+                      <TableCell>{getInvitationTypeLabel(invitation.type)}</TableCell>
+                      <TableCell>
+                        {invitation.type === "PERSONAL"
+                          ? invitation.email || t("emailNotProvided")
+                          : t("noEmail")}
+                      </TableCell>
+                      <TableCell>{invitation.customRoleName || t("noCustomRole")}</TableCell>
                       <TableCell>
                         <Chip
-                          label={invitation.status === "pending" ? "Ожидает" : invitation.status}
+                          label={getInvitationStateLabel(invitation)}
                           size="small"
-                          color={invitation.status === "pending" ? "warning" : "default"}
-                          variant={invitation.status === "pending" ? "filled" : "outlined"}
+                          color={getInvitationStateColor(invitation)}
+                          variant={invitation.state === "pending" ? "filled" : "outlined"}
                         />
+                      </TableCell>
+                      <TableCell>{`${invitation.usedCount}/${invitation.maxUses}`}</TableCell>
+                      <TableCell sx={{ maxWidth: 260 }}>
+                        <Typography variant="body2" sx={{ wordBreak: "break-all" }}>
+                          {invitation.shareUrl}
+                        </Typography>
                       </TableCell>
                       <TableCell>
                         {new Date(invitation.expiresAt).toLocaleDateString()}
                       </TableCell>
                       <TableCell align="right">
-                        {invitation.status === "pending" && (
-                          <Stack direction="row" spacing={1} justifyContent="flex-end">
+                        <Stack direction="row" spacing={1} justifyContent="flex-end">
+                          {invitation.state === "pending" && (
                             <Tooltip
                               title={
                                 copiedTokenId === invitation.id
-                                  ? "Скопировано!"
-                                  : "Скопировать ссылку приглашения"
+                                  ? t("copied")
+                                  : t("copyInviteLink")
                               }
                             >
                               <IconButton
                                 size="small"
+                                disabled={removingInvitationId === invitation.id}
                                 onClick={() =>
                                   void handleCopyToken(invitation.token, invitation.id)
                                 }
@@ -321,8 +420,21 @@ export default function BoardUsersClient({ boardId }: BoardUsersClientProps) {
                                 <span>📋</span>
                               </IconButton>
                             </Tooltip>
-                          </Stack>
-                        )}
+                          )}
+                          <Button
+                            size="small"
+                            color="error"
+                            variant="outlined"
+                            disabled={removingInvitationId === invitation.id}
+                            onClick={() => void handleDeleteInvitation(invitation)}
+                          >
+                            {removingInvitationId === invitation.id ? (
+                              <CircularProgress size={16} />
+                            ) : (
+                              t("deleteInvitation")
+                            )}
+                          </Button>
+                        </Stack>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -338,29 +450,62 @@ export default function BoardUsersClient({ boardId }: BoardUsersClientProps) {
           maxWidth="sm"
           fullWidth
         >
-          <DialogTitle>Пригласить участника</DialogTitle>
+          <DialogTitle>{t("inviteDialogTitle")}</DialogTitle>
           <DialogContent>
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 2 }}>
-              <TextField
-                fullWidth
-                label="Email адрес"
-                type="email"
-                value={inviteEmail}
-                onChange={(e) => setInviteEmail(e.target.value)}
-                disabled={inviting}
-                placeholder="user@example.com"
-              />
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Checkbox
+                  checked={inviteType === "SHARED"}
+                  onChange={(event) => {
+                    setInviteType(event.target.checked ? "SHARED" : "PERSONAL");
+                    setError(null);
+                  }}
+                  disabled={inviting}
+                />
+                <Typography variant="body2">{t("sharedLinkCheckbox")}</Typography>
+              </Box>
+
+              {inviteType === "PERSONAL" ? (
+                <TextField
+                  fullWidth
+                  label={t("emailAddressLabel")}
+                  type="email"
+                  value={inviteEmail}
+                  onChange={(e) => setInviteEmail(e.target.value)}
+                  disabled={inviting}
+                  placeholder="user@example.com"
+                />
+              ) : (
+                <FormControl fullWidth>
+                  <InputLabel>{t("sharedModeLabel")}</InputLabel>
+                  <Select
+                    value={sharedInvitationMode}
+                    label={t("sharedModeLabel")}
+                    onChange={(e) =>
+                      setSharedInvitationMode(e.target.value as SharedInvitationMode)
+                    }
+                    disabled={inviting}
+                  >
+                    <MenuItem value="SINGLE_USE">{t("singleUse")}</MenuItem>
+                    <MenuItem value="MULTI_USE">{t("multiUse")}</MenuItem>
+                  </Select>
+                </FormControl>
+              )}
+
               <FormControl fullWidth>
-                <InputLabel>Роль в доске</InputLabel>
+                <InputLabel>{t("customRoleLabel")}</InputLabel>
                 <Select
-                  value={inviteRole}
-                  label="Роль в доске"
-                  onChange={(e) => setInviteRole(e.target.value as "MEMBER")}
+                  value={inviteCustomRoleId}
+                  label={t("customRoleLabel")}
+                  onChange={(e) => setInviteCustomRoleId(String(e.target.value))}
                   disabled={inviting}
                 >
-                  <MenuItem value="MEMBER">Участник</MenuItem>
-                  <MenuItem value="ADMIN">Администратор</MenuItem>
-                  <MenuItem value="VIEWER">Зритель</MenuItem>
+                  <MenuItem value="">{t("noCustomRole")}</MenuItem>
+                  {roles.map((role) => (
+                    <MenuItem key={role.id} value={role.id}>
+                      {role.name}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Box>
@@ -370,14 +515,14 @@ export default function BoardUsersClient({ boardId }: BoardUsersClientProps) {
               onClick={() => setShowInviteForm(false)}
               disabled={inviting}
             >
-              Отмена
+              {t("cancelButton")}
             </Button>
             <Button
               onClick={() => void handleCreateInvitation()}
               variant="contained"
-              disabled={inviting || !inviteEmail.trim()}
+              disabled={inviting || (inviteType === "PERSONAL" && !inviteEmail.trim())}
             >
-              {inviting ? <CircularProgress size={20} /> : "Отправить приглашение"}
+              {inviting ? <CircularProgress size={20} /> : t("createInvitation")}
             </Button>
           </DialogActions>
         </Dialog>

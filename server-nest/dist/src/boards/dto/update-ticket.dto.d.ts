@@ -7,6 +7,7 @@ export declare class UpdateTicketDto {
     columnId?: string;
     sortIndex?: number;
     accessPolicy?: {
+        fill?: string[];
         view?: string[];
         edit?: string[];
         delete?: string[];
@@ -14,4 +15,8 @@ export declare class UpdateTicketDto {
         comment?: string[];
         manageAccess?: string[];
     };
+    estimateOriginalHours?: number | null;
+    estimateSpentHours?: number | null;
+    estimateRemainingHours?: number | null;
+    storyPoints?: number | null;
 }

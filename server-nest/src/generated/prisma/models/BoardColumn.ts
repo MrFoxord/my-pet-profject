@@ -437,14 +437,6 @@ export type BoardColumnUncheckedUpdateManyWithoutBoardNestedInput = {
   deleteMany?: Prisma.BoardColumnScalarWhereInput | Prisma.BoardColumnScalarWhereInput[]
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type BoardColumnCreateNestedOneWithoutTicketsInput = {
   create?: Prisma.XOR<Prisma.BoardColumnCreateWithoutTicketsInput, Prisma.BoardColumnUncheckedCreateWithoutTicketsInput>
   connectOrCreate?: Prisma.BoardColumnCreateOrConnectWithoutTicketsInput

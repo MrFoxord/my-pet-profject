@@ -35,6 +35,7 @@ export interface Board {
   };
   tickets?: Ticket[];
   currentUserRole?: string | null;
+  currentUserCustomRoleName?: string | null;
   columns: BoardColumn[];
 }
 
@@ -56,6 +57,7 @@ export interface BoardMockProps {
 
 export type TicketAccessPolicy = {
   view: string[];
+  fill: string[];
   edit: string[];
   delete: string[];
   estimate: string[];
@@ -65,6 +67,7 @@ export type TicketAccessPolicy = {
 
 export const DEFAULT_ACCESS_POLICY: TicketAccessPolicy = {
   view: [],
+  fill: [],
   edit: [],
   delete: [],
   estimate: [],
@@ -73,10 +76,10 @@ export const DEFAULT_ACCESS_POLICY: TicketAccessPolicy = {
 };
 
 export interface TicketEstimate {
-  originalHours?: number;
-  spentHours?: number;
-  remainingHours?: number;
-  storyPoints?: number;
+  originalHours?: number | null;
+  spentHours?: number | null;
+  remainingHours?: number | null;
+  storyPoints?: number | null;
 }
 
 export interface Ticket {
@@ -110,6 +113,7 @@ export interface BoardColumn {
 
 export interface TickerCardProps {
   ticket: Ticket;
+  moveTransitionPhase?: "out" | "in";
   onClick?: (ticket: Ticket) => void;
 }
 
@@ -117,17 +121,22 @@ export interface TicketModalProps {
   ticket: Ticket;
   open: boolean;
   onClose: () => void;
+  remoteUpdateVersion?: number;
   boardRoleNames?: string[];
+  currentUserRole?: string | null;
+  currentUserCustomRoleName?: string | null;
   onSaveTicket?: (
     ticketId: string,
     payload: {
-      description: string;
-      status: Ticket["status"];
-      priority: Ticket["priority"];
-      type: Ticket["type"];
-      accessPolicy: TicketAccessPolicy;
+      description?: string;
+      status?: Ticket["status"];
+      priority?: Ticket["priority"];
+      type?: Ticket["type"];
+      estimate?: TicketEstimate;
+      accessPolicy?: TicketAccessPolicy;
     }
   ) => Promise<Ticket | null>;
+  onCreateComment?: (ticketId: string, body: string) => Promise<TicketComment | null>;
   onDeleteTicket?: (ticketId: string) => Promise<boolean>;
 }
 

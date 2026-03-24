@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersController = void 0;
 const common_1 = require("@nestjs/common");
+const swagger_1 = require("@nestjs/swagger");
 const internal_auth_guard_1 = require("../auth/internal-auth.guard");
 const update_default_profile_dto_1 = require("./dto/update-default-profile.dto");
 const users_service_1 = require("./users.service");
@@ -37,6 +38,20 @@ let UsersController = class UsersController {
 exports.UsersController = UsersController;
 __decorate([
     (0, common_1.Get)('me/default-state'),
+    (0, swagger_1.ApiOperation)({ summary: 'Get current user default profile state' }),
+    (0, swagger_1.ApiOkResponse)({
+        description: 'Current default profile state',
+        schema: {
+            example: {
+                isDefault: false,
+                firstName: 'John',
+                lastName: 'Doe',
+                nickname: 'johnny',
+                workRole: 'CLIENT',
+            },
+        },
+    }),
+    (0, swagger_1.ApiUnauthorizedResponse)({ description: 'Unauthorized' }),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -44,6 +59,21 @@ __decorate([
 ], UsersController.prototype, "getDefaultState", null);
 __decorate([
     (0, common_1.Patch)('me/default-profile'),
+    (0, swagger_1.ApiOperation)({ summary: 'Update current user default profile' }),
+    (0, swagger_1.ApiBody)({ type: update_default_profile_dto_1.UpdateDefaultProfileDto }),
+    (0, swagger_1.ApiOkResponse)({
+        description: 'Updated default profile',
+        schema: {
+            example: {
+                isDefault: true,
+                firstName: 'John',
+                lastName: 'Doe',
+                nickname: 'johnny',
+                workRole: 'EXECUTOR',
+            },
+        },
+    }),
+    (0, swagger_1.ApiUnauthorizedResponse)({ description: 'Unauthorized' }),
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -51,6 +81,8 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "updateDefaultProfile", null);
 exports.UsersController = UsersController = __decorate([
+    (0, swagger_1.ApiTags)('Users'),
+    (0, swagger_1.ApiBearerAuth)('bearer'),
     (0, common_1.Controller)('users'),
     (0, common_1.UseGuards)(internal_auth_guard_1.InternalAuthGuard),
     __metadata("design:paramtypes", [users_service_1.UsersService])

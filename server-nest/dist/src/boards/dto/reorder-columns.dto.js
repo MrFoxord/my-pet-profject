@@ -11,10 +11,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ReorderColumnsDto = void 0;
 const class_validator_1 = require("class-validator");
+const swagger_1 = require("@nestjs/swagger");
 class ReorderColumnsDto {
 }
 exports.ReorderColumnsDto = ReorderColumnsDto;
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        type: [String],
+        example: ['col_todo', 'col_progress', 'col_done'],
+    }),
     (0, class_validator_1.IsArray)(),
     (0, class_validator_1.IsString)({ each: true }),
     __metadata("design:type", Array)

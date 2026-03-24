@@ -6,60 +6,68 @@ import { MuiLikeTheme } from "@/types";
 
 export const ColumnsContainer = styled.div`
   display: flex;
-  gap: 16px;
+  gap: 14px;
   align-items: flex-start;
   width: max-content;
   min-width: 100%;
   overflow-x: visible;
-  padding-bottom: 8px;
+  padding-bottom: 10px;
 `;
 
 export const ColumnWrapper = styled.div`
-  flex: 0 0 280px;
+  flex: 0 0 294px;
 `;
 
 export const ColumnCard = styled.div`
   background: ${({ theme }) =>
     (theme as MuiLikeTheme)?.palette?.background?.paper ?? "#ffffff"};
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 12px;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 9px;
 `;
 
 export const ColumnHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 `;
 
 export const ColumnActions = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 `;
 
 export const AddTicketButton = styled.button`
   border: 0;
-  background: #0f172a;
+  background: #0b63ce;
   color: #fff;
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   border-radius: 999px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 17px;
   line-height: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  transition: transform .16s ease, filter .16s ease;
+
+  &:hover {
+    filter: brightness(1.05);
+    transform: translateY(-1px);
+  }
 `;
 
 export const ColumnTitle = styled(MuiTypography)`
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.95rem;
+  color: #1d2a44;
 `;
 
 export const ColumnTicketList = styled.div`

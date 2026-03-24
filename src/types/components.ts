@@ -3,8 +3,3 @@ export interface SidebarProps {
   themeColor?: string;
 }
 
-export interface TopbarProps {
-  boardTitle: string;
-  boardLogo?: string;
-}
-

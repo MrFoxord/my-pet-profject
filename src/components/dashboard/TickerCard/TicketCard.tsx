@@ -17,13 +17,14 @@ import {
 
 export default function TickerCard({
   ticket,
+  moveTransitionPhase,
   onClick,
 }: TickerCardProps) {
   const total = ticket.subtasks.length;
   const done = ticket.subtasks.filter((st) => st.done).length;
 
   return (
-    <Card onClick={() => onClick?.(ticket)}>
+    <Card $moveTransitionPhase={moveTransitionPhase} onClick={() => onClick?.(ticket)}>
       <HeaderRow>
         <TicketId>{ticket.id}</TicketId>
         <TypeBadge $type={ticket.type}>{ticket.type}</TypeBadge>

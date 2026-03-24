@@ -10,15 +10,17 @@ exports.BoardsModule = void 0;
 const common_1 = require("@nestjs/common");
 const boards_controller_1 = require("./boards.controller");
 const invitations_public_controller_1 = require("./invitations.public.controller");
+const notifications_controller_1 = require("./notifications.controller");
 const boards_service_1 = require("./boards.service");
 const auth_module_1 = require("../auth/auth.module");
+const realtime_module_1 = require("../realtime/realtime.module");
 let BoardsModule = class BoardsModule {
 };
 exports.BoardsModule = BoardsModule;
 exports.BoardsModule = BoardsModule = __decorate([
     (0, common_1.Module)({
-        imports: [auth_module_1.AuthModule],
-        controllers: [boards_controller_1.BoardsController, invitations_public_controller_1.InvitationsPublicController],
+        imports: [auth_module_1.AuthModule, realtime_module_1.RealtimeModule],
+        controllers: [boards_controller_1.BoardsController, invitations_public_controller_1.InvitationsPublicController, notifications_controller_1.NotificationsController],
         providers: [boards_service_1.BoardsService],
     })
 ], BoardsModule);

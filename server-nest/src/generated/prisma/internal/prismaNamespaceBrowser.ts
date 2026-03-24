@@ -60,6 +60,7 @@ export const ModelName = {
   Ticket: 'Ticket',
   Subtask: 'Subtask',
   Comment: 'Comment',
+  Notification: 'Notification',
   Account: 'Account',
   VerificationToken: 'VerificationToken'
 } as const
@@ -141,10 +142,15 @@ export type BoardRoleScalarFieldEnum = (typeof BoardRoleScalarFieldEnum)[keyof t
 export const BoardInvitationScalarFieldEnum = {
   id: 'id',
   token: 'token',
+  type: 'type',
   email: 'email',
   boardId: 'boardId',
-  role: 'role',
+  customRoleId: 'customRoleId',
+  customRoleName: 'customRoleName',
+  createdByUserId: 'createdByUserId',
   status: 'status',
+  maxUses: 'maxUses',
+  usedCount: 'usedCount',
   expiresAt: 'expiresAt',
   createdAt: 'createdAt'
 } as const
@@ -207,6 +213,22 @@ export const CommentScalarFieldEnum = {
 } as const
 
 export type CommentScalarFieldEnum = (typeof CommentScalarFieldEnum)[keyof typeof CommentScalarFieldEnum]
+
+
+export const NotificationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  boardId: 'boardId',
+  ticketId: 'ticketId',
+  kind: 'kind',
+  title: 'title',
+  message: 'message',
+  isRead: 'isRead',
+  readAt: 'readAt',
+  createdAt: 'createdAt'
+} as const
+
+export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
 
 
 export const AccountScalarFieldEnum = {

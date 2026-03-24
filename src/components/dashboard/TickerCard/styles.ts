@@ -1,16 +1,73 @@
-import styled from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 
-export const Card = styled.div`
+const movedCardSmoothing = keyframes`
+  0% {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  45% {
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
+    transform: translateY(-1px) scale(1.005);
+    opacity: 0.72;
+  }
+  100% {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+`;
+
+const movedCardFadeOut = keyframes`
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-2px) scale(0.99);
+  }
+`;
+
+const movedCardFadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(2px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+`;
+
+export const Card = styled.div<{ $moveTransitionPhase?: "out" | "in" }>`
     width: 100%;
-    background: #fff;
-    border-radius: 10px;
-    padding: 14px;
-    margin-bottom: 10px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #dfe6f2;
+    padding: 12px 13px;
+    margin-bottom: 8px;
+    box-shadow: 0 5px 14px rgba(15, 23, 42, 0.08);
     cursor: pointer;
     display: flex;
     flex-direction: column;
     gap: 8px;
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    &:hover {
+      transform: translateY(-1px);
+      border-color: #b7c9e4;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.1);
+    }
+    ${({ $moveTransitionPhase }) =>
+      $moveTransitionPhase === "out"
+        ? css`
+            animation: ${movedCardFadeOut} 140ms ease-in forwards;
+          `
+        : $moveTransitionPhase === "in"
+        ? css`
+            animation: ${movedCardFadeIn} 220ms ease-out forwards, ${movedCardSmoothing} 420ms ease-out;
+          `
+        : ""}
 `
 
 export const HeaderRow = styled.div`
@@ -22,7 +79,7 @@ export const HeaderRow = styled.div`
 export const TicketId = styled.div`
   font-size: 13px;
   font-weight: 600;
-  color: #6b7280;
+  color: #74839a;
 `;
 
 export const TypeBadge = styled.div<{ $type: string }>`
@@ -31,9 +88,9 @@ export const TypeBadge = styled.div<{ $type: string }>`
   font-size: 12px;
   text-transform: capitalize;
   background: ${({ $type }) =>
-    $type === "bug" ? "#fee2e2" :
-    $type === "feature" ? "#dbeafe" :
-    "#f3f4f6"};
+    $type === "bug" ? "#fde3e3" :
+    $type === "feature" ? "#deebff" :
+    "#edf1f8"};
   color: ${({ $type }) =>
     $type === "bug" ? "#b91c1c" :
     $type === "feature" ? "#1d4ed8" :
@@ -42,8 +99,8 @@ export const TypeBadge = styled.div<{ $type: string }>`
 
 export const Title = styled.div`
   font-size: 15px;
-  font-weight: 600;
-  color: #111827;
+  font-weight: 700;
+  color: #1a2a43;
 `;
 
 export const FooterRow = styled.div`
@@ -60,12 +117,12 @@ export const Left = styled.div`
 
 export const TaskSummary = styled.div`
   font-size: 13px;
-  color: #6b7280;
+  color: #5f6f86;
 `;
 
 export const Progress = styled.div`
   height: 4px;
-  background: #e5e7eb;
+  background: #e2e8f2;
   border-radius: 4px;
   width: 100%;
 `;

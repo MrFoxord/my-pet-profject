@@ -5,6 +5,11 @@ export declare const BoardMemberRole: {
     readonly VIEWER: "VIEWER";
 };
 export type BoardMemberRole = (typeof BoardMemberRole)[keyof typeof BoardMemberRole];
+export declare const InvitationType: {
+    readonly PERSONAL: "PERSONAL";
+    readonly SHARED: "SHARED";
+};
+export type InvitationType = (typeof InvitationType)[keyof typeof InvitationType];
 export declare const MonetizationRole: {
     readonly FREE: "FREE";
     readonly SUBMITTED: "SUBMITTED";

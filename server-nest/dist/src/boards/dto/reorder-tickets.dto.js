@@ -12,23 +12,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ReorderTicketsDto = exports.ReorderTicketItemDto = void 0;
 const class_validator_1 = require("class-validator");
 const class_transformer_1 = require("class-transformer");
+const swagger_1 = require("@nestjs/swagger");
 class ReorderTicketItemDto {
 }
 exports.ReorderTicketItemDto = ReorderTicketItemDto;
 __decorate([
+    (0, swagger_1.ApiProperty)({ example: 'ticket_1' }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], ReorderTicketItemDto.prototype, "id", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({ example: 'in-progress' }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], ReorderTicketItemDto.prototype, "status", void 0);
 __decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: 'col_progress' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], ReorderTicketItemDto.prototype, "columnId", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({ example: 2 }),
     (0, class_validator_1.IsInt)(),
     (0, class_validator_1.Min)(0),
     __metadata("design:type", Number)
@@ -37,6 +42,13 @@ class ReorderTicketsDto {
 }
 exports.ReorderTicketsDto = ReorderTicketsDto;
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        type: [ReorderTicketItemDto],
+        example: [
+            { id: 'ticket_1', status: 'todo', columnId: 'col_todo', sortIndex: 0 },
+            { id: 'ticket_2', status: 'in-progress', columnId: 'col_progress', sortIndex: 1 },
+        ],
+    }),
     (0, class_validator_1.IsArray)(),
     (0, class_validator_1.ValidateNested)({ each: true }),
     (0, class_transformer_1.Type)(() => ReorderTicketItemDto),

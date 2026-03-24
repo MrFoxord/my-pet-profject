@@ -1,5 +1,11 @@
-import { BoardMemberRole } from '../../generated/prisma/client';
+import { InvitationType } from '../../generated/prisma/client';
+export declare enum SharedInvitationMode {
+    SINGLE_USE = "SINGLE_USE",
+    MULTI_USE = "MULTI_USE"
+}
 export declare class CreateBoardInvitationDto {
-    email: string;
-    role: BoardMemberRole;
+    type: InvitationType;
+    email?: string;
+    customRoleId?: string;
+    sharedInvitationMode?: SharedInvitationMode;
 }

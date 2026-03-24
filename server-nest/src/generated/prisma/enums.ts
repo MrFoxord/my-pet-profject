@@ -19,6 +19,14 @@ export const BoardMemberRole = {
 export type BoardMemberRole = (typeof BoardMemberRole)[keyof typeof BoardMemberRole]
 
 
+export const InvitationType = {
+  PERSONAL: 'PERSONAL',
+  SHARED: 'SHARED'
+} as const
+
+export type InvitationType = (typeof InvitationType)[keyof typeof InvitationType]
+
+
 export const MonetizationRole = {
   FREE: 'FREE',
   SUBMITTED: 'SUBMITTED',

@@ -11,10 +11,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UpdateBoardMemberCustomRoleDto = void 0;
 const class_validator_1 = require("class-validator");
+const swagger_1 = require("@nestjs/swagger");
 class UpdateBoardMemberCustomRoleDto {
 }
 exports.UpdateBoardMemberCustomRoleDto = UpdateBoardMemberCustomRoleDto;
 __decorate([
+    (0, swagger_1.ApiPropertyOptional)({
+        nullable: true,
+        example: 'role_123',
+        description: 'Set null or omit to clear custom role',
+    }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)

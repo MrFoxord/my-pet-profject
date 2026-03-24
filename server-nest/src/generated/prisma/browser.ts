@@ -63,6 +63,11 @@ export type Subtask = Prisma.SubtaskModel
  */
 export type Comment = Prisma.CommentModel
 /**
+ * Model Notification
+ * 
+ */
+export type Notification = Prisma.NotificationModel
+/**
  * Model Account
  * 
  */

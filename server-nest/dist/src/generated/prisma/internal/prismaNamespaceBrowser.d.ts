@@ -20,6 +20,7 @@ export declare const ModelName: {
     readonly Ticket: "Ticket";
     readonly Subtask: "Subtask";
     readonly Comment: "Comment";
+    readonly Notification: "Notification";
     readonly Account: "Account";
     readonly VerificationToken: "VerificationToken";
 };
@@ -80,10 +81,15 @@ export type BoardRoleScalarFieldEnum = (typeof BoardRoleScalarFieldEnum)[keyof t
 export declare const BoardInvitationScalarFieldEnum: {
     readonly id: "id";
     readonly token: "token";
+    readonly type: "type";
     readonly email: "email";
     readonly boardId: "boardId";
-    readonly role: "role";
+    readonly customRoleId: "customRoleId";
+    readonly customRoleName: "customRoleName";
+    readonly createdByUserId: "createdByUserId";
     readonly status: "status";
+    readonly maxUses: "maxUses";
+    readonly usedCount: "usedCount";
     readonly expiresAt: "expiresAt";
     readonly createdAt: "createdAt";
 };
@@ -133,6 +139,19 @@ export declare const CommentScalarFieldEnum: {
     readonly updatedAt: "updatedAt";
 };
 export type CommentScalarFieldEnum = (typeof CommentScalarFieldEnum)[keyof typeof CommentScalarFieldEnum];
+export declare const NotificationScalarFieldEnum: {
+    readonly id: "id";
+    readonly userId: "userId";
+    readonly boardId: "boardId";
+    readonly ticketId: "ticketId";
+    readonly kind: "kind";
+    readonly title: "title";
+    readonly message: "message";
+    readonly isRead: "isRead";
+    readonly readAt: "readAt";
+    readonly createdAt: "createdAt";
+};
+export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum];
 export declare const AccountScalarFieldEnum: {
     readonly id: "id";
     readonly userId: "userId";

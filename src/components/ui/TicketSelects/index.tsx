@@ -6,6 +6,7 @@ import type { Ticket } from "@/types";
 interface BaseSelectProps {
   fullWidth?: boolean;
   size?: "small" | "medium";
+  disabled?: boolean;
 }
 
 // ── Type ──────────────────────────────────────────────────────────────────────
@@ -22,6 +23,7 @@ export function TicketTypeSelect({
   label = "Тип",
   fullWidth = true,
   size,
+  disabled,
 }: TicketTypeSelectProps) {
   return (
     <TextField
@@ -31,6 +33,7 @@ export function TicketTypeSelect({
       onChange={(e) => onChange(e.target.value as Ticket["type"])}
       fullWidth={fullWidth}
       size={size}
+      disabled={disabled}
     >
       <MenuItem value="task">Task</MenuItem>
       <MenuItem value="feature">Feature</MenuItem>
@@ -53,6 +56,7 @@ export function TicketPrioritySelect({
   label = "Приоритет",
   fullWidth = true,
   size,
+  disabled,
 }: TicketPrioritySelectProps) {
   return (
     <TextField
@@ -62,6 +66,7 @@ export function TicketPrioritySelect({
       onChange={(e) => onChange(e.target.value as Ticket["priority"])}
       fullWidth={fullWidth}
       size={size}
+      disabled={disabled}
     >
       <MenuItem value="low">Low</MenuItem>
       <MenuItem value="medium">Medium</MenuItem>
@@ -85,6 +90,7 @@ export function TicketStatusSelect({
   label = "Статус",
   fullWidth = true,
   size,
+  disabled,
 }: TicketStatusSelectProps) {
   return (
     <TextField
@@ -94,6 +100,7 @@ export function TicketStatusSelect({
       onChange={(e) => onChange(e.target.value as Ticket["status"])}
       fullWidth={fullWidth}
       size={size}
+      disabled={disabled}
     >
       <MenuItem value="todo">To Do</MenuItem>
       <MenuItem value="in-progress">In Progress</MenuItem>

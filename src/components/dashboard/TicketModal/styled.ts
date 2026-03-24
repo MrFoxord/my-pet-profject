@@ -1,15 +1,52 @@
-import styled from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 import { MuiLikeTheme } from "@/types";
 
+const modalRemotePulse = keyframes`
+  0% {
+    box-shadow: 0 10px 40px rgba(15, 23, 42, 0.35);
+  }
+  45% {
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.28), 0 20px 48px rgba(2, 132, 199, 0.22);
+  }
+  100% {
+    box-shadow: 0 10px 40px rgba(15, 23, 42, 0.35);
+  }
+`;
+
+const commentAppearFromTop = keyframes`
+  0% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.985);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+`;
+
+const sectionRemotePulse = keyframes`
+  0% {
+    box-shadow: 0 0 0 0 rgba(14, 165, 233, 0);
+    background: transparent;
+  }
+  40% {
+    box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.16);
+    background: rgba(14, 165, 233, 0.07);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(14, 165, 233, 0);
+    background: transparent;
+  }
+`;
+
 export const ModalOuter = styled.div`
-  min-height: 100vh;
   padding: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
 `;
 
-export const ModalCard = styled.div`
+export const ModalCard = styled.div<{ $isRemotePulse?: boolean }>`
   width: min(640px, 90vw);
   max-height: 90vh;
   background: ${({ theme }) =>
@@ -21,6 +58,12 @@ export const ModalCard = styled.div`
   flex-direction: column;
   gap: 24px;
   overflow-y: auto;
+  ${({ $isRemotePulse }) =>
+    $isRemotePulse
+      ? css`
+          animation: ${modalRemotePulse} 680ms ease-out;
+        `
+      : ""}
 `;
 
 export const Header = styled.div`
@@ -66,10 +109,17 @@ export const HeaderActions = styled.div`
   flex-shrink: 0;
 `;
 
-export const Section = styled.div`
+export const Section = styled.div<{ $isRemotePulse?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 12px;
+  border-radius: 10px;
+  ${({ $isRemotePulse }) =>
+    $isRemotePulse
+      ? css`
+          animation: ${sectionRemotePulse} 680ms ease-out;
+        `
+      : ""}
 `;
 
 export const SubtasksHeader = styled.div`
@@ -112,7 +162,7 @@ export const CommentsList = styled.div`
   gap: 8px;
 `;
 
-export const CommentCard = styled.div`
+export const CommentCard = styled.div<{ $isNew?: boolean }>`
   padding: 12px;
   border-radius: 8px;
   background: ${({ theme }) =>
@@ -120,6 +170,13 @@ export const CommentCard = styled.div`
   display: flex;
   flex-direction: column;
   gap: 6px;
+  transform-origin: top center;
+  ${({ $isNew }) =>
+    $isNew
+      ? css`
+          animation: ${commentAppearFromTop} 420ms ease-out;
+        `
+      : ""}
 `;
 
 export const CommentHeader = styled.div`

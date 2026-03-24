@@ -169,6 +169,12 @@ export type EnumBoardMemberRoleWithAggregatesFilter<$PrismaModel = never> = {
     _min?: Prisma.NestedEnumBoardMemberRoleFilter<$PrismaModel>;
     _max?: Prisma.NestedEnumBoardMemberRoleFilter<$PrismaModel>;
 };
+export type EnumInvitationTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.InvitationType | Prisma.EnumInvitationTypeFieldRefInput<$PrismaModel>;
+    in?: $Enums.InvitationType[] | Prisma.ListEnumInvitationTypeFieldRefInput<$PrismaModel>;
+    notIn?: $Enums.InvitationType[] | Prisma.ListEnumInvitationTypeFieldRefInput<$PrismaModel>;
+    not?: Prisma.NestedEnumInvitationTypeFilter<$PrismaModel> | $Enums.InvitationType;
+};
 export type IntFilter<$PrismaModel = never> = {
     equals?: number | Prisma.IntFieldRefInput<$PrismaModel>;
     in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>;
@@ -178,6 +184,15 @@ export type IntFilter<$PrismaModel = never> = {
     gt?: number | Prisma.IntFieldRefInput<$PrismaModel>;
     gte?: number | Prisma.IntFieldRefInput<$PrismaModel>;
     not?: Prisma.NestedIntFilter<$PrismaModel> | number;
+};
+export type EnumInvitationTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.InvitationType | Prisma.EnumInvitationTypeFieldRefInput<$PrismaModel>;
+    in?: $Enums.InvitationType[] | Prisma.ListEnumInvitationTypeFieldRefInput<$PrismaModel>;
+    notIn?: $Enums.InvitationType[] | Prisma.ListEnumInvitationTypeFieldRefInput<$PrismaModel>;
+    not?: Prisma.NestedEnumInvitationTypeWithAggregatesFilter<$PrismaModel> | $Enums.InvitationType;
+    _count?: Prisma.NestedIntFilter<$PrismaModel>;
+    _min?: Prisma.NestedEnumInvitationTypeFilter<$PrismaModel>;
+    _max?: Prisma.NestedEnumInvitationTypeFilter<$PrismaModel>;
 };
 export type IntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | Prisma.IntFieldRefInput<$PrismaModel>;
@@ -435,6 +450,21 @@ export type NestedEnumBoardMemberRoleWithAggregatesFilter<$PrismaModel = never> 
     _count?: Prisma.NestedIntFilter<$PrismaModel>;
     _min?: Prisma.NestedEnumBoardMemberRoleFilter<$PrismaModel>;
     _max?: Prisma.NestedEnumBoardMemberRoleFilter<$PrismaModel>;
+};
+export type NestedEnumInvitationTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.InvitationType | Prisma.EnumInvitationTypeFieldRefInput<$PrismaModel>;
+    in?: $Enums.InvitationType[] | Prisma.ListEnumInvitationTypeFieldRefInput<$PrismaModel>;
+    notIn?: $Enums.InvitationType[] | Prisma.ListEnumInvitationTypeFieldRefInput<$PrismaModel>;
+    not?: Prisma.NestedEnumInvitationTypeFilter<$PrismaModel> | $Enums.InvitationType;
+};
+export type NestedEnumInvitationTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.InvitationType | Prisma.EnumInvitationTypeFieldRefInput<$PrismaModel>;
+    in?: $Enums.InvitationType[] | Prisma.ListEnumInvitationTypeFieldRefInput<$PrismaModel>;
+    notIn?: $Enums.InvitationType[] | Prisma.ListEnumInvitationTypeFieldRefInput<$PrismaModel>;
+    not?: Prisma.NestedEnumInvitationTypeWithAggregatesFilter<$PrismaModel> | $Enums.InvitationType;
+    _count?: Prisma.NestedIntFilter<$PrismaModel>;
+    _min?: Prisma.NestedEnumInvitationTypeFilter<$PrismaModel>;
+    _max?: Prisma.NestedEnumInvitationTypeFilter<$PrismaModel>;
 };
 export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | Prisma.IntFieldRefInput<$PrismaModel>;

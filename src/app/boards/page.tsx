@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import AddIcon from "@mui/icons-material/Add";
-import LogoutIcon from "@mui/icons-material/Logout";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import { useTranslations } from "next-intl";
 import {
   Button,
   Dialog,
@@ -14,8 +15,10 @@ import {
   Stack,
   TextField,
   Typography,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { Loader } from "@/components/ui/Loader/Loader";
 import CreateBoardModal, {
   CreateBoardPayload,
@@ -35,26 +38,24 @@ import {
   BoardMeta,
   AddBoardButton,
 } from "@/components/home/styled";
-import { BoardDto } from "@/types/dashboard";
 import {
-  createBoard,
-  getBoards,
   getUserDefaultState,
   updateDefaultProfile,
 } from "@/lib/api/client";
 import { WorkRole } from "@/types/user";
-
-const WORK_ROLE_OPTIONS: { value: WorkRole; label: string }[] = [
-  { value: "CLIENT", label: "Клиент" },
-  { value: "EXECUTOR", label: "Исполнитель" },
-  { value: "ORGANIZER", label: "Организатор" },
-  { value: "CEO", label: "CEO" },
-];
+import { useCreateBoardMutation, useDeleteBoardMutation, useGetBoardsQuery } from "@/store/api";
 
 export default function BoardsPage() {
+  const t = useTranslations("boards");
+  const router = useRouter();
   const { data: session, status } = useSession();
-  const [boards, setBoards] = useState<BoardDto[]>([]);
-  const [loading, setLoading] = useState(true);
+    const WORK_ROLE_OPTIONS: { value: WorkRole; label: string }[] = [
+      { value: "CLIENT", label: "CLIENT" },
+      { value: "EXECUTOR", label: "EXECUTOR" },
+      { value: "ORGANIZER", label: "ORGANIZER" },
+      { value: "CEO", label: "CEO" },
+    ];
+
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [creating, setCreating] = useState(false);
   const [defaultModalOpen, setDefaultModalOpen] = useState(false);
@@ -68,18 +69,14 @@ export default function BoardsPage() {
   const [displayRoleOverride, setDisplayRoleOverride] = useState<WorkRole | null>(null);
 
   const userId = session?.user?.id;
-
-  const loadBoards = async () => {
-    try {
-      setLoading(true);
-      const data = await getBoards();
-      setBoards(data);
-    } catch (error) {
-      console.error("load boards error", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [createBoardMutation] = useCreateBoardMutation();
+  const [deleteBoardMutation] = useDeleteBoardMutation();
+  const {
+    data: boards = [],
+    isLoading: isBoardsLoading,
+  } = useGetBoardsQuery(undefined, {
+    skip: status !== "authenticated" || !userId,
+  });
 
   const loadDefaultProfileState = async () => {
     try {
@@ -103,13 +100,12 @@ export default function BoardsPage() {
       return;
     }
 
-    void loadBoards();
     void loadDefaultProfileState();
   }, [status, userId]);
 
   const handleSaveDefaultProfile = async () => {
     if (!firstName.trim() || !lastName.trim()) {
-      setDefaultError("Имя и фамилия обязательны");
+      setDefaultError(t("profileNameRequired"));
       return;
     }
 
@@ -129,7 +125,7 @@ export default function BoardsPage() {
       setDefaultModalOpen(updated.isDefault);
     } catch (error) {
       console.error("save default profile error", error);
-      setDefaultError("Не удалось сохранить профиль. Проверь никнейм и попробуй снова.");
+      setDefaultError(t("profileSaveError"));
     } finally {
       setDefaultSaving(false);
     }
@@ -143,7 +139,7 @@ export default function BoardsPage() {
     try {
       setCreating(true);
 
-      await createBoard({
+      await createBoardMutation({
         title: payload.title,
         description: payload.description || null,
         themeColor: payload.themeColor,
@@ -151,10 +147,9 @@ export default function BoardsPage() {
         columns: payload.columns,
         customRoles: payload.customRoles,
         ownerId: userId,
-      });
+      }).unwrap();
 
       setCreateModalOpen(false);
-      await loadBoards();
     } catch (error) {
       console.error("create board error", error);
     } finally {
@@ -162,7 +157,20 @@ export default function BoardsPage() {
     }
   };
 
-  if (status === "loading" || (loading && status === "authenticated")) {
+  const handleDeleteBoard = async (boardId: string) => {
+    if (!window.confirm(t("deleteBoardConfirm"))) {
+      return;
+    }
+
+    try {
+      await deleteBoardMutation({ boardId }).unwrap();
+    } catch (error) {
+      console.error("delete board error", error);
+      window.alert(t("deleteBoardError"));
+    }
+  };
+
+  if (status === "loading" || (isBoardsLoading && status === "authenticated")) {
     return (
       <PageRoot>
         <PageMain>
@@ -182,39 +190,57 @@ export default function BoardsPage() {
               startIcon={<AddIcon />}
               onClick={() => setCreateModalOpen(true)}
             >
-              Добавить доску
+              {t("addBoard")}
             </AddBoardButton>
-            <Title>Ваши доски</Title>
-            <Button
-              variant="outlined"
-              startIcon={<LogoutIcon />}
-              onClick={() => signOut({ callbackUrl: "/auth/signin" })}
-            >
-              Выйти
-            </Button>
+            <Title>{t("title")}</Title>
           </HeaderTop>
           <Subtitle>
-            {displayNameOverride ?? session?.user?.name ?? session?.user?.email ?? "Пользователь"} · {displayRoleOverride ?? session?.user?.workRole ?? "CLIENT"} · {session?.user?.monetizationRole ?? "FREE"}
+            {displayNameOverride ?? session?.user?.name ?? session?.user?.email ?? t("userFallback")} · {displayRoleOverride ?? session?.user?.workRole ?? "CLIENT"} · {session?.user?.monetizationRole ?? "FREE"}
           </Subtitle>
         </Header>
 
         {boards.length === 0 ? (
-          <Subtitle>У вас пока нет привязанных дашбордов.</Subtitle>
+          <Subtitle>{t("noBoards")}</Subtitle>
         ) : (
           <BoardsGrid>
             {boards.map((board) => (
-              <Link key={board.id} href={`/dashboard/${board.id}`}>
-                <BoardCard>
-                  <BoardId>Board #{board.id}</BoardId>
-                  <BoardName>{board.title}</BoardName>
-                  {board.description && (
-                    <BoardDescription>{board.description}</BoardDescription>
-                  )}
-                  <BoardMeta>
-                    Роль: {board.dashboardRole ?? "member"} · {board.tickets?.length ?? 0} тикетов
-                  </BoardMeta>
-                </BoardCard>
-              </Link>
+              <BoardCard
+                key={board.id}
+                role="button"
+                tabIndex={0}
+                onClick={() => router.push(`/dashboard/${board.id}`)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    router.push(`/dashboard/${board.id}`);
+                  }
+                }}
+              >
+                <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={1}>
+                  <BoardId>{t("boardLabel")} #{board.id}</BoardId>
+                  <Tooltip title={t("deleteBoard")}>
+                    <IconButton
+                      size="small"
+                      color="error"
+                      aria-label={t("deleteBoard")}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        void handleDeleteBoard(board.id);
+                      }}
+                    >
+                      <DeleteOutlineIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </Stack>
+                <BoardName>{board.title}</BoardName>
+                {board.description && (
+                  <BoardDescription>{board.description}</BoardDescription>
+                )}
+                <BoardMeta>
+                  {t("role")}: {board.dashboardRole ?? "member"} · {board.tickets?.length ?? 0} {t("tickets")}
+                </BoardMeta>
+              </BoardCard>
             ))}
           </BoardsGrid>
         )}
@@ -227,30 +253,30 @@ export default function BoardsPage() {
         />
 
         <Dialog open={defaultModalOpen} disableEscapeKeyDown>
-          <DialogTitle>Заполните профиль</DialogTitle>
+          <DialogTitle>{t("profileRequiredTitle")}</DialogTitle>
           <DialogContent>
             <Stack spacing={2} sx={{ mt: 1, minWidth: 360 }}>
               <TextField
-                label="Имя"
+                label={t("firstName")}
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 required
               />
               <TextField
-                label="Фамилия"
+                label={t("lastName")}
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
                 required
               />
               <TextField
-                label="Никнейм"
+                label={t("nickname")}
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
-                helperText="Уникальный псевдоним"
+                helperText={t("nicknameHelper")}
               />
               <TextField
                 select
-                label="Роль"
+                label={t("customRole")}
                 value={workRole}
                 onChange={(e) => setWorkRole(e.target.value as WorkRole)}
               >
@@ -265,7 +291,7 @@ export default function BoardsPage() {
           </DialogContent>
           <DialogActions>
             <Button onClick={handleSaveDefaultProfile} variant="contained" disabled={defaultSaving}>
-              {defaultSaving ? "Сохраняем..." : "Сохранить"}
+              {defaultSaving ? t("savingProfile") : t("saveProfile")}
             </Button>
           </DialogActions>
         </Dialog>

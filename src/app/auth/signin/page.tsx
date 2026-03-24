@@ -9,13 +9,29 @@ import {
 	Stack,
 	Typography,
 } from "@mui/material";
+import { getTranslations } from "next-intl/server";
 import { auth, authProviderStates, signIn } from "@/auth";
 
-export default async function SignInPage() {
+interface SignInPageProps {
+	searchParams: Promise<{ redirectTo?: string }>;
+}
+
+function normalizeRedirectTarget(redirectTo?: string) {
+	if (!redirectTo || !redirectTo.startsWith("/")) {
+		return "/boards";
+	}
+
+	return redirectTo;
+}
+
+export default async function SignInPage({ searchParams }: SignInPageProps) {
+	const t = await getTranslations("auth");
 	const session = await auth();
+	const params = await searchParams;
+	const redirectTo = normalizeRedirectTarget(params.redirectTo);
 
 	if (session) {
-		redirect("/boards");
+		redirect(redirectTo);
 	}
 
 	return (
@@ -24,13 +40,12 @@ export default async function SignInPage() {
 				<CardContent sx={{ p: 5 }}>
 					<Stack spacing={3}>
 						<Box>
-							<Typography variant="overline">Authorization</Typography>
+							<Typography variant="overline">{t("authorization")}</Typography>
 							<Typography variant="h4" sx={{ fontWeight: 700 }}>
-								Вход в рабочее пространство
+								{t("signInTitle")}
 							</Typography>
 							<Typography color="text.secondary" sx={{ mt: 1 }}>
-								Авторизация через OAuth. Профиль, сессия, глобальные роли и
-								membership в дашбордах сохраняются в нашей базе.
+								{t("signInDescription")}
 							</Typography>
 						</Box>
 
@@ -41,7 +56,7 @@ export default async function SignInPage() {
 									action={async () => {
 										"use server";
 
-										await signIn(provider.id, { redirectTo: "/boards" });
+										await signIn(provider.id, { redirectTo });
 									}}
 								>
 									<Button
@@ -53,23 +68,19 @@ export default async function SignInPage() {
 										sx={{ minHeight: 52 }}
 									>
 										{provider.enabled
-											? `Продолжить через ${provider.name}`
-											: `${provider.name} не настроен`}
+											? t("continueWith", { provider: provider.name })
+											: t("providerNotConfigured", { provider: provider.name })}
 									</Button>
 								</form>
 							))}
 						</Stack>
 
 						<Typography color="text.secondary" variant="body2">
-							Если хочешь добавить провайдеры, нужны переменные окружения
-							`GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GITHUB_CLIENT_ID`,
-							`GITHUB_CLIENT_SECRET`, `FACEBOOK_CLIENT_ID`,
-							`FACEBOOK_CLIENT_SECRET`, `AUTH_SECRET`.
+							{t("envHint")}
 						</Typography>
 
 						<Typography variant="body2" color="text.secondary">
-							Регистрация отдельной формой не нужна. Первый вход через OAuth
-							создаёт пользователя автоматически. <Link href="/auth/register">Подробнее</Link>
+							{t("registerInfo")} <Link href={`/auth/register?redirectTo=${encodeURIComponent(redirectTo)}`}>{t("registerMore")}</Link>
 						</Typography>
 					</Stack>
 				</CardContent>

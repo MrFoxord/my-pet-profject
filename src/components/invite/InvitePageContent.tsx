@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useSession, signIn } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import { useFormatter, useTranslations } from "next-intl";
 import {
   Box,
   MuiCard as Card,
@@ -25,10 +26,15 @@ interface InvitePageContentProps {
 export default function InvitePageContent({ token }: InvitePageContentProps) {
   const router = useRouter();
   const { data: session, status } = useSession();
+  const t = useTranslations("invite");
+  const format = useFormatter();
   const [invitation, setInvitation] = useState<BoardInvitationPublic | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [accepting, setAccepting] = useState(false);
+  const [autoAcceptTriggered, setAutoAcceptTriggered] = useState(false);
+
+  const signInUrl = `/auth/signin?redirectTo=${encodeURIComponent(`/invite/${token}`)}`;
 
   useEffect(() => {
     const loadInvitation = async () => {
@@ -37,7 +43,7 @@ export default function InvitePageContent({ token }: InvitePageContentProps) {
         setError(null);
         const invite = await getInvitationByToken(token);
         if (!invite) {
-          setError("Приглашение не найдено или истекло.");
+          setError(t("loadingError"));
           return;
         }
         setInvitation(invite);
@@ -45,9 +51,11 @@ export default function InvitePageContent({ token }: InvitePageContentProps) {
         const msg = error instanceof Error ? error.message : "";
         console.warn("failed to load invitation", error);
         if (msg.includes("503")) {
-          setError("Сервер временно недоступен. Попробуйте позже.");
+          setError(t("serverUnavailable"));
+        } else if (msg.includes("404")) {
+          setError(t("notFound"));
         } else {
-          setError("Не удалось загрузить данные приглашения.");
+          setError(t("loadError"));
         }
       } finally {
         setLoading(false);
@@ -55,39 +63,58 @@ export default function InvitePageContent({ token }: InvitePageContentProps) {
     };
 
     void loadInvitation();
-  }, [token]);
+  }, [token, t]);
 
-  const handleAcceptInvitation = async () => {
+  const handleAcceptInvitation = useCallback(async () => {
     if (!session?.user?.id) {
-      await signIn();
+      router.push(signInUrl);
       return;
     }
 
     try {
       setAccepting(true);
       setError(null);
-      const result = await acceptInvitationByToken(token, session.user.id);
+      const result = await acceptInvitationByToken(token);
       if (result?.success && result.boardId) {
         router.push(`/dashboard/${result.boardId}`);
       } else {
-        setError("Не удалось принять приглашение.");
+        setError(t("acceptError"));
       }
     } catch (err) {
       console.warn("failed to accept invitation", err);
       const msg = err instanceof Error ? err.message : "";
       if (msg.includes("email mismatch")) {
-        setError("Это приглашение предназначено для другого email-адреса. Войдите в нужный аккаунт.");
-      } else if (msg.includes("not pending")) {
-        setError("Это приглашение уже было принято или отозвано.");
+        setError(t("emailMismatch"));
+      } else if (msg.includes("custom role is missing")) {
+        setError(t("roleMissing"));
+      } else if (msg.includes("limit reached")) {
+        setError(t("limitReachedError"));
+      } else if (msg.includes("already accepted")) {
+        setError(t("alreadyAccepted"));
+      } else if (msg.includes("revoked")) {
+        setError(t("revokedError"));
       } else if (msg.includes("expired")) {
-        setError("Срок действия приглашения истёк. Запросите новое у владельца доски.");
+        setError(t("expiredError"));
       } else {
-        setError("Ошибка при принятии приглашения.");
+        setError(t("acceptError"));
       }
     } finally {
       setAccepting(false);
     }
-  };
+  }, [session?.user?.id, token, router, signInUrl, t]);
+
+  useEffect(() => {
+    if (
+      status === "authenticated" &&
+      session?.user?.id &&
+      invitation?.state === "pending" &&
+      !accepting &&
+      !autoAcceptTriggered
+    ) {
+      setAutoAcceptTriggered(true);
+      void handleAcceptInvitation();
+    }
+  }, [status, session?.user?.id, invitation?.state, accepting, autoAcceptTriggered, handleAcceptInvitation]);
 
   if (loading) {
     return (
@@ -120,13 +147,13 @@ export default function InvitePageContent({ token }: InvitePageContentProps) {
         <Card sx={{ maxWidth: 500, width: "100%" }}>
           <CardContent>
             <Typography variant="h5" sx={{ mb: 2, color: "error.main" }}>
-              Приглашение недействительно
+              {t("invalidTitle")}
             </Typography>
-            <Alert severity="error">{error || "Приглашение не найдено."}</Alert>
+            <Alert severity="error">{error ?? t("notFound")}</Alert>
           </CardContent>
           <CardActions>
             <Button onClick={() => router.push("/")} variant="contained">
-              Вернуться на главную
+              {t("backToHome")}
             </Button>
           </CardActions>
         </Card>
@@ -134,10 +161,72 @@ export default function InvitePageContent({ token }: InvitePageContentProps) {
     );
   }
 
-  const isExpired =
-    new Date(invitation.expiresAt).getTime() < Date.now();
-  const isPending = invitation.status === "pending";
-  const canAccept = isPending && !isExpired && status === "authenticated";
+  const isPending = invitation.state === "pending";
+  const canAccept = isPending && status === "authenticated";
+
+  const renderStateAlert = () => {
+    if (error) {
+      return <Alert severity="error">{error}</Alert>;
+    }
+
+    switch (invitation.state) {
+      case "expired":
+        return (
+          <Alert severity="warning">
+            {t("expiredAlert")}
+          </Alert>
+        );
+      case "revoked":
+        return <Alert severity="error">{t("revokedAlert")}</Alert>;
+      case "limit_reached":
+        return (
+          <Alert severity="warning">
+            {t("limitReachedAlert")}
+          </Alert>
+        );
+      case "accepted":
+        return (
+          <Alert severity="info">
+            {t("alreadyAcceptedAlert")}
+          </Alert>
+        );
+      default:
+        if (status === "unauthenticated") {
+          return (
+            <Alert severity="info">
+              {t("signInPrompt")}
+            </Alert>
+          );
+        }
+
+        if (accepting) {
+          return <Alert severity="info">{t("processing")}</Alert>;
+        }
+
+        return null;
+    }
+  };
+
+  const expiresLabel = invitation.expiresAt
+    ? t("expiresLabel", {
+        date: format.dateTime(new Date(invitation.expiresAt), {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        }),
+      })
+    : null;
+
+  const stateLabel =
+    invitation.state === "pending"
+      ? t("statePending")
+      : invitation.state === "limit_reached"
+        ? t("stateLimitReached")
+        : invitation.state === "revoked"
+          ? t("stateRevoked")
+          : invitation.state === "expired"
+            ? t("stateExpired")
+            : t("stateUsed");
 
   return (
     <Box
@@ -167,10 +256,10 @@ export default function InvitePageContent({ token }: InvitePageContentProps) {
               />
             )}
             <Typography variant="h5" sx={{ mb: 2 }}>
-              Приглашение на доску
+              {t("title")}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              Вы приглашены присоединиться к доске:
+              {t("subtitle")}
             </Typography>
           </Box>
 
@@ -190,47 +279,54 @@ export default function InvitePageContent({ token }: InvitePageContentProps) {
 
             <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
               <Chip
-                label={`Роль: ${invitation.role}`}
+                label={t("typeLabel", {
+                  type: invitation.type === "PERSONAL" ? t("typePersonal") : t("typeShared"),
+                })}
                 color="primary"
                 variant="outlined"
               />
               <Chip
                 label={
-                  isExpired
-                    ? "Истекло"
-                    : `Истекает: ${new Date(invitation.expiresAt).toLocaleDateString()}`
+                  invitation.customRoleName
+                    ? t("customRoleValue", { role: invitation.customRoleName })
+                    : t("noCustomRole")
                 }
-                color={isExpired ? "error" : "info"}
+                color="primary"
                 variant="outlined"
               />
+              {expiresLabel && (
+                <Chip
+                  label={expiresLabel}
+                  color={invitation.state === "expired" ? "error" : "info"}
+                  variant="outlined"
+                />
+              )}
               <Chip
-                label={isPending ? "Ожидает ответа" : invitation.status}
+                label={stateLabel}
                 color={isPending ? "warning" : "default"}
                 variant="filled"
               />
+              {invitation.type === "SHARED" ? (
+                <Chip
+                  label={t("usageLabel", {
+                    used: invitation.usedCount,
+                    max: invitation.maxUses,
+                  })}
+                  color="default"
+                  variant="outlined"
+                />
+              ) : null}
             </Box>
           </Stack>
 
-          {error && <Alert severity="error">{error}</Alert>}
-
-          {isExpired && (
-            <Alert severity="warning" sx={{ mb: 2 }}>
-              Это приглашение истекло. Пожалуйста, запросите новое приглашение у владельца доски.
-            </Alert>
-          )}
-
-          {isPending && !isExpired && status === "unauthenticated" && (
-            <Alert severity="info" sx={{ mb: 2 }}>
-              Пожалуйста, войдите в систему или создайте аккаунт для принятия приглашения.
-            </Alert>
-          )}
+          {renderStateAlert()}
         </CardContent>
         <CardActions>
           <Button
             onClick={() => router.push("/")}
             variant="outlined"
           >
-            Отмена
+            {t("cancelButton")}
           </Button>
           {canAccept ? (
             <Button
@@ -240,21 +336,17 @@ export default function InvitePageContent({ token }: InvitePageContentProps) {
               disabled={accepting}
               sx={{ flex: 1 }}
             >
-              {accepting ? <CircularProgress size={20} /> : "Принять приглашение"}
+              {accepting ? <CircularProgress size={20} /> : t("acceptButton")}
             </Button>
           ) : (
             <Button
-              onClick={async () => {
-                if (status === "unauthenticated") {
-                  await signIn();
-                }
-              }}
+              onClick={() => router.push(signInUrl)}
               variant="contained"
               color="primary"
-              disabled={isExpired}
+              disabled={invitation.state !== "pending"}
               sx={{ flex: 1 }}
             >
-              {isExpired ? "Приглашение истекло" : "Войти / Зарегистрироваться"}
+              {invitation.state === "pending" ? t("signInButton") : t("newLinkNeeded")}
             </Button>
           )}
         </CardActions>

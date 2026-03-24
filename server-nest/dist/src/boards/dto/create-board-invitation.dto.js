@@ -9,18 +9,46 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreateBoardInvitationDto = void 0;
+exports.CreateBoardInvitationDto = exports.SharedInvitationMode = void 0;
 const class_validator_1 = require("class-validator");
+const swagger_1 = require("@nestjs/swagger");
 const client_1 = require("../../generated/prisma/client");
+var SharedInvitationMode;
+(function (SharedInvitationMode) {
+    SharedInvitationMode["SINGLE_USE"] = "SINGLE_USE";
+    SharedInvitationMode["MULTI_USE"] = "MULTI_USE";
+})(SharedInvitationMode || (exports.SharedInvitationMode = SharedInvitationMode = {}));
 class CreateBoardInvitationDto {
 }
 exports.CreateBoardInvitationDto = CreateBoardInvitationDto;
 __decorate([
+    (0, swagger_1.ApiProperty)({ enum: client_1.InvitationType, example: client_1.InvitationType.PERSONAL }),
+    (0, class_validator_1.IsEnum)(client_1.InvitationType),
+    __metadata("design:type", String)
+], CreateBoardInvitationDto.prototype, "type", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({
+        example: 'user@example.com',
+        description: 'Required when type is PERSONAL',
+    }),
+    (0, class_validator_1.ValidateIf)((dto) => dto.type === client_1.InvitationType.PERSONAL),
     (0, class_validator_1.IsEmail)(),
     __metadata("design:type", String)
 ], CreateBoardInvitationDto.prototype, "email", void 0);
 __decorate([
-    (0, class_validator_1.IsEnum)(client_1.BoardMemberRole),
+    (0, swagger_1.ApiPropertyOptional)({ example: 'role_123' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreateBoardInvitationDto.prototype, "role", void 0);
+], CreateBoardInvitationDto.prototype, "customRoleId", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({
+        enum: SharedInvitationMode,
+        example: SharedInvitationMode.SINGLE_USE,
+        description: 'Required when type is SHARED',
+    }),
+    (0, class_validator_1.ValidateIf)((dto) => dto.type === client_1.InvitationType.SHARED),
+    (0, class_validator_1.IsEnum)(SharedInvitationMode),
+    __metadata("design:type", String)
+], CreateBoardInvitationDto.prototype, "sharedInvitationMode", void 0);
 //# sourceMappingURL=create-board-invitation.dto.js.map

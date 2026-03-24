@@ -15,5 +15,6 @@ export type BoardColumn = Prisma.BoardColumnModel;
 export type Ticket = Prisma.TicketModel;
 export type Subtask = Prisma.SubtaskModel;
 export type Comment = Prisma.CommentModel;
+export type Notification = Prisma.NotificationModel;
 export type Account = Prisma.AccountModel;
 export type VerificationToken = Prisma.VerificationTokenModel;

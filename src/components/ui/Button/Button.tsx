@@ -5,5 +5,15 @@ import { Button as MuiButton, ButtonProps as MuiButtonProps } from "@mui/materia
 export type ButtonProps = MuiButtonProps;
 
 export function Button({ sx, ...props }: ButtonProps) {
-  return <MuiButton sx={{ textTransform: "none", ...sx }} {...props} />;
+  return (
+    <MuiButton
+      sx={{
+        textTransform: "none",
+        borderRadius: 10,
+        fontWeight: 600,
+        ...sx,
+      }}
+      {...props}
+    />
+  );
 }

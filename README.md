@@ -1,36 +1,152 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# My Pet Project
 
-## Getting Started
+Full-stack task/board management app:
+- Frontend: Next.js (App Router), next-auth, next-intl, MUI, RTK Query
+- Backend: NestJS, Prisma, PostgreSQL, Swagger, Socket.IO
 
-First, run the development server:
+## Features
+
+- OAuth sign-in (Google/GitHub/Facebook, if configured)
+- Board-based collaboration with roles and custom roles
+- Ticket creation, editing, reorder, comments, estimates
+- Invite links (personal/shared) with expiration and usage limits
+- Realtime notifications over Socket.IO
+- Swagger API docs for backend integration and QA checks
+
+## Repository Structure
+
+- `src/`: Next.js app and frontend source
+- `server-nest/`: NestJS API server
+- `prisma/`: Prisma schema and migrations (shared DB schema)
+- `messages/`: i18n dictionaries (`en`, `ru`, `uk`)
+- `.github/workflows/ci.yml`: CI pipeline
+
+## Requirements
+
+- Node.js 20+
+- npm 10+
+- PostgreSQL 16+ (local or container)
+
+## Environment Variables
+
+Use `.env.example` in repository root as the source of truth.
+
+Minimal required values for local start:
+- `DATABASE_URL`
+- `AUTH_SECRET`
+- `INTERNAL_API_SECRET`
+- `NEST_API_URL`
+- `NEXT_PUBLIC_API_BASE_URL`
+- `ALLOWED_ORIGIN`
+
+Optional but recommended:
+- `SWAGGER_ENABLED`, `SWAGGER_PATH`
+- `RATE_LIMIT_TTL_MS`, `RATE_LIMIT_MAX_REQUESTS`
+- OAuth provider IDs/secrets
+
+## Local Development
+
+1. Install frontend dependencies:
+```bash
+npm ci
+```
+
+2. Install backend dependencies:
+```bash
+cd server-nest
+npm ci
+cd ..
+```
+
+3. Start PostgreSQL (option A: docker):
+```bash
+docker compose up -d db
+```
+
+4. Apply Prisma migrations from repository root:
+```bash
+npx prisma migrate deploy
+```
+
+5. Start backend:
+```bash
+cd server-nest
+npm run start:dev
+```
+
+6. Start frontend (new terminal):
+```bash
+npm run dev
+```
+
+Frontend: `http://localhost:3000`
+Backend API: `http://localhost:8082`
+Swagger: `http://localhost:8082/api/docs`
+
+## Backend Commands
+
+Run in `server-nest/`:
+
+```bash
+npm run build
+npm run start:dev
+npm run test
+npm run test:e2e
+```
+
+## Frontend Commands
+
+Run in repository root:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run lint
+npm run build
+npm run start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Security Baseline
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Implemented baseline protections:
+- Nest global rate limiting (`@nestjs/throttler`)
+- Stricter throttles on public invitation endpoints
+- `helmet` in Nest bootstrap
+- Next.js security headers (CSP, frame/options, referrer, permissions)
+- Frontend middleware rate limiting for auth/invite routes
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Before production:
+- Set strong secrets for `AUTH_SECRET` and `INTERNAL_API_SECRET`
+- Restrict `ALLOWED_ORIGIN` to real frontend domain
+- Disable Swagger in prod if public docs are not desired (`SWAGGER_ENABLED=false`)
+- Use HTTPS and managed Postgres with backups
 
-## Learn More
+## Testing
 
-To learn more about Next.js, take a look at the following resources:
+- Unit tests include invitation-state and permission checks in `server-nest/src/boards/boards.service.spec.ts`
+- E2E smoke test includes health endpoint in `server-nest/test/health.e2e-spec.ts`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+CI runs frontend lint/build plus backend build/tests on push and PR.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## API and Swagger
 
-## Deploy on Vercel
+Swagger is enabled by default in non-production and can be explicitly controlled:
+- `SWAGGER_ENABLED=true|false`
+- `SWAGGER_PATH=api/docs`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Main domain endpoints:
+- `GET /health`
+- `GET/POST /boards`
+- `GET /boards/:id`
+- `DELETE /boards/:boardId`
+- Ticket, column, member, role, invitation routes under `/boards/*`
+- Public invite routes under `/invitations/*`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Release Notes (Current)
+
+This branch includes:
+- Full Swagger documentation on controllers and DTOs
+- Invite flow hardening and session-safe acceptance
+- Board deletion endpoint and UI action
+- Error boundaries (`error.tsx`, `not-found.tsx`)
+- CI pipeline and backend test scaffolding
+- Security headers and rate limiting

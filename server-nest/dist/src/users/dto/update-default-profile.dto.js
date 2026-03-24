@@ -11,23 +11,27 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UpdateDefaultProfileDto = void 0;
 const class_validator_1 = require("class-validator");
+const swagger_1 = require("@nestjs/swagger");
 const WORK_ROLES = ['CLIENT', 'EXECUTOR', 'ORGANIZER', 'CEO'];
 class UpdateDefaultProfileDto {
 }
 exports.UpdateDefaultProfileDto = UpdateDefaultProfileDto;
 __decorate([
+    (0, swagger_1.ApiProperty)({ example: 'John', minLength: 1, maxLength: 80 }),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.MinLength)(1),
     (0, class_validator_1.MaxLength)(80),
     __metadata("design:type", String)
 ], UpdateDefaultProfileDto.prototype, "firstName", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({ example: 'Doe', minLength: 1, maxLength: 80 }),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.MinLength)(1),
     (0, class_validator_1.MaxLength)(80),
     __metadata("design:type", String)
 ], UpdateDefaultProfileDto.prototype, "lastName", void 0);
 __decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: 'johndoe', minLength: 2, maxLength: 30 }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.MinLength)(2),
@@ -35,6 +39,10 @@ __decorate([
     __metadata("design:type", String)
 ], UpdateDefaultProfileDto.prototype, "nickname", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        enum: WORK_ROLES,
+        example: 'CLIENT',
+    }),
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsIn)(WORK_ROLES),
     __metadata("design:type", Object)

@@ -19,6 +19,8 @@ import {
 interface BoardColumnViewProps {
   column: BoardColumn;
   tickets: Ticket[];
+  movingOutTicketIdSet?: Set<string>;
+  movingInTicketIdSet?: Set<string>;
   onTicketClick?: (ticket: Ticket) => void;
   onRenameColumn?: (columnId: string, currentTitle: string) => Promise<void> | void;
   onDeleteColumn?: (columnId: string, ticketIds: string[]) => Promise<void> | void;
@@ -28,6 +30,8 @@ interface BoardColumnViewProps {
 export function BoardColumnView({
   column,
   tickets,
+  movingOutTicketIdSet,
+  movingInTicketIdSet,
   onTicketClick,
   onRenameColumn,
   onDeleteColumn,
@@ -100,6 +104,13 @@ export function BoardColumnView({
                 key={ticket.id}
                 ticket={ticket}
                 columnId={column.id}
+                moveTransitionPhase={
+                  movingOutTicketIdSet?.has(ticket.id)
+                    ? "out"
+                    : movingInTicketIdSet?.has(ticket.id)
+                      ? "in"
+                      : undefined
+                }
                 onTicketClick={onTicketClick}
               />
             ))}
@@ -113,12 +124,14 @@ export function BoardColumnView({
 interface SortableTicketCardProps {
   ticket: Ticket;
   columnId: string;
+  moveTransitionPhase?: "out" | "in";
   onTicketClick?: (ticket: Ticket) => void;
 }
 
 function SortableTicketCard({
   ticket,
   columnId,
+  moveTransitionPhase,
   onTicketClick,
 }: SortableTicketCardProps) {
   const {
@@ -144,7 +157,7 @@ function SortableTicketCard({
 
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      <TickerCard ticket={ticket} onClick={onTicketClick} />
+      <TickerCard ticket={ticket} onClick={onTicketClick} moveTransitionPhase={moveTransitionPhase} />
     </div>
   );
 }

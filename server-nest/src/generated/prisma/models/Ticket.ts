@@ -328,6 +328,7 @@ export type TicketWhereInput = {
   column?: Prisma.XOR<Prisma.BoardColumnNullableScalarRelationFilter, Prisma.BoardColumnWhereInput> | null
   subtasks?: Prisma.SubtaskListRelationFilter
   comments?: Prisma.CommentListRelationFilter
+  notifications?: Prisma.NotificationListRelationFilter
 }
 
 export type TicketOrderByWithRelationInput = {
@@ -352,6 +353,7 @@ export type TicketOrderByWithRelationInput = {
   column?: Prisma.BoardColumnOrderByWithRelationInput
   subtasks?: Prisma.SubtaskOrderByRelationAggregateInput
   comments?: Prisma.CommentOrderByRelationAggregateInput
+  notifications?: Prisma.NotificationOrderByRelationAggregateInput
 }
 
 export type TicketWhereUniqueInput = Prisma.AtLeast<{
@@ -379,6 +381,7 @@ export type TicketWhereUniqueInput = Prisma.AtLeast<{
   column?: Prisma.XOR<Prisma.BoardColumnNullableScalarRelationFilter, Prisma.BoardColumnWhereInput> | null
   subtasks?: Prisma.SubtaskListRelationFilter
   comments?: Prisma.CommentListRelationFilter
+  notifications?: Prisma.NotificationListRelationFilter
 }, "id">
 
 export type TicketOrderByWithAggregationInput = {
@@ -449,6 +452,7 @@ export type TicketCreateInput = {
   column?: Prisma.BoardColumnCreateNestedOneWithoutTicketsInput
   subtasks?: Prisma.SubtaskCreateNestedManyWithoutTicketInput
   comments?: Prisma.CommentCreateNestedManyWithoutTicketInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutTicketInput
 }
 
 export type TicketUncheckedCreateInput = {
@@ -471,6 +475,7 @@ export type TicketUncheckedCreateInput = {
   updatedAt?: Date | string
   subtasks?: Prisma.SubtaskUncheckedCreateNestedManyWithoutTicketInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutTicketInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTicketInput
 }
 
 export type TicketUpdateInput = {
@@ -493,6 +498,7 @@ export type TicketUpdateInput = {
   column?: Prisma.BoardColumnUpdateOneWithoutTicketsNestedInput
   subtasks?: Prisma.SubtaskUpdateManyWithoutTicketNestedInput
   comments?: Prisma.CommentUpdateManyWithoutTicketNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutTicketNestedInput
 }
 
 export type TicketUncheckedUpdateInput = {
@@ -515,6 +521,7 @@ export type TicketUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subtasks?: Prisma.SubtaskUncheckedUpdateManyWithoutTicketNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutTicketNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTicketNestedInput
 }
 
 export type TicketCreateManyInput = {
@@ -664,6 +671,11 @@ export type TicketScalarRelationFilter = {
   isNot?: Prisma.TicketWhereInput
 }
 
+export type TicketNullableScalarRelationFilter = {
+  is?: Prisma.TicketWhereInput | null
+  isNot?: Prisma.TicketWhereInput | null
+}
+
 export type TicketCreateNestedManyWithoutBoardInput = {
   create?: Prisma.XOR<Prisma.TicketCreateWithoutBoardInput, Prisma.TicketUncheckedCreateWithoutBoardInput> | Prisma.TicketCreateWithoutBoardInput[] | Prisma.TicketUncheckedCreateWithoutBoardInput[]
   connectOrCreate?: Prisma.TicketCreateOrConnectWithoutBoardInput | Prisma.TicketCreateOrConnectWithoutBoardInput[]
@@ -784,6 +796,22 @@ export type TicketUpdateOneRequiredWithoutCommentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TicketUpdateToOneWithWhereWithoutCommentsInput, Prisma.TicketUpdateWithoutCommentsInput>, Prisma.TicketUncheckedUpdateWithoutCommentsInput>
 }
 
+export type TicketCreateNestedOneWithoutNotificationsInput = {
+  create?: Prisma.XOR<Prisma.TicketCreateWithoutNotificationsInput, Prisma.TicketUncheckedCreateWithoutNotificationsInput>
+  connectOrCreate?: Prisma.TicketCreateOrConnectWithoutNotificationsInput
+  connect?: Prisma.TicketWhereUniqueInput
+}
+
+export type TicketUpdateOneWithoutNotificationsNestedInput = {
+  create?: Prisma.XOR<Prisma.TicketCreateWithoutNotificationsInput, Prisma.TicketUncheckedCreateWithoutNotificationsInput>
+  connectOrCreate?: Prisma.TicketCreateOrConnectWithoutNotificationsInput
+  upsert?: Prisma.TicketUpsertWithoutNotificationsInput
+  disconnect?: Prisma.TicketWhereInput | boolean
+  delete?: Prisma.TicketWhereInput | boolean
+  connect?: Prisma.TicketWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TicketUpdateToOneWithWhereWithoutNotificationsInput, Prisma.TicketUpdateWithoutNotificationsInput>, Prisma.TicketUncheckedUpdateWithoutNotificationsInput>
+}
+
 export type TicketCreateWithoutBoardInput = {
   id: string
   title: string
@@ -803,6 +831,7 @@ export type TicketCreateWithoutBoardInput = {
   column?: Prisma.BoardColumnCreateNestedOneWithoutTicketsInput
   subtasks?: Prisma.SubtaskCreateNestedManyWithoutTicketInput
   comments?: Prisma.CommentCreateNestedManyWithoutTicketInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutTicketInput
 }
 
 export type TicketUncheckedCreateWithoutBoardInput = {
@@ -824,6 +853,7 @@ export type TicketUncheckedCreateWithoutBoardInput = {
   updatedAt?: Date | string
   subtasks?: Prisma.SubtaskUncheckedCreateNestedManyWithoutTicketInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutTicketInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTicketInput
 }
 
 export type TicketCreateOrConnectWithoutBoardInput = {
@@ -894,6 +924,7 @@ export type TicketCreateWithoutColumnInput = {
   board: Prisma.BoardCreateNestedOneWithoutTicketsInput
   subtasks?: Prisma.SubtaskCreateNestedManyWithoutTicketInput
   comments?: Prisma.CommentCreateNestedManyWithoutTicketInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutTicketInput
 }
 
 export type TicketUncheckedCreateWithoutColumnInput = {
@@ -915,6 +946,7 @@ export type TicketUncheckedCreateWithoutColumnInput = {
   updatedAt?: Date | string
   subtasks?: Prisma.SubtaskUncheckedCreateNestedManyWithoutTicketInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutTicketInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTicketInput
 }
 
 export type TicketCreateOrConnectWithoutColumnInput = {
@@ -962,6 +994,7 @@ export type TicketCreateWithoutSubtasksInput = {
   board: Prisma.BoardCreateNestedOneWithoutTicketsInput
   column?: Prisma.BoardColumnCreateNestedOneWithoutTicketsInput
   comments?: Prisma.CommentCreateNestedManyWithoutTicketInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutTicketInput
 }
 
 export type TicketUncheckedCreateWithoutSubtasksInput = {
@@ -983,6 +1016,7 @@ export type TicketUncheckedCreateWithoutSubtasksInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutTicketInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTicketInput
 }
 
 export type TicketCreateOrConnectWithoutSubtasksInput = {
@@ -1020,6 +1054,7 @@ export type TicketUpdateWithoutSubtasksInput = {
   board?: Prisma.BoardUpdateOneRequiredWithoutTicketsNestedInput
   column?: Prisma.BoardColumnUpdateOneWithoutTicketsNestedInput
   comments?: Prisma.CommentUpdateManyWithoutTicketNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutTicketNestedInput
 }
 
 export type TicketUncheckedUpdateWithoutSubtasksInput = {
@@ -1041,6 +1076,7 @@ export type TicketUncheckedUpdateWithoutSubtasksInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUncheckedUpdateManyWithoutTicketNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTicketNestedInput
 }
 
 export type TicketCreateWithoutCommentsInput = {
@@ -1062,6 +1098,7 @@ export type TicketCreateWithoutCommentsInput = {
   board: Prisma.BoardCreateNestedOneWithoutTicketsInput
   column?: Prisma.BoardColumnCreateNestedOneWithoutTicketsInput
   subtasks?: Prisma.SubtaskCreateNestedManyWithoutTicketInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutTicketInput
 }
 
 export type TicketUncheckedCreateWithoutCommentsInput = {
@@ -1083,6 +1120,7 @@ export type TicketUncheckedCreateWithoutCommentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   subtasks?: Prisma.SubtaskUncheckedCreateNestedManyWithoutTicketInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTicketInput
 }
 
 export type TicketCreateOrConnectWithoutCommentsInput = {
@@ -1120,6 +1158,7 @@ export type TicketUpdateWithoutCommentsInput = {
   board?: Prisma.BoardUpdateOneRequiredWithoutTicketsNestedInput
   column?: Prisma.BoardColumnUpdateOneWithoutTicketsNestedInput
   subtasks?: Prisma.SubtaskUpdateManyWithoutTicketNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutTicketNestedInput
 }
 
 export type TicketUncheckedUpdateWithoutCommentsInput = {
@@ -1141,6 +1180,111 @@ export type TicketUncheckedUpdateWithoutCommentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subtasks?: Prisma.SubtaskUncheckedUpdateManyWithoutTicketNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTicketNestedInput
+}
+
+export type TicketCreateWithoutNotificationsInput = {
+  id: string
+  title: string
+  description?: string | null
+  status: string
+  sortIndex?: number
+  priority: string
+  type: string
+  accessPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  estimateOriginalHours?: number | null
+  estimateSpentHours?: number | null
+  estimateRemainingHours?: number | null
+  storyPoints?: number | null
+  dueDate?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  board: Prisma.BoardCreateNestedOneWithoutTicketsInput
+  column?: Prisma.BoardColumnCreateNestedOneWithoutTicketsInput
+  subtasks?: Prisma.SubtaskCreateNestedManyWithoutTicketInput
+  comments?: Prisma.CommentCreateNestedManyWithoutTicketInput
+}
+
+export type TicketUncheckedCreateWithoutNotificationsInput = {
+  id: string
+  title: string
+  description?: string | null
+  status: string
+  sortIndex?: number
+  priority: string
+  type: string
+  accessPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  boardId: string
+  columnId?: string | null
+  estimateOriginalHours?: number | null
+  estimateSpentHours?: number | null
+  estimateRemainingHours?: number | null
+  storyPoints?: number | null
+  dueDate?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  subtasks?: Prisma.SubtaskUncheckedCreateNestedManyWithoutTicketInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutTicketInput
+}
+
+export type TicketCreateOrConnectWithoutNotificationsInput = {
+  where: Prisma.TicketWhereUniqueInput
+  create: Prisma.XOR<Prisma.TicketCreateWithoutNotificationsInput, Prisma.TicketUncheckedCreateWithoutNotificationsInput>
+}
+
+export type TicketUpsertWithoutNotificationsInput = {
+  update: Prisma.XOR<Prisma.TicketUpdateWithoutNotificationsInput, Prisma.TicketUncheckedUpdateWithoutNotificationsInput>
+  create: Prisma.XOR<Prisma.TicketCreateWithoutNotificationsInput, Prisma.TicketUncheckedCreateWithoutNotificationsInput>
+  where?: Prisma.TicketWhereInput
+}
+
+export type TicketUpdateToOneWithWhereWithoutNotificationsInput = {
+  where?: Prisma.TicketWhereInput
+  data: Prisma.XOR<Prisma.TicketUpdateWithoutNotificationsInput, Prisma.TicketUncheckedUpdateWithoutNotificationsInput>
+}
+
+export type TicketUpdateWithoutNotificationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  sortIndex?: Prisma.IntFieldUpdateOperationsInput | number
+  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  accessPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  estimateOriginalHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  estimateSpentHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  estimateRemainingHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storyPoints?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  board?: Prisma.BoardUpdateOneRequiredWithoutTicketsNestedInput
+  column?: Prisma.BoardColumnUpdateOneWithoutTicketsNestedInput
+  subtasks?: Prisma.SubtaskUpdateManyWithoutTicketNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutTicketNestedInput
+}
+
+export type TicketUncheckedUpdateWithoutNotificationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  sortIndex?: Prisma.IntFieldUpdateOperationsInput | number
+  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  accessPolicy?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  boardId?: Prisma.StringFieldUpdateOperationsInput | string
+  columnId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  estimateOriginalHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  estimateSpentHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  estimateRemainingHours?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  storyPoints?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  dueDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subtasks?: Prisma.SubtaskUncheckedUpdateManyWithoutTicketNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutTicketNestedInput
 }
 
 export type TicketCreateManyBoardInput = {
@@ -1181,6 +1325,7 @@ export type TicketUpdateWithoutBoardInput = {
   column?: Prisma.BoardColumnUpdateOneWithoutTicketsNestedInput
   subtasks?: Prisma.SubtaskUpdateManyWithoutTicketNestedInput
   comments?: Prisma.CommentUpdateManyWithoutTicketNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutTicketNestedInput
 }
 
 export type TicketUncheckedUpdateWithoutBoardInput = {
@@ -1202,6 +1347,7 @@ export type TicketUncheckedUpdateWithoutBoardInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subtasks?: Prisma.SubtaskUncheckedUpdateManyWithoutTicketNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutTicketNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTicketNestedInput
 }
 
 export type TicketUncheckedUpdateManyWithoutBoardInput = {
@@ -1261,6 +1407,7 @@ export type TicketUpdateWithoutColumnInput = {
   board?: Prisma.BoardUpdateOneRequiredWithoutTicketsNestedInput
   subtasks?: Prisma.SubtaskUpdateManyWithoutTicketNestedInput
   comments?: Prisma.CommentUpdateManyWithoutTicketNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutTicketNestedInput
 }
 
 export type TicketUncheckedUpdateWithoutColumnInput = {
@@ -1282,6 +1429,7 @@ export type TicketUncheckedUpdateWithoutColumnInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subtasks?: Prisma.SubtaskUncheckedUpdateManyWithoutTicketNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutTicketNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTicketNestedInput
 }
 
 export type TicketUncheckedUpdateManyWithoutColumnInput = {
@@ -1311,11 +1459,13 @@ export type TicketUncheckedUpdateManyWithoutColumnInput = {
 export type TicketCountOutputType = {
   subtasks: number
   comments: number
+  notifications: number
 }
 
 export type TicketCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   subtasks?: boolean | TicketCountOutputTypeCountSubtasksArgs
   comments?: boolean | TicketCountOutputTypeCountCommentsArgs
+  notifications?: boolean | TicketCountOutputTypeCountNotificationsArgs
 }
 
 /**
@@ -1342,6 +1492,13 @@ export type TicketCountOutputTypeCountCommentsArgs<ExtArgs extends runtime.Types
   where?: Prisma.CommentWhereInput
 }
 
+/**
+ * TicketCountOutputType without action
+ */
+export type TicketCountOutputTypeCountNotificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.NotificationWhereInput
+}
+
 
 export type TicketSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1365,6 +1522,7 @@ export type TicketSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   column?: boolean | Prisma.Ticket$columnArgs<ExtArgs>
   subtasks?: boolean | Prisma.Ticket$subtasksArgs<ExtArgs>
   comments?: boolean | Prisma.Ticket$commentsArgs<ExtArgs>
+  notifications?: boolean | Prisma.Ticket$notificationsArgs<ExtArgs>
   _count?: boolean | Prisma.TicketCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["ticket"]>
 
@@ -1438,6 +1596,7 @@ export type TicketInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   column?: boolean | Prisma.Ticket$columnArgs<ExtArgs>
   subtasks?: boolean | Prisma.Ticket$subtasksArgs<ExtArgs>
   comments?: boolean | Prisma.Ticket$commentsArgs<ExtArgs>
+  notifications?: boolean | Prisma.Ticket$notificationsArgs<ExtArgs>
   _count?: boolean | Prisma.TicketCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TicketIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1456,6 +1615,7 @@ export type $TicketPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     column: Prisma.$BoardColumnPayload<ExtArgs> | null
     subtasks: Prisma.$SubtaskPayload<ExtArgs>[]
     comments: Prisma.$CommentPayload<ExtArgs>[]
+    notifications: Prisma.$NotificationPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1873,6 +2033,7 @@ export interface Prisma__TicketClient<T, Null = never, ExtArgs extends runtime.T
   column<T extends Prisma.Ticket$columnArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Ticket$columnArgs<ExtArgs>>): Prisma.Prisma__BoardColumnClient<runtime.Types.Result.GetResult<Prisma.$BoardColumnPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   subtasks<T extends Prisma.Ticket$subtasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Ticket$subtasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SubtaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   comments<T extends Prisma.Ticket$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Ticket$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  notifications<T extends Prisma.Ticket$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Ticket$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2384,6 +2545,30 @@ export type Ticket$commentsArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.CommentScalarFieldEnum | Prisma.CommentScalarFieldEnum[]
+}
+
+/**
+ * Ticket.notifications
+ */
+export type Ticket$notificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Notification
+   */
+  select?: Prisma.NotificationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Notification
+   */
+  omit?: Prisma.NotificationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NotificationInclude<ExtArgs> | null
+  where?: Prisma.NotificationWhereInput
+  orderBy?: Prisma.NotificationOrderByWithRelationInput | Prisma.NotificationOrderByWithRelationInput[]
+  cursor?: Prisma.NotificationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.NotificationScalarFieldEnum | Prisma.NotificationScalarFieldEnum[]
 }
 
 /**

@@ -1,11 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.WorkRole = exports.MonetizationRole = exports.BoardMemberRole = void 0;
+exports.WorkRole = exports.MonetizationRole = exports.InvitationType = exports.BoardMemberRole = void 0;
 exports.BoardMemberRole = {
     OWNER: 'OWNER',
     ADMIN: 'ADMIN',
     MEMBER: 'MEMBER',
     VIEWER: 'VIEWER'
+};
+exports.InvitationType = {
+    PERSONAL: 'PERSONAL',
+    SHARED: 'SHARED'
 };
 exports.MonetizationRole = {
     FREE: 'FREE',

@@ -16,6 +16,12 @@ export const Input = ({ label, value, onChange }: InputProps) => {
             onChange={(e) => onChange(e.target.value)}
             fullWidth
             margin="normal"
+            size="small"
+            sx={{
+                "& .MuiOutlinedInput-root": {
+                    backgroundColor: "rgba(255, 255, 255, 0.9)",
+                },
+            }}
         />
     );
-}
+};

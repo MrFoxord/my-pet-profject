@@ -165,6 +165,7 @@ export type UserWhereInput = {
     boardMemberships?: Prisma.BoardMemberListRelationFilter;
     accounts?: Prisma.AccountListRelationFilter;
     comments?: Prisma.CommentListRelationFilter;
+    notifications?: Prisma.NotificationListRelationFilter;
 };
 export type UserOrderByWithRelationInput = {
     id?: Prisma.SortOrder;
@@ -184,6 +185,7 @@ export type UserOrderByWithRelationInput = {
     boardMemberships?: Prisma.BoardMemberOrderByRelationAggregateInput;
     accounts?: Prisma.AccountOrderByRelationAggregateInput;
     comments?: Prisma.CommentOrderByRelationAggregateInput;
+    notifications?: Prisma.NotificationOrderByRelationAggregateInput;
 };
 export type UserWhereUniqueInput = Prisma.AtLeast<{
     id?: string;
@@ -206,6 +208,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
     boardMemberships?: Prisma.BoardMemberListRelationFilter;
     accounts?: Prisma.AccountListRelationFilter;
     comments?: Prisma.CommentListRelationFilter;
+    notifications?: Prisma.NotificationListRelationFilter;
 }, "id" | "email" | "nickname">;
 export type UserOrderByWithAggregationInput = {
     id?: Prisma.SortOrder;
@@ -261,6 +264,7 @@ export type UserCreateInput = {
     boardMemberships?: Prisma.BoardMemberCreateNestedManyWithoutUserInput;
     accounts?: Prisma.AccountCreateNestedManyWithoutUserInput;
     comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput;
+    notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput;
 };
 export type UserUncheckedCreateInput = {
     id?: string;
@@ -280,6 +284,7 @@ export type UserUncheckedCreateInput = {
     boardMemberships?: Prisma.BoardMemberUncheckedCreateNestedManyWithoutUserInput;
     accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput;
     comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput;
+    notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput;
 };
 export type UserUpdateInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -299,6 +304,7 @@ export type UserUpdateInput = {
     boardMemberships?: Prisma.BoardMemberUpdateManyWithoutUserNestedInput;
     accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput;
     comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput;
+    notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput;
 };
 export type UserUncheckedUpdateInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -318,6 +324,7 @@ export type UserUncheckedUpdateInput = {
     boardMemberships?: Prisma.BoardMemberUncheckedUpdateManyWithoutUserNestedInput;
     accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput;
     comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput;
+    notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput;
 };
 export type UserCreateManyInput = {
     id?: string;
@@ -478,6 +485,18 @@ export type UserUpdateOneWithoutCommentsNestedInput = {
     connect?: Prisma.UserWhereUniqueInput;
     update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCommentsInput, Prisma.UserUpdateWithoutCommentsInput>, Prisma.UserUncheckedUpdateWithoutCommentsInput>;
 };
+export type UserCreateNestedOneWithoutNotificationsInput = {
+    create?: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>;
+    connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotificationsInput;
+    connect?: Prisma.UserWhereUniqueInput;
+};
+export type UserUpdateOneRequiredWithoutNotificationsNestedInput = {
+    create?: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>;
+    connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotificationsInput;
+    upsert?: Prisma.UserUpsertWithoutNotificationsInput;
+    connect?: Prisma.UserWhereUniqueInput;
+    update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutNotificationsInput, Prisma.UserUpdateWithoutNotificationsInput>, Prisma.UserUncheckedUpdateWithoutNotificationsInput>;
+};
 export type UserCreateNestedOneWithoutAccountsInput = {
     create?: Prisma.XOR<Prisma.UserCreateWithoutAccountsInput, Prisma.UserUncheckedCreateWithoutAccountsInput>;
     connectOrCreate?: Prisma.UserCreateOrConnectWithoutAccountsInput;
@@ -507,6 +526,7 @@ export type UserCreateWithoutOwnedBoardsInput = {
     boardMemberships?: Prisma.BoardMemberCreateNestedManyWithoutUserInput;
     accounts?: Prisma.AccountCreateNestedManyWithoutUserInput;
     comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput;
+    notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput;
 };
 export type UserUncheckedCreateWithoutOwnedBoardsInput = {
     id?: string;
@@ -525,6 +545,7 @@ export type UserUncheckedCreateWithoutOwnedBoardsInput = {
     boardMemberships?: Prisma.BoardMemberUncheckedCreateNestedManyWithoutUserInput;
     accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput;
     comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput;
+    notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput;
 };
 export type UserCreateOrConnectWithoutOwnedBoardsInput = {
     where: Prisma.UserWhereUniqueInput;
@@ -556,6 +577,7 @@ export type UserUpdateWithoutOwnedBoardsInput = {
     boardMemberships?: Prisma.BoardMemberUpdateManyWithoutUserNestedInput;
     accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput;
     comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput;
+    notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput;
 };
 export type UserUncheckedUpdateWithoutOwnedBoardsInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -574,6 +596,7 @@ export type UserUncheckedUpdateWithoutOwnedBoardsInput = {
     boardMemberships?: Prisma.BoardMemberUncheckedUpdateManyWithoutUserNestedInput;
     accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput;
     comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput;
+    notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput;
 };
 export type UserCreateWithoutBoardMembershipsInput = {
     id?: string;
@@ -592,6 +615,7 @@ export type UserCreateWithoutBoardMembershipsInput = {
     ownedBoards?: Prisma.BoardCreateNestedManyWithoutOwnerInput;
     accounts?: Prisma.AccountCreateNestedManyWithoutUserInput;
     comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput;
+    notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput;
 };
 export type UserUncheckedCreateWithoutBoardMembershipsInput = {
     id?: string;
@@ -610,6 +634,7 @@ export type UserUncheckedCreateWithoutBoardMembershipsInput = {
     ownedBoards?: Prisma.BoardUncheckedCreateNestedManyWithoutOwnerInput;
     accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput;
     comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput;
+    notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput;
 };
 export type UserCreateOrConnectWithoutBoardMembershipsInput = {
     where: Prisma.UserWhereUniqueInput;
@@ -641,6 +666,7 @@ export type UserUpdateWithoutBoardMembershipsInput = {
     ownedBoards?: Prisma.BoardUpdateManyWithoutOwnerNestedInput;
     accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput;
     comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput;
+    notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput;
 };
 export type UserUncheckedUpdateWithoutBoardMembershipsInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -659,6 +685,7 @@ export type UserUncheckedUpdateWithoutBoardMembershipsInput = {
     ownedBoards?: Prisma.BoardUncheckedUpdateManyWithoutOwnerNestedInput;
     accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput;
     comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput;
+    notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput;
 };
 export type UserCreateWithoutCommentsInput = {
     id?: string;
@@ -677,6 +704,7 @@ export type UserCreateWithoutCommentsInput = {
     ownedBoards?: Prisma.BoardCreateNestedManyWithoutOwnerInput;
     boardMemberships?: Prisma.BoardMemberCreateNestedManyWithoutUserInput;
     accounts?: Prisma.AccountCreateNestedManyWithoutUserInput;
+    notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput;
 };
 export type UserUncheckedCreateWithoutCommentsInput = {
     id?: string;
@@ -695,6 +723,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
     ownedBoards?: Prisma.BoardUncheckedCreateNestedManyWithoutOwnerInput;
     boardMemberships?: Prisma.BoardMemberUncheckedCreateNestedManyWithoutUserInput;
     accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput;
+    notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput;
 };
 export type UserCreateOrConnectWithoutCommentsInput = {
     where: Prisma.UserWhereUniqueInput;
@@ -726,6 +755,7 @@ export type UserUpdateWithoutCommentsInput = {
     ownedBoards?: Prisma.BoardUpdateManyWithoutOwnerNestedInput;
     boardMemberships?: Prisma.BoardMemberUpdateManyWithoutUserNestedInput;
     accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput;
+    notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput;
 };
 export type UserUncheckedUpdateWithoutCommentsInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -744,6 +774,96 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
     ownedBoards?: Prisma.BoardUncheckedUpdateManyWithoutOwnerNestedInput;
     boardMemberships?: Prisma.BoardMemberUncheckedUpdateManyWithoutUserNestedInput;
     accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput;
+    notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput;
+};
+export type UserCreateWithoutNotificationsInput = {
+    id?: string;
+    email?: string | null;
+    name?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    nickname?: string | null;
+    isDefault?: boolean;
+    image?: string | null;
+    emailVerified?: Date | string | null;
+    monetizationRole?: $Enums.MonetizationRole;
+    workRole?: $Enums.WorkRole;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    ownedBoards?: Prisma.BoardCreateNestedManyWithoutOwnerInput;
+    boardMemberships?: Prisma.BoardMemberCreateNestedManyWithoutUserInput;
+    accounts?: Prisma.AccountCreateNestedManyWithoutUserInput;
+    comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput;
+};
+export type UserUncheckedCreateWithoutNotificationsInput = {
+    id?: string;
+    email?: string | null;
+    name?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    nickname?: string | null;
+    isDefault?: boolean;
+    image?: string | null;
+    emailVerified?: Date | string | null;
+    monetizationRole?: $Enums.MonetizationRole;
+    workRole?: $Enums.WorkRole;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    ownedBoards?: Prisma.BoardUncheckedCreateNestedManyWithoutOwnerInput;
+    boardMemberships?: Prisma.BoardMemberUncheckedCreateNestedManyWithoutUserInput;
+    accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput;
+    comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput;
+};
+export type UserCreateOrConnectWithoutNotificationsInput = {
+    where: Prisma.UserWhereUniqueInput;
+    create: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>;
+};
+export type UserUpsertWithoutNotificationsInput = {
+    update: Prisma.XOR<Prisma.UserUpdateWithoutNotificationsInput, Prisma.UserUncheckedUpdateWithoutNotificationsInput>;
+    create: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>;
+    where?: Prisma.UserWhereInput;
+};
+export type UserUpdateToOneWithWhereWithoutNotificationsInput = {
+    where?: Prisma.UserWhereInput;
+    data: Prisma.XOR<Prisma.UserUpdateWithoutNotificationsInput, Prisma.UserUncheckedUpdateWithoutNotificationsInput>;
+};
+export type UserUpdateWithoutNotificationsInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    monetizationRole?: Prisma.EnumMonetizationRoleFieldUpdateOperationsInput | $Enums.MonetizationRole;
+    workRole?: Prisma.EnumWorkRoleFieldUpdateOperationsInput | $Enums.WorkRole;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    ownedBoards?: Prisma.BoardUpdateManyWithoutOwnerNestedInput;
+    boardMemberships?: Prisma.BoardMemberUpdateManyWithoutUserNestedInput;
+    accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput;
+    comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput;
+};
+export type UserUncheckedUpdateWithoutNotificationsInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    nickname?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    monetizationRole?: Prisma.EnumMonetizationRoleFieldUpdateOperationsInput | $Enums.MonetizationRole;
+    workRole?: Prisma.EnumWorkRoleFieldUpdateOperationsInput | $Enums.WorkRole;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    ownedBoards?: Prisma.BoardUncheckedUpdateManyWithoutOwnerNestedInput;
+    boardMemberships?: Prisma.BoardMemberUncheckedUpdateManyWithoutUserNestedInput;
+    accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput;
+    comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput;
 };
 export type UserCreateWithoutAccountsInput = {
     id?: string;
@@ -762,6 +882,7 @@ export type UserCreateWithoutAccountsInput = {
     ownedBoards?: Prisma.BoardCreateNestedManyWithoutOwnerInput;
     boardMemberships?: Prisma.BoardMemberCreateNestedManyWithoutUserInput;
     comments?: Prisma.CommentCreateNestedManyWithoutAuthorInput;
+    notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput;
 };
 export type UserUncheckedCreateWithoutAccountsInput = {
     id?: string;
@@ -780,6 +901,7 @@ export type UserUncheckedCreateWithoutAccountsInput = {
     ownedBoards?: Prisma.BoardUncheckedCreateNestedManyWithoutOwnerInput;
     boardMemberships?: Prisma.BoardMemberUncheckedCreateNestedManyWithoutUserInput;
     comments?: Prisma.CommentUncheckedCreateNestedManyWithoutAuthorInput;
+    notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput;
 };
 export type UserCreateOrConnectWithoutAccountsInput = {
     where: Prisma.UserWhereUniqueInput;
@@ -811,6 +933,7 @@ export type UserUpdateWithoutAccountsInput = {
     ownedBoards?: Prisma.BoardUpdateManyWithoutOwnerNestedInput;
     boardMemberships?: Prisma.BoardMemberUpdateManyWithoutUserNestedInput;
     comments?: Prisma.CommentUpdateManyWithoutAuthorNestedInput;
+    notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput;
 };
 export type UserUncheckedUpdateWithoutAccountsInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -829,18 +952,21 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
     ownedBoards?: Prisma.BoardUncheckedUpdateManyWithoutOwnerNestedInput;
     boardMemberships?: Prisma.BoardMemberUncheckedUpdateManyWithoutUserNestedInput;
     comments?: Prisma.CommentUncheckedUpdateManyWithoutAuthorNestedInput;
+    notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput;
 };
 export type UserCountOutputType = {
     ownedBoards: number;
     boardMemberships: number;
     accounts: number;
     comments: number;
+    notifications: number;
 };
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     ownedBoards?: boolean | UserCountOutputTypeCountOwnedBoardsArgs;
     boardMemberships?: boolean | UserCountOutputTypeCountBoardMembershipsArgs;
     accounts?: boolean | UserCountOutputTypeCountAccountsArgs;
     comments?: boolean | UserCountOutputTypeCountCommentsArgs;
+    notifications?: boolean | UserCountOutputTypeCountNotificationsArgs;
 };
 export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     select?: Prisma.UserCountOutputTypeSelect<ExtArgs> | null;
@@ -856,6 +982,9 @@ export type UserCountOutputTypeCountAccountsArgs<ExtArgs extends runtime.Types.E
 };
 export type UserCountOutputTypeCountCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     where?: Prisma.CommentWhereInput;
+};
+export type UserCountOutputTypeCountNotificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.NotificationWhereInput;
 };
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
@@ -875,6 +1004,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
     boardMemberships?: boolean | Prisma.User$boardMembershipsArgs<ExtArgs>;
     accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>;
     comments?: boolean | Prisma.User$commentsArgs<ExtArgs>;
+    notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>;
     _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
 }, ExtArgs["result"]["user"]>;
 export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -928,6 +1058,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     boardMemberships?: boolean | Prisma.User$boardMembershipsArgs<ExtArgs>;
     accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>;
     comments?: boolean | Prisma.User$commentsArgs<ExtArgs>;
+    notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>;
     _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
 };
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {};
@@ -939,6 +1070,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
         boardMemberships: Prisma.$BoardMemberPayload<ExtArgs>[];
         accounts: Prisma.$AccountPayload<ExtArgs>[];
         comments: Prisma.$CommentPayload<ExtArgs>[];
+        notifications: Prisma.$NotificationPayload<ExtArgs>[];
     };
     scalars: runtime.Types.Extensions.GetPayloadResult<{
         id: string;
@@ -1010,6 +1142,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
     boardMemberships<T extends Prisma.User$boardMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$boardMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BoardMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
     accounts<T extends Prisma.User$accountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
     comments<T extends Prisma.User$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
+    notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
     then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
     catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): runtime.Types.Utils.JsPromise<T | TResult>;
     finally(onfinally?: (() => void) | undefined | null): runtime.Types.Utils.JsPromise<T>;
@@ -1170,6 +1303,17 @@ export type User$commentsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
     take?: number;
     skip?: number;
     distinct?: Prisma.CommentScalarFieldEnum | Prisma.CommentScalarFieldEnum[];
+};
+export type User$notificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    select?: Prisma.NotificationSelect<ExtArgs> | null;
+    omit?: Prisma.NotificationOmit<ExtArgs> | null;
+    include?: Prisma.NotificationInclude<ExtArgs> | null;
+    where?: Prisma.NotificationWhereInput;
+    orderBy?: Prisma.NotificationOrderByWithRelationInput | Prisma.NotificationOrderByWithRelationInput[];
+    cursor?: Prisma.NotificationWhereUniqueInput;
+    take?: number;
+    skip?: number;
+    distinct?: Prisma.NotificationScalarFieldEnum | Prisma.NotificationScalarFieldEnum[];
 };
 export type UserDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     select?: Prisma.UserSelect<ExtArgs> | null;

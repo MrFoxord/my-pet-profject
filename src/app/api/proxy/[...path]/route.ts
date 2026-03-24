@@ -58,14 +58,14 @@ async function proxy(req: NextRequest, { params }: RouteContext): Promise<NextRe
   if (contentType) headers["content-type"] = contentType;
 
   const hasBody = req.method !== "GET" && req.method !== "HEAD";
-  let body: Buffer | undefined;
+  let body: ArrayBuffer | string | undefined;
 
   if (hasBody) {
     if (isAccept && session?.user?.id) {
-      body = Buffer.from(JSON.stringify({ userId: session.user.id }));
+      body = JSON.stringify({ userId: session.user.id });
       headers["content-type"] = "application/json";
     } else {
-      body = Buffer.from(await req.arrayBuffer());
+      body = await req.arrayBuffer();
     }
   }
 

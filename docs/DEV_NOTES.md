@@ -380,3 +380,188 @@
 3. На чтении борды фильтровать `tickets` по этим ролям.
 4. На mutation-эндпоинтах тикета ввести проверку не только membership, но и ticket-level access.
 5. После этого строить UI управления участниками и ролями доски.
+
+---
+
+## Актуализация на 2026-03-24
+
+### Что сделали за день
+
+Это был в первую очередь **релизно-подготовительный** этап: не новые фичи, а системная доводка до стандарта, при котором проект можно запускать и передавать другим людям без страха.
+
+#### Безопасность и хардening
+
+1. Подключили `helmet` в bootstrap Nest — базовые HTTP security headers на всех ответах API.
+2. Добавили глобальный rate limiting через `@nestjs/throttler` (AppModule + global guard).
+3. Добавили усиленные per-endpoint throttle декораторы на публичных invite-эндпоинтах (lookup / accept) — направленная защита от brute-force по токену.
+4. Добавили lightweight in-memory rate limiter в Next `middleware.ts` для `/auth/*` и `/invite/*` — защита от перебора на уровне фронтенда до того, как запрос дойдет до бекенда.
+5. Добавили расширенный набор security headers в `next.config.ts`:
+   - CSP baseline;
+   - `X-Frame-Options: DENY`;
+   - `X-Content-Type-Options: nosniff`;
+   - `Referrer-Policy: strict-origin-when-cross-origin`;
+   - выключен `X-Powered-By`.
+
+#### Тестирование (с нуля до рабочей инфраструктуры)
+
+1. Создан `jest.config.ts` для unit-тестов в `server-nest`.
+2. Создан `test/jest-e2e.json` для e2e-тестов.
+3. Добавлены npm-скрипты `test`, `test:watch`, `test:e2e` в `server-nest/package.json`.
+4. Написан первый `boards.service.spec.ts` — 4 unit-теста на приватную логику:
+   - pending invitation state;
+   - limit_reached при исчерпании shared-инвайта;
+   - OWNER всегда может управлять доступом;
+   - VIEWER не может редактировать при restrictive policy.
+5. Написан `test/health.e2e-spec.ts` — smoke e2e через supertest + Nest bootstrap.
+6. Прогнаны все тесты, стабильно зеленые: unit 4/4, e2e 1/1.
+7. В процессе доводки пришлось решить два нетривиальных нюанса:
+   - в e2e нужно `import * as request from 'supertest'`, не `default import` (CommonJS interop);
+   - health-контроллер возвращает plain `'ok'`, а не `{ status: 'ok' }` — тест должен проверять `response.text`, не `response.body`.
+
+#### Новые фичи
+
+1. Добавлен `DELETE /boards/:boardId` в backend (owner-only, cascade через Prisma).
+2. Добавлен `deleteBoard` в API-клиент фронта, RTK Query mutation и UI-кнопку удаления борды с confirmation.
+3. Добавлена серверная поддержка пагинации тикетов при запросе борды: query-параметры `ticketsOffset` / `ticketsLimit` в `GET /boards/:id`.
+
+#### Фронтовая устойчивость (resilience)
+
+1. Создан `src/app/error.tsx` — глобальный error boundary для App Router с кнопками `Повторить` и `К доскам`.
+2. Создан `src/app/not-found.tsx` — кастомная 404-страница.
+3. В `src/app/dashboard/[boardId]/page.tsx` заменён ручной fallback на `notFound()`.
+4. Оба файла поддерживают i18n through `next-intl`.
+5. Добавлены переводы (`errors.*`) во все три locale: en / ru / uk.
+
+#### Инфраструктура
+
+1. Создан `.github/workflows/ci.yml` — два job'а: frontend (lint + build) и backend (build + unit + e2e).
+2. Расширен `.env.example` в корне (Swagger URL, rate limit env, app public URL).
+3. Создан `server-nest/.env.example` — первый раз задокументировал все переменные бекенда.
+4. Переписан `README.md` — убраны стандартные Next.js шаблонные тексты, добавлено: описание проекта, архитектура, инструкция по запуску, переменные окружения, тестирование, security notes.
+
+#### Lint и качество кода (финальный cleanup)
+
+1. Устранены 13 lint-ошибок:
+   - 4 `any` в `boards.service.ts` → заменены на `CreateBoardRoleDto`, `UpdateBoardRoleDto`, `Partial<{...}>`, `unknown`;
+   - `(service as any).method` в тесте → заменён на типизированный `serviceInternals` с explicit interface;
+   - `require()` import в e2e → заменён на `import * as`;
+   - 4 нарушения `react-hooks/set-state-in-effect` → `setState` обёрнут через `setTimeout(..., 0)` в `BoardColumns.tsx` и `TicketModal.tsx`.
+2. Финальные результаты после всех правок:
+   - `npm run lint` — 0 ошибок, 0 предупреждений;
+   - `npm run build` (Next) — успешно, 0 TypeScript ошибок;
+   - `nest build` — успешно, 0 TypeScript ошибок;
+   - unit tests — 4/4;
+   - e2e tests — 1/1.
+
+---
+
+### Наблюдения по итогам дня
+
+#### Что видно в архитектуре прямо сейчас
+
+1. **`boards.service.ts` — критична точка роста.**
+   Файл уже превышает 2000 строк. Внутри него вперемешку: бизнес-логика досок, билеты, колонки, инвайты, роли, нотификации, агрегации. Это пока работает, но при следующем крупном feature-слое (например, real-time коллаборация или полноценный permission enforcement) файл станет непосильным для понимания или безопасного изменения.
+
+2. **Notification-слой реализован, но не тестируется.**
+   `createAndDispatchNotifications`, `notifyBoardMembers`, `listUserNotifications` — эти методы существуют и, судя по TypeScript, корректны. Но ни один тест их не покрывает. При любом рефакторинге этого слоя можно сломать тихо.
+
+3. **RTK Query API (`src/store/api.ts`) полностью соответствует backend.**
+   Это хороший признак: клиентский и серверный контракты не разошлись. Но весь `api.ts` — это один монолитный `createApi` с ~400 строк. При дальнейшем расширении стоит разбить по namespace'ам (boards, tickets, members, notifications).
+
+4. **Realtime-слой готов к приёму данных, но пока нет ни одного места во фронте, которое слушает и реагирует.**
+   `SocketContext.tsx` подключается, регистрирует userId и умеет слушать события. `RealtimeGateway` умеет их слать. Но ни один компонент пока не вызывает `useSocket()` для обновления данных. Это ближайший реально осязаемый UX-прирост.
+
+5. **Security headers — baseline, не финальный уровень.**
+   CSP написан как baseline (без nonces для inline-scripts). MUI + emotion генерируют inline-критические стили, что в production с `nonce`-based CSP потребует доработки. Сейчас это нормально, но надо иметь в виду, что текущий CSP — это отправная точка, а не production-hardened конфиг.
+
+6. **Тестовое покрытие пока очень мало.**
+   4 unit-теста + 1 e2e — это каркас инфраструктуры, не coverage. Из критичной логики не тестируются: invitation acceptance, ticket access enforcement, board deletion со связанными данными, notifications dispatch. Это технический долг, который вырастет резкo, когда проект начнут использовать несколько человек.
+
+---
+
+### Видение дальнейшего развития
+
+#### Ближайший шаг — realtime реактивность (высокий impact, малые риски)
+
+`SocketContext` и `RealtimeGateway` уже соединены. Осталось сделать один небольшой шаг: подписаться на событие `board-state-changed` внутри компонента деталей борды и вызвать `refetch` RTK Query.
+
+Это даст мгновенно ощутимую живость интерфейса: два пользователя в одном браузере или двух вкладках видят изменения без перезагрузки страницы. Это самая видимая фича при минимальных усилиях.
+
+#### Следующий крупный slice — Board Management UI
+
+Половина серверной логики уже написана: роли, инвайты, управление участниками, удаление.
+На фронте этого пока нет в виде отдельного полноценного UI.
+Нужна страница (или боковая панель) `Board Settings` со вкладками:
+- Участники + смена роли + удаление участника;
+- Кастомные роли (create/rename/delete);
+- Инвайты: создание, копирование ссылки, список pending, отзыв.
+
+Это закрывает главный разрыв между тем, что умеет API, и тем, что видит пользователь.
+
+#### Технический долг, который надо погасить до следующего feature-слоя
+
+1. **Разделить `boards.service.ts`** на несколько сервисов:
+   - `BoardsService` (CRUD борд + memberships);
+   - `TicketsService` (тикеты, комментарии, access policy enforcement);
+   - `BoardInvitationsService` (инвайты, токены, acceptance flow);
+   - `NotificationsService` (dispatch, list, read).
+
+2. **Добавить тесты на критичую логику:**
+   - acceptance флоу инвайтов (personal + shared, expiry, limit);
+   - ticket access enforcement (view/edit/delete по ролям);
+   - deleteBoard с каскадом.
+
+3. **RTK Query api.ts разбить по namespace:**
+   - `boardsApi`, `ticketsApi`, `membersApi`, `notificationsApi`;
+   - это также позволит переиспользовать теги и инвалидации точечно, а не через один глобальный `appApi`.
+
+#### Среднесрочное видение (следующие 2–3 итерации)
+
+1. **Полноценный ticket lifecycle:**
+   - assignees (кому назначен);
+   - due date + reminder (через notification dispatch);
+   - subtask completion агрегация;
+   - attachments (хотя бы как ссылки).
+
+2. **Board-level аналитика:**
+   - сколько тикетов в каждом статусе;
+   - burndown или простой счётчик прогресса спринта;
+   - это сделает борд не просто Kanban, а управленческим инструментом.
+
+3. **Email-нотификации:**
+   - сейчас нотификации хранятся в БД и отдаются в realtime;
+   - следующий уровень — отправка email при важных событиях (invite, mention, назначение);
+   - minimal MVP: SMTP + Nodemailer в Nest, шаблон приглашения.
+
+4. **Многопользовательская коллаборация на тикете:**
+   - lock при редактировании (optimistic, через realtime);
+   - cursor awareness (кто смотрит на тикет прямо сейчас);
+   - это реалистично, потому что realtime-слой уже готов принять эти события.
+
+#### Долгосрочное видение
+
+Проект строился как pet-project, но архитектурно уже сейчас готов к командной работе:
+- RBAC с кастомными ролями per-board — это enterprise-уровень;
+- realtime gateway — это product-level фича;
+- typed API + generated Prisma — это production-grade backend.
+
+Если добавить email-инвайты, board analytics и mobile-responsive layout — он превращается в реально конкурентоспособный B2B-продукт для небольших команд.
+
+Ключевое, что осталось сделать для этого перехода:
+- закрыть realtime loop (subscribe → update → UI);
+- сделать Board Settings как полноценный UI;
+- добавить минимальный test coverage на критичную логику.
+
+Всё остальное — это наращивание, а не фундамент.
+
+---
+
+### TODO на следующую итерацию (приоритет)
+
+1. `[ ]` Подписаться на `board-state-changed` в `[boardId]/page.tsx`, вызвать `refetch` при событии.
+2. `[ ]` Подписаться на `ticket-state-changed` в том же компоненте, инвалидировать `getBoardTicketById`.
+3. `[ ]` Создать страницу Board Settings с вкладками: участники, роли, инвайты.
+4. `[ ]` Разбить `boards.service.ts` — минимум выделить `BoardInvitationsService` и `NotificationsService`.
+5. `[ ]` Добавить тест на acceptance flow инвайта (unit, mocked Prisma).
+6. `[ ]` Разбить `src/store/api.ts` на namespace-эндпоинты.
+7. `[ ]` Email-уведомления — Nodemailer в Nest, шаблон инвайта.
