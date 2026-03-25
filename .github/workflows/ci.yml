@@ -32,6 +32,9 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          DATABASE_URL: "postgresql://user:password@localhost:5432/dbname?schema=public"
+        
 
   backend:
     name: Backend (Nest)
