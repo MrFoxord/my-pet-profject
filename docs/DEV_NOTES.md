@@ -3,8 +3,8 @@
 Этот файл — конспект решений и плана работ, чтобы можно было продолжать разработку с другого ноутбука / другим Copilot, не теряя контекст.
 
 Быстрая навигация:
-- Актуальное состояние: `Актуализация на 2026-03-19`
-- Текущий план: `6. Ближайшие шаги (актуальный TODO)`
+- Актуальное состояние: `Актуализация на 2026-03-25`
+- Текущий план: `TODO на следующую итерацию` (в разделе 2026-03-24)
 - Предложенная стратегия: `7. Стратегия дальнейшей разработки`
 
 ---
@@ -468,8 +468,8 @@
 3. **RTK Query API (`src/store/api.ts`) полностью соответствует backend.**
    Это хороший признак: клиентский и серверный контракты не разошлись. Но весь `api.ts` — это один монолитный `createApi` с ~400 строк. При дальнейшем расширении стоит разбить по namespace'ам (boards, tickets, members, notifications).
 
-4. **Realtime-слой готов к приёму данных, но пока нет ни одного места во фронте, которое слушает и реагирует.**
-   `SocketContext.tsx` подключается, регистрирует userId и умеет слушать события. `RealtimeGateway` умеет их слать. Но ни один компонент пока не вызывает `useSocket()` для обновления данных. Это ближайший реально осязаемый UX-прирост.
+4. **Realtime-loop замкнут — `DashboardClient.tsx` уже подписывается и реагирует.**
+   `SocketContext.tsx` подключается, регистрирует userId. `RealtimeGateway` отправляет события. `DashboardClient.tsx` вызывает `useSocket()`, на `componentDidMount` эмитит `subscribe-board`, слушает `board-state-changed` (инвалидирует RTK-тег `Board`) и `ticket-state-changed` (инвалидирует `BoardTicket` + анимирует перемещение). Своя эхо-отсечка через `actorUserId === session.user.id`. На `unmount` — `unsubscribe-board`. Realtime полностью рабочий.
 
 5. **Security headers — baseline, не финальный уровень.**
    CSP написан как baseline (без nonces для inline-scripts). MUI + emotion генерируют inline-критические стили, что в production с `nonce`-based CSP потребует доработки. Сейчас это нормально, но надо иметь в виду, что текущий CSP — это отправная точка, а не production-hardened конфиг.
@@ -481,22 +481,24 @@
 
 ### Видение дальнейшего развития
 
-#### Ближайший шаг — realtime реактивность (высокий impact, малые риски)
+#### ~~Ближайший шаг — realtime реактивность~~ ✅ Уже сделано
 
-`SocketContext` и `RealtimeGateway` уже соединены. Осталось сделать один небольшой шаг: подписаться на событие `board-state-changed` внутри компонента деталей борды и вызвать `refetch` RTK Query.
+`DashboardClient.tsx` уже подписывается на `board-state-changed` и `ticket-state-changed`, инвалидирует RTK Query теги и анимирует перемещение тикетов. Realtime-loop закрыт. Это больше не задача.
 
-Это даст мгновенно ощутимую живость интерфейса: два пользователя в одном браузере или двух вкладках видят изменения без перезагрузки страницы. Это самая видимая фича при минимальных усилиях.
+#### Board Management UI — частично сделано
 
-#### Следующий крупный slice — Board Management UI
+Серверная логика реализована полностью: роли, инвайты, управление участниками, удаление.
 
-Половина серверной логики уже написана: роли, инвайты, управление участниками, удаление.
-На фронте этого пока нет в виде отдельного полноценного UI.
-Нужна страница (или боковая панель) `Board Settings` со вкладками:
-- Участники + смена роли + удаление участника;
-- Кастомные роли (create/rename/delete);
-- Инвайты: создание, копирование ссылки, список pending, отзыв.
+На фронте существует страница `src/app/dashboard/[boardId]/users/` с компонентом `BoardUsersClient`:
+- список участников с их кастомными ролями и кнопкой удаления;
+- создание инвайтов типа `PERSONAL` (с email) и `SHARED` (без email, `SINGLE_USE` / `MULTI_USE`);
+- таблица ожидающих приглашений с кнопкой копирования ссылки и отзывом.
 
-Это закрывает главный разрыв между тем, что умеет API, и тем, что видит пользователь.
+**Что пока не реализовано:**
+- Страница `/dashboard/[boardId]/settings` — sidebar на неё ссылается, но page.tsx не существует.
+- UI управления кастомными ролями (create / rename / delete) — доступно только при создании борды, не редактируется после.
+
+Следующий реальный шаг — создать страницу `/settings` (или добавить вкладку "Роли" в `/users`) с CRUD кастомных ролей.
 
 #### Технический долг, который надо погасить до следующего feature-слоя
 
@@ -558,10 +560,61 @@
 
 ### TODO на следующую итерацию (приоритет)
 
-1. `[ ]` Подписаться на `board-state-changed` в `[boardId]/page.tsx`, вызвать `refetch` при событии.
-2. `[ ]` Подписаться на `ticket-state-changed` в том же компоненте, инвалидировать `getBoardTicketById`.
-3. `[ ]` Создать страницу Board Settings с вкладками: участники, роли, инвайты.
-4. `[ ]` Разбить `boards.service.ts` — минимум выделить `BoardInvitationsService` и `NotificationsService`.
-5. `[ ]` Добавить тест на acceptance flow инвайта (unit, mocked Prisma).
-6. `[ ]` Разбить `src/store/api.ts` на namespace-эндпоинты.
-7. `[ ]` Email-уведомления — Nodemailer в Nest, шаблон инвайта.
+1. `[x]` ~~Подписаться на `board-state-changed` в `[boardId]/page.tsx`, вызвать `refetch` при событии.~~ — **Сделано в `DashboardClient.tsx`** (invalidateTags Board + ticket-state-changed)
+2. `[x]` ~~Подписаться на `ticket-state-changed` в том же компоненте, инвалидировать `getBoardTicketById`.~~ — **Сделано** (см. выше)
+3. `[ ]` Создать страницу `/dashboard/[boardId]/settings` — sidebar уже ссылается, но файла нет.
+4. `[ ]` Добавить UI управления кастомными ролями (create / rename / delete) в settings или users page.
+5. `[ ]` Разбить `boards.service.ts` — минимум выделить `BoardInvitationsService` и `NotificationsService`.
+6. `[ ]` Добавить тест на acceptance flow инвайта (unit, mocked Prisma).
+7. `[ ]` Разбить `src/store/api.ts` на namespace-эндпоинты.
+8. `[ ]` Email-уведомления — Nodemailer в Nest, шаблон инвайта.
+9. `[ ]` Resume flow после auth — invite-токен должен переживать signin/register redirect chain.
+
+---
+
+## Актуализация на 2026-03-25
+
+### Ревизия — что реально сделано к этому моменту
+
+Этот раздел исправляет ряд неточностей из секции 2026-03-24, которые описывали как «ещё не готово» то, что на самом деле уже было реализовано в более ранних итерациях.
+
+#### Realtime — полностью готов
+
+- `DashboardClient.tsx` импортирует `useSocket()`, на mount эмитит `subscribe-board`, слушает события:
+  - `board-state-changed` → `dispatch(appApi.util.invalidateTags([{type:'Board', id:boardId}]))`
+  - `ticket-state-changed` → `dispatch(appApi.util.invalidateTags([{type:'BoardTicket', id:ticketId}]))` + анимация перемещения
+- Самоэхо-отсечка: события с `actorUserId === session.user.id` игнорируются.
+- На unmount — `unsubscribe-board`.
+- `SocketProvider` обёрнут в `src/components/Providers.tsx`, доступен глобально.
+
+#### Board Users / Invitations UI — реализован
+
+- Существует `src/app/dashboard/[boardId]/users/page.tsx`.
+- `BoardUsersClient.tsx` обеспечивает:
+  - список участников со сменой кастомной роли и удалением;
+  - создание инвайтов `PERSONAL` (с email) и `SHARED` (`SINGLE_USE` / `MULTI_USE`);
+  - таблица pending-инвайтов с копированием ссылки и отзывом.
+
+#### Ticket access enforcement — работает в бэкенде
+
+- `boards.service.ts` содержит `normalizeTicketAccessPolicy()`, `canUseTicketPermission()`, `canAccessTicket()`.
+- Enforcement применяется на всех mutation-эндпоинтах: edit / fill / delete / estimate / comment.
+
+#### SHARED-инвайты — реализованы (вопреки заметкам от 2026-03-19)
+
+- Модель `BoardInvitation` содержит `type: PERSONAL | SHARED`, `email?`, `customRoleId?`, `maxUses?`, `usedCount`.
+- Acceptance-логика атомарно инкрементирует `usedCount` и проверяет `maxUses`.
+- Удалена жёсткая уникальность `@@unique([boardId, email])`.
+
+### Что пока не реализовано (актуальный технический долг)
+
+| Задача | Приоритет |
+|---|---|
+| `src/app/dashboard/[boardId]/settings/page.tsx` — sidebar ссылается, файла нет | Высокий |
+| UI управления кастомными ролями (создание/переименование/удаление) | Высокий |
+| Resume flow: invite-токен переживает цепочку редиректов signin/register | Средний |
+| Email-уведомления (Nodemailer, шаблон инвайта) | Средний |
+| Разбить `boards.service.ts` (2000+ строк) на `TicketsService`, `BoardInvitationsService`, `NotificationsService` | Средний |
+| Разбить `src/store/api.ts` (~400 строк) по namespace'ам | Низкий |
+| Тест на флоу принятия инвайта (unit, mocked Prisma) | Средний |
+| Тест на каскадное удаление борды | Низкий |
