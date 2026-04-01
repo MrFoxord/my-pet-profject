@@ -117,6 +117,12 @@ Example:
 
 - `https://api-production-xxxx.up.railway.app`
 
+Important build-time note:
+
+- in this repository, Prisma config resolves `DATABASE_URL` during Docker image build as well
+- so `DATABASE_URL` must exist in Railway service variables before the `api` image build starts
+- if it is missing, the image can fail during `npx prisma generate --schema=prisma/schema.prisma`
+
 That public URL becomes the browser-facing backend URL for Vercel.
 
 ## Step 4. Configure Vercel Frontend

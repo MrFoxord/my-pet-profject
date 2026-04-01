@@ -31,6 +31,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.api
+      args:
+        DATABASE_URL: ${DATABASE_URL}
     env_file:
       - .env
     environment:
@@ -56,6 +58,7 @@ services:
       context: .
       dockerfile: Dockerfile.web
       args:
+        DATABASE_URL: ${DATABASE_URL}
         NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8082}
         NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
         NEXT_PUBLIC_SOCKET_PORT: ${NEXT_PUBLIC_SOCKET_PORT:-8082}
