@@ -288,6 +288,19 @@ Recommended production shape:
 - terminate HTTPS at the reverse proxy;
 - keep PostgreSQL inaccessible from the public internet unless there is a very specific reason.
 
+### Railway + Vercel Deployment
+
+If you want to run PostgreSQL and Nest on Railway, while keeping the Next.js frontend on Vercel, use the dedicated guide:
+
+- [docs/RAILWAY_VERCEL_DEPLOY.md](docs/RAILWAY_VERCEL_DEPLOY.md)
+
+That guide documents the correct split for this repository:
+
+- Railway PostgreSQL service instead of self-hosted `db` container
+- Railway Docker deployment for `migrate` and `api`
+- Vercel deployment for the frontend
+- shared production `DATABASE_URL` for Railway and Vercel
+
 ### Production Checklist for Docker Deployment
 
 - Replace development secrets in `.env`.
