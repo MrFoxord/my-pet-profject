@@ -111,7 +111,7 @@ export default function BoardSettingsClient({ boardId }: BoardSettingsClientProp
       sharedInviteMaxUses: String(board.sharedInviteMaxUses ?? 10),
     });
   }, [board]);
-
+  console.log("boardForm");
   useEffect(() => {
     if (roles.length === 0) {
       return;
