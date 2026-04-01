@@ -8,6 +8,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import PeopleIcon from "@mui/icons-material/People";
 import { useTranslations } from "next-intl";
 import { SidebarProps } from "@/types";
+import { DASHBOARD_CHROME_BACKGROUND } from "@/components/layout/chrome";
 
 export function Sidebar({ boardId, themeColor }: SidebarProps) {
     const t = useTranslations("sidebar");
@@ -21,7 +22,7 @@ export function Sidebar({ boardId, themeColor }: SidebarProps) {
                 [`& .MuiDrawer-paper`]: {
                     width: 248,
                     boxSizing: "border-box",
-                    background: `linear-gradient(180deg, ${themeColor || "#173464"} 0%, #0f2244 100%)`,
+                    background: DASHBOARD_CHROME_BACKGROUND,
                     color: "rgba(244, 248, 255, 0.94)",
                     borderRight: "1px solid rgba(255, 255, 255, 0.12)",
                 },

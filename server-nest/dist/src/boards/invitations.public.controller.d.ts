@@ -1,7 +1,12 @@
-import { BoardsService } from './boards.service';
+import { Request } from 'express';
+import { BoardInvitationsService } from './board-invitations.service';
+import { ServiceJwtPayload } from '../auth/internal-auth.guard';
+type AuthRequest = Request & {
+    serviceUser?: ServiceJwtPayload;
+};
 export declare class InvitationsPublicController {
-    private readonly boardsService;
-    constructor(boardsService: BoardsService);
+    private readonly boardInvitationsService;
+    constructor(boardInvitationsService: BoardInvitationsService);
     getInvitationByToken(token: string): Promise<{
         id: string;
         token: string;
@@ -12,7 +17,7 @@ export declare class InvitationsPublicController {
         customRoleName: string;
         createdByUserId: string;
         status: string;
-        state: "pending" | "expired" | "revoked" | "limit_reached" | "accepted";
+        state: import("./boards.types").InvitationState;
         maxUses: number;
         usedCount: number;
         expiresAt: Date;
@@ -23,11 +28,10 @@ export declare class InvitationsPublicController {
             logoUrl: string;
         };
     }>;
-    acceptInvitationByToken(token: string, body: {
-        userId?: string;
-    }): Promise<{
+    acceptInvitationByToken(token: string, req: AuthRequest): Promise<{
         success: boolean;
         boardId: string;
         alreadyMember: boolean;
     }>;
 }
+export {};

@@ -1,31 +1,43 @@
-import { IsInt, IsObject, IsOptional, IsString, Min } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsIn, IsInt, IsObject, IsOptional, IsString, Min } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { TICKET_PRIORITY_VALUES, TICKET_STATUS_VALUES, TICKET_TYPE_VALUES } from '../boards.constants';
+import { TicketPriority, TicketStatus, TicketType } from '../../shared/tickets';
 
 export class CreateTicketDto {
   @ApiProperty({ example: 'Implement OAuth callback' })
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
   @IsString()
   title: string;
 
   @ApiPropertyOptional({ example: 'Handle provider token exchange and session creation' })
   @IsOptional()
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
   @IsString()
   description?: string;
 
   @ApiProperty({ example: 'todo' })
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim().toLowerCase() : value))
   @IsString()
-  status: string;
+  @IsIn(TICKET_STATUS_VALUES)
+  status: TicketStatus;
 
   @ApiProperty({ example: 'task' })
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim().toLowerCase() : value))
   @IsString()
-  type: string;
+  @IsIn(TICKET_TYPE_VALUES)
+  type: TicketType;
 
   @ApiPropertyOptional({ example: 'high' })
   @IsOptional()
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim().toLowerCase() : value))
   @IsString()
-  priority?: string;
+  @IsIn(TICKET_PRIORITY_VALUES)
+  priority?: TicketPriority;
 
   @ApiPropertyOptional({ example: 'col_todo' })
   @IsOptional()
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
   @IsString()
   columnId?: string;
 

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useFormatter, useTranslations } from "next-intl";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
-import { Ticket, TicketModalProps, TicketAccessPolicy, DEFAULT_ACCESS_POLICY, TicketEstimate } from "@/types";
+import { Ticket, TicketModalProps, TicketAccessPolicy, TicketPermission, DEFAULT_ACCESS_POLICY, TicketEstimate } from "@/types";
 import {
   Avatar,
   Button,
@@ -49,6 +49,7 @@ export const TicketModal = ({
   boardRoleNames = [],
   currentUserRole,
   currentUserCustomRoleName,
+  currentUserCustomRolePermissions,
   onSaveTicket,
   onCreateComment,
   onDeleteTicket,
@@ -63,6 +64,7 @@ export const TicketModal = ({
           remoteUpdateVersion={remoteUpdateVersion}
           currentUserRole={currentUserRole}
           currentUserCustomRoleName={currentUserCustomRoleName}
+          currentUserCustomRolePermissions={currentUserCustomRolePermissions}
           onSaveTicket={onSaveTicket}
           onCreateComment={onCreateComment}
           onDeleteTicket={onDeleteTicket}
@@ -79,6 +81,7 @@ interface TicketModalContentProps {
   remoteUpdateVersion?: number;
   currentUserRole?: string | null;
   currentUserCustomRoleName?: string | null;
+  currentUserCustomRolePermissions?: TicketPermission[];
   onSaveTicket?: (
     ticketId: string,
     payload: {
@@ -101,6 +104,7 @@ const TicketModalContent = ({
   remoteUpdateVersion,
   currentUserRole,
   currentUserCustomRoleName,
+  currentUserCustomRolePermissions,
   onSaveTicket,
   onCreateComment,
   onDeleteTicket,
@@ -351,17 +355,29 @@ const TicketModalContent = ({
     return roles;
   }, [currentUserCustomRoleName, currentUserRole]);
 
+  const customRolePermissionSet = useMemo(
+    () => new Set(currentUserCustomRolePermissions ?? []),
+    [currentUserCustomRolePermissions]
+  );
+
   const hasPermission = (permission: keyof TicketAccessPolicy) => {
     if (canManageTicketAccess) {
       return true;
     }
 
     const roles = accessPolicy[permission] ?? [];
-    if (!roles.length) {
-      return true;
+    const allowedByAccessPolicy =
+      !roles.length || roles.some((role) => effectiveRoles.has(role.toLowerCase()));
+
+    if (!allowedByAccessPolicy) {
+      return false;
     }
 
-    return roles.some((role) => effectiveRoles.has(role.toLowerCase()));
+    if (currentUserCustomRoleName?.trim() && customRolePermissionSet.size > 0) {
+      return customRolePermissionSet.has(permission);
+    }
+
+    return true;
   };
 
   const canFillTicket = hasPermission("fill");

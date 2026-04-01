@@ -1,18 +1,81 @@
-version: "3.9"
-
 services:
   db:
-    image: postgres:16
-    container_name: my-pet-postgres
+    image: postgres:16-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: my_pet_profect
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-my_pet_profect}
     ports:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-my_pet_profect}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile.migrate
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    env_file:
+      - .env
+    environment:
+      PORT: ${PORT:-8082}
+      SOCKET_SERVER_PORT: ${SOCKET_SERVER_PORT:-8082}
+      ALLOWED_ORIGIN: ${ALLOWED_ORIGIN:-http://localhost:3000}
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    ports:
+      - "8082:8082"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8082/health >/dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+      args:
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8082}
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+        NEXT_PUBLIC_SOCKET_PORT: ${NEXT_PUBLIC_SOCKET_PORT:-8082}
+        NEXT_PUBLIC_WS_URL: ${NEXT_PUBLIC_WS_URL:-}
+    env_file:
+      - .env
+    environment:
+      PORT: 3000
+      NEST_API_URL: http://api:8082
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/api/auth/session >/dev/null 2>&1 || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
 
 volumes:
   db_data:

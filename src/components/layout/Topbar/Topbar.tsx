@@ -20,6 +20,7 @@ import { LocaleSwitcher } from "./LocaleSwitcher/LocaleSwitcher";
 import { Button } from "@/components/ui";
 import { useGetBoardByIdQuery, useLeaveBoardMutation } from "@/store/api";
 import { signOut, useSession } from "next-auth/react";
+import { DASHBOARD_CHROME_BACKGROUND } from "@/components/layout/chrome";
 
 export function Topbar() {
     const router = useRouter();
@@ -108,7 +109,7 @@ export function Topbar() {
                 position="fixed"
                 sx={{
                     zIndex: (theme) => theme.zIndex.drawer + 1,
-                    background: "linear-gradient(90deg, #14325f 0%, #0f4b82 52%, #0e6f8f 100%)",
+                    background: DASHBOARD_CHROME_BACKGROUND,
                 }}
             >
                 <Toolbar sx={{ display: "flex", justifyContent: "space-between", minHeight: 66 }}>

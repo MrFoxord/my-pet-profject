@@ -1,7 +1,27 @@
 "use client";
 
 import { MenuItem, TextField } from "@mui/material";
+import { TICKET_PRIORITY_VALUES, TICKET_STATUS_VALUES, TICKET_TYPE_VALUES } from "@/shared/tickets";
 import type { Ticket } from "@/types";
+
+const TICKET_TYPE_LABELS: Record<Ticket["type"], string> = {
+  bug: "Bug",
+  feature: "Feature",
+  task: "Task",
+};
+
+const TICKET_PRIORITY_LABELS: Record<Ticket["priority"], string> = {
+  low: "Low",
+  medium: "Medium",
+  high: "High",
+  critical: "Critical",
+};
+
+const TICKET_STATUS_LABELS: Record<Ticket["status"], string> = {
+  todo: "To Do",
+  "in-progress": "In Progress",
+  done: "Done",
+};
 
 interface BaseSelectProps {
   fullWidth?: boolean;
@@ -35,9 +55,11 @@ export function TicketTypeSelect({
       size={size}
       disabled={disabled}
     >
-      <MenuItem value="task">Task</MenuItem>
-      <MenuItem value="feature">Feature</MenuItem>
-      <MenuItem value="bug">Bug</MenuItem>
+      {TICKET_TYPE_VALUES.map((type) => (
+        <MenuItem key={type} value={type}>
+          {TICKET_TYPE_LABELS[type]}
+        </MenuItem>
+      ))}
     </TextField>
   );
 }
@@ -68,10 +90,11 @@ export function TicketPrioritySelect({
       size={size}
       disabled={disabled}
     >
-      <MenuItem value="low">Low</MenuItem>
-      <MenuItem value="medium">Medium</MenuItem>
-      <MenuItem value="high">High</MenuItem>
-      <MenuItem value="critical">Critical</MenuItem>
+      {TICKET_PRIORITY_VALUES.map((priority) => (
+        <MenuItem key={priority} value={priority}>
+          {TICKET_PRIORITY_LABELS[priority]}
+        </MenuItem>
+      ))}
     </TextField>
   );
 }
@@ -102,9 +125,11 @@ export function TicketStatusSelect({
       size={size}
       disabled={disabled}
     >
-      <MenuItem value="todo">To Do</MenuItem>
-      <MenuItem value="in-progress">In Progress</MenuItem>
-      <MenuItem value="done">Done</MenuItem>
+      {TICKET_STATUS_VALUES.map((status) => (
+        <MenuItem key={status} value={status}>
+          {TICKET_STATUS_LABELS[status]}
+        </MenuItem>
+      ))}
     </TextField>
   );
 }

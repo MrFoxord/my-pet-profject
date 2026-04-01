@@ -1367,6 +1367,11 @@ export const BoardScalarFieldEnum = {
   description: 'description',
   logoUrl: 'logoUrl',
   themeColor: 'themeColor',
+  allowPersonalInvites: 'allowPersonalInvites',
+  allowSharedInvites: 'allowSharedInvites',
+  defaultSharedInvitationMode: 'defaultSharedInvitationMode',
+  inviteExpiresHours: 'inviteExpiresHours',
+  sharedInviteMaxUses: 'sharedInviteMaxUses',
   ownerId: 'ownerId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1629,6 +1634,34 @@ export type ListEnumWorkRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$Pri
 
 
 /**
+ * Reference to a field of type 'SharedInvitationMode'
+ */
+export type EnumSharedInvitationModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SharedInvitationMode'>
+    
+
+
+/**
+ * Reference to a field of type 'SharedInvitationMode[]'
+ */
+export type ListEnumSharedInvitationModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SharedInvitationMode[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Int'
+ */
+export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+/**
+ * Reference to a field of type 'Int[]'
+ */
+export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
  * Reference to a field of type 'BoardMemberRole'
  */
 export type EnumBoardMemberRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BoardMemberRole'>
@@ -1653,20 +1686,6 @@ export type EnumInvitationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$P
  * Reference to a field of type 'InvitationType[]'
  */
 export type ListEnumInvitationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InvitationType[]'>
-    
-
-
-/**
- * Reference to a field of type 'Int'
- */
-export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-/**
- * Reference to a field of type 'Int[]'
- */
-export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 

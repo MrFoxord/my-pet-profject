@@ -10,6 +10,11 @@ export declare const InvitationType: {
     readonly SHARED: "SHARED";
 };
 export type InvitationType = (typeof InvitationType)[keyof typeof InvitationType];
+export declare const SharedInvitationMode: {
+    readonly SINGLE_USE: "SINGLE_USE";
+    readonly MULTI_USE: "MULTI_USE";
+};
+export type SharedInvitationMode = (typeof SharedInvitationMode)[keyof typeof SharedInvitationMode];
 export declare const MonetizationRole: {
     readonly FREE: "FREE";
     readonly SUBMITTED: "SUBMITTED";

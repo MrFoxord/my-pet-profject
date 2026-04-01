@@ -16,19 +16,19 @@ exports.NotificationsController = void 0;
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
 const internal_auth_guard_1 = require("../auth/internal-auth.guard");
-const boards_service_1 = require("./boards.service");
+const board_notifications_service_1 = require("./board-notifications.service");
 let NotificationsController = class NotificationsController {
-    constructor(boardsService) {
-        this.boardsService = boardsService;
+    constructor(boardNotificationsService) {
+        this.boardNotificationsService = boardNotificationsService;
     }
     list(req) {
-        return this.boardsService.listUserNotifications(req.serviceUser?.sub);
+        return this.boardNotificationsService.listUserNotifications(req.serviceUser?.sub);
     }
     markAllAsRead(req) {
-        return this.boardsService.markAllNotificationsRead(req.serviceUser?.sub);
+        return this.boardNotificationsService.markAllNotificationsRead(req.serviceUser?.sub);
     }
     markAsRead(notificationId, req) {
-        return this.boardsService.markNotificationRead(notificationId, req.serviceUser?.sub);
+        return this.boardNotificationsService.markNotificationRead(notificationId, req.serviceUser?.sub);
     }
 };
 exports.NotificationsController = NotificationsController;
@@ -94,6 +94,6 @@ exports.NotificationsController = NotificationsController = __decorate([
     (0, swagger_1.ApiBearerAuth)('bearer'),
     (0, common_1.Controller)('notifications'),
     (0, common_1.UseGuards)(internal_auth_guard_1.InternalAuthGuard),
-    __metadata("design:paramtypes", [boards_service_1.BoardsService])
+    __metadata("design:paramtypes", [board_notifications_service_1.BoardNotificationsService])
 ], NotificationsController);
 //# sourceMappingURL=notifications.controller.js.map

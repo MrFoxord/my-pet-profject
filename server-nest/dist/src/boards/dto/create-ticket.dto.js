@@ -10,41 +10,52 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateTicketDto = void 0;
+const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
 const swagger_1 = require("@nestjs/swagger");
+const boards_constants_1 = require("../boards.constants");
 class CreateTicketDto {
 }
 exports.CreateTicketDto = CreateTicketDto;
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 'Implement OAuth callback' }),
+    (0, class_transformer_1.Transform)(({ value }) => (typeof value === 'string' ? value.trim() : value)),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateTicketDto.prototype, "title", void 0);
 __decorate([
     (0, swagger_1.ApiPropertyOptional)({ example: 'Handle provider token exchange and session creation' }),
     (0, class_validator_1.IsOptional)(),
+    (0, class_transformer_1.Transform)(({ value }) => (typeof value === 'string' ? value.trim() : value)),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateTicketDto.prototype, "description", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 'todo' }),
+    (0, class_transformer_1.Transform)(({ value }) => (typeof value === 'string' ? value.trim().toLowerCase() : value)),
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsIn)(boards_constants_1.TICKET_STATUS_VALUES),
     __metadata("design:type", String)
 ], CreateTicketDto.prototype, "status", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({ example: 'task' }),
+    (0, class_transformer_1.Transform)(({ value }) => (typeof value === 'string' ? value.trim().toLowerCase() : value)),
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsIn)(boards_constants_1.TICKET_TYPE_VALUES),
     __metadata("design:type", String)
 ], CreateTicketDto.prototype, "type", void 0);
 __decorate([
     (0, swagger_1.ApiPropertyOptional)({ example: 'high' }),
     (0, class_validator_1.IsOptional)(),
+    (0, class_transformer_1.Transform)(({ value }) => (typeof value === 'string' ? value.trim().toLowerCase() : value)),
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsIn)(boards_constants_1.TICKET_PRIORITY_VALUES),
     __metadata("design:type", String)
 ], CreateTicketDto.prototype, "priority", void 0);
 __decorate([
     (0, swagger_1.ApiPropertyOptional)({ example: 'col_todo' }),
     (0, class_validator_1.IsOptional)(),
+    (0, class_transformer_1.Transform)(({ value }) => (typeof value === 'string' ? value.trim() : value)),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], CreateTicketDto.prototype, "columnId", void 0);

@@ -30,7 +30,9 @@ export async function getServerBoardById(
   });
 
   if (res.status === 404) return null;
-  if (!res.ok) return null;
+  if (!res.ok) {
+    throw new Error(`Failed to load board: ${res.status}`);
+  }
 
   return res.json() as Promise<ApiBoardResponse>;
 }

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.WorkRole = exports.MonetizationRole = exports.InvitationType = exports.BoardMemberRole = void 0;
+exports.WorkRole = exports.MonetizationRole = exports.SharedInvitationMode = exports.InvitationType = exports.BoardMemberRole = void 0;
 exports.BoardMemberRole = {
     OWNER: 'OWNER',
     ADMIN: 'ADMIN',
@@ -10,6 +10,10 @@ exports.BoardMemberRole = {
 exports.InvitationType = {
     PERSONAL: 'PERSONAL',
     SHARED: 'SHARED'
+};
+exports.SharedInvitationMode = {
+    SINGLE_USE: 'SINGLE_USE',
+    MULTI_USE: 'MULTI_USE'
 };
 exports.MonetizationRole = {
     FREE: 'FREE',

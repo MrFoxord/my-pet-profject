@@ -14,7 +14,7 @@ export type RealtimeNotificationPayload = {
 export type BoardStateChangedPayload = {
     boardId: string;
     actorUserId?: string;
-    reason: 'columns_changed' | 'tickets_changed' | 'members_changed' | 'roles_changed' | 'invitations_changed';
+    reason: 'columns_changed' | 'tickets_changed' | 'members_changed' | 'roles_changed' | 'invitations_changed' | 'settings_changed';
 };
 export type TicketStateChangedPayload = {
     boardId: string;

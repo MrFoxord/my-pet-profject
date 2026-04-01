@@ -3,23 +3,30 @@ import {
   Get,
   Post,
   Param,
-  Body,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiParam,
   ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { BoardsService } from './boards.service';
+import { Request } from 'express';
+import { BoardInvitationsService } from './board-invitations.service';
+import { InternalAuthGuard, ServiceJwtPayload } from '../auth/internal-auth.guard';
+
+type AuthRequest = Request & { serviceUser?: ServiceJwtPayload };
 
 @ApiTags('Invitations (Public)')
 @Controller('invitations')
 export class InvitationsPublicController {
-  constructor(private readonly boardsService: BoardsService) {}
+  constructor(private readonly boardInvitationsService: BoardInvitationsService) {}
 
   @Get(':token')
   @Throttle({ default: { limit: 30, ttl: 60_000 } })
@@ -43,30 +50,31 @@ export class InvitationsPublicController {
   })
   @ApiNotFoundResponse({ description: 'Invitation not found' })
   async getInvitationByToken(@Param('token') token: string) {
-    return this.boardsService.getInvitationByToken(token);
+    return this.boardInvitationsService.getInvitationByToken(token);
   }
 
   @Post(':token/accept')
   @Throttle({ default: { limit: 10, ttl: 60_000 } })
+  @UseGuards(InternalAuthGuard)
+  @ApiBearerAuth('bearer')
   @ApiOperation({ summary: 'Accept invitation by token' })
   @ApiParam({ name: 'token', description: 'Invitation token' })
   @ApiBody({
     schema: {
       type: 'object',
-      properties: {
-        userId: { type: 'string', nullable: true },
-      },
-      example: { userId: 'user_123' },
+      properties: {},
+      example: {},
     },
   })
   @ApiOkResponse({
     description: 'Invitation accepted',
     schema: { example: { success: true, boardId: 'board_1' } },
   })
+  @ApiUnauthorizedResponse({ description: 'Authentication is required to accept invitation' })
   async acceptInvitationByToken(
     @Param('token') token: string,
-    @Body() body: { userId?: string },
+    @Req() req: AuthRequest,
   ) {
-    return this.boardsService.acceptInvitationByToken(token, body.userId);
+    return this.boardInvitationsService.acceptInvitationByToken(token, req.serviceUser?.sub);
   }
 }

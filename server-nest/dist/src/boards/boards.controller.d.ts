@@ -1,5 +1,8 @@
 import { Request } from 'express';
-import { BoardsService } from './boards.service';
+import { BoardsService } from './board-workflow.service';
+import { BoardMembersService } from './board-members.service';
+import { BoardRolesService } from './board-roles.service';
+import { BoardInvitationsService } from './board-invitations.service';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { CreateColumnDto } from './dto/create-column.dto';
 import { ReorderColumnsDto } from './dto/reorder-columns.dto';
@@ -13,19 +16,28 @@ import { CreateBoardRoleDto } from './dto/create-board-role.dto';
 import { UpdateBoardRoleDto } from './dto/update-board-role.dto';
 import { CreateBoardInvitationDto } from './dto/create-board-invitation.dto';
 import { UpdateBoardMemberCustomRoleDto } from './dto/update-board-member-custom-role.dto';
+import { UpdateBoardDto } from './dto/update-board.dto';
 import { ServiceJwtPayload } from '../auth/internal-auth.guard';
 type AuthRequest = Request & {
     serviceUser?: ServiceJwtPayload;
 };
 export declare class BoardsController {
     private readonly boardsService;
-    constructor(boardsService: BoardsService);
+    private readonly boardMembersService;
+    private readonly boardRolesService;
+    private readonly boardInvitationsService;
+    constructor(boardsService: BoardsService, boardMembersService: BoardMembersService, boardRolesService: BoardRolesService, boardInvitationsService: BoardInvitationsService);
     findAll(req: AuthRequest): Promise<{
         id: string;
         title: string;
         description: string;
         logoUrl: string;
         themeColor: string;
+        allowPersonalInvites: boolean;
+        allowSharedInvites: boolean;
+        defaultSharedInvitationMode: import("../generated/prisma/enums").SharedInvitationMode;
+        inviteExpiresHours: number;
+        sharedInviteMaxUses: number;
         dashboardRole: import("../generated/prisma/enums").BoardMemberRole;
         tickets: {
             id: string;
@@ -37,6 +49,11 @@ export declare class BoardsController {
         description: string;
         logoUrl: string;
         themeColor: string;
+        allowPersonalInvites: boolean;
+        allowSharedInvites: boolean;
+        defaultSharedInvitationMode: string;
+        inviteExpiresHours: number;
+        sharedInviteMaxUses: number;
         dashboardRole: import("../generated/prisma/enums").BoardMemberRole;
         tickets: any[];
     }>;
@@ -46,8 +63,14 @@ export declare class BoardsController {
         description: string;
         logoUrl: string;
         themeColor: string;
+        allowPersonalInvites: boolean;
+        allowSharedInvites: boolean;
+        defaultSharedInvitationMode: import("../generated/prisma/enums").SharedInvitationMode;
+        inviteExpiresHours: number;
+        sharedInviteMaxUses: number;
         currentUserRole: import("../generated/prisma/enums").BoardMemberRole;
         currentUserCustomRoleName: string;
+        currentUserCustomRolePermissions: import("./boards.types").TicketPermission[];
         columns: {
             id: string;
             title: string;
@@ -62,15 +85,65 @@ export declare class BoardsController {
             status: string;
             sortIndex: number;
             columnId: string;
-            accessPolicy: {
-                view: string[];
-                fill: string[];
-                edit: string[];
-                delete: string[];
-                estimate: string[];
-                comment: string[];
-                manageAccess: string[];
+            accessPolicy: import("./boards.types").TicketAccessPolicy;
+            createdAt: string;
+            updatedAt: string;
+            dueDate: string;
+            assignee: {
+                name: string;
+                avatar: string;
             };
+            subtasks: {
+                id: string;
+                title: string;
+                done: boolean;
+            }[];
+            comments: {
+                id: string;
+                message: string;
+                createdAt: string;
+                author: {
+                    name: string;
+                    avatar: string;
+                };
+            }[];
+            estimate: {
+                originalHours: number;
+                spentHours: number;
+                remainingHours: number;
+                storyPoints: number;
+            };
+        }[];
+    }>;
+    updateBoard(boardId: string, dto: UpdateBoardDto, req: AuthRequest): Promise<{
+        id: string;
+        title: string;
+        description: string;
+        logoUrl: string;
+        themeColor: string;
+        allowPersonalInvites: boolean;
+        allowSharedInvites: boolean;
+        defaultSharedInvitationMode: import("../generated/prisma/enums").SharedInvitationMode;
+        inviteExpiresHours: number;
+        sharedInviteMaxUses: number;
+        currentUserRole: import("../generated/prisma/enums").BoardMemberRole;
+        currentUserCustomRoleName: string;
+        currentUserCustomRolePermissions: import("./boards.types").TicketPermission[];
+        columns: {
+            id: string;
+            title: string;
+            position: number;
+        }[];
+        tickets: {
+            id: string;
+            title: string;
+            description: string;
+            type: string;
+            priority: string;
+            status: string;
+            sortIndex: number;
+            columnId: string;
+            accessPolicy: import("./boards.types").TicketAccessPolicy;
             createdAt: string;
             updatedAt: string;
             dueDate: string;
@@ -126,15 +199,7 @@ export declare class BoardsController {
         status: string;
         sortIndex: number;
         columnId: string;
-        accessPolicy: {
-            view: string[];
-            fill: string[];
-            edit: string[];
-            delete: string[];
-            estimate: string[];
-            comment: string[];
-            manageAccess: string[];
-        };
+        accessPolicy: import("./boards.types").TicketAccessPolicy;
         createdAt: string;
         updatedAt: string;
         dueDate: string;
@@ -175,15 +240,7 @@ export declare class BoardsController {
         status: string;
         sortIndex: number;
         columnId: string;
-        accessPolicy: {
-            view: string[];
-            fill: string[];
-            edit: string[];
-            delete: string[];
-            estimate: string[];
-            comment: string[];
-            manageAccess: string[];
-        };
+        accessPolicy: import("./boards.types").TicketAccessPolicy;
         createdAt: string;
         updatedAt: string;
         dueDate: string;
@@ -221,15 +278,7 @@ export declare class BoardsController {
         status: string;
         sortIndex: number;
         columnId: string;
-        accessPolicy: {
-            view: string[];
-            fill: string[];
-            edit: string[];
-            delete: string[];
-            estimate: string[];
-            comment: string[];
-            manageAccess: string[];
-        };
+        accessPolicy: import("./boards.types").TicketAccessPolicy;
         createdAt: string;
         updatedAt: string;
         dueDate: string;
@@ -277,6 +326,7 @@ export declare class BoardsController {
         role: import("../generated/prisma/enums").BoardMemberRole;
         customRoleId: string;
         customRoleName: string;
+        customRolePermissions: string[];
         email: string;
         name: string;
         nickname: string;
@@ -288,6 +338,7 @@ export declare class BoardsController {
         role: import("../generated/prisma/enums").BoardMemberRole;
         customRoleId: string;
         customRoleName: string;
+        customRolePermissions: string[];
         email: string;
         name: string;
         nickname: string;
@@ -334,7 +385,7 @@ export declare class BoardsController {
         customRoleName: string;
         createdByUserId: string;
         status: string;
-        state: "pending" | "expired" | "revoked" | "limit_reached" | "accepted";
+        state: import("./boards.types").InvitationState;
         maxUses: number;
         usedCount: number;
         expiresAt: Date;
@@ -351,7 +402,7 @@ export declare class BoardsController {
         customRoleName: string;
         createdByUserId: string;
         status: string;
-        state: "pending" | "expired" | "revoked" | "limit_reached" | "accepted";
+        state: import("./boards.types").InvitationState;
         maxUses: number;
         usedCount: number;
         expiresAt: Date;

@@ -11,7 +11,14 @@ const common_1 = require("@nestjs/common");
 const boards_controller_1 = require("./boards.controller");
 const invitations_public_controller_1 = require("./invitations.public.controller");
 const notifications_controller_1 = require("./notifications.controller");
-const boards_service_1 = require("./boards.service");
+const board_workflow_service_1 = require("./board-workflow.service");
+const boards_access_service_1 = require("./boards-access.service");
+const board_notifications_service_1 = require("./board-notifications.service");
+const board_structure_service_1 = require("./board-structure.service");
+const board_tickets_service_1 = require("./board-tickets.service");
+const board_invitations_service_1 = require("./board-invitations.service");
+const board_members_service_1 = require("./board-members.service");
+const board_roles_service_1 = require("./board-roles.service");
 const auth_module_1 = require("../auth/auth.module");
 const realtime_module_1 = require("../realtime/realtime.module");
 let BoardsModule = class BoardsModule {
@@ -21,7 +28,16 @@ exports.BoardsModule = BoardsModule = __decorate([
     (0, common_1.Module)({
         imports: [auth_module_1.AuthModule, realtime_module_1.RealtimeModule],
         controllers: [boards_controller_1.BoardsController, invitations_public_controller_1.InvitationsPublicController, notifications_controller_1.NotificationsController],
-        providers: [boards_service_1.BoardsService],
+        providers: [
+            board_workflow_service_1.BoardsService,
+            boards_access_service_1.BoardsAccessService,
+            board_notifications_service_1.BoardNotificationsService,
+            board_structure_service_1.BoardStructureService,
+            board_tickets_service_1.BoardTicketsService,
+            board_invitations_service_1.BoardInvitationsService,
+            board_members_service_1.BoardMembersService,
+            board_roles_service_1.BoardRolesService,
+        ],
     })
 ], BoardsModule);
 //# sourceMappingURL=boards.module.js.map

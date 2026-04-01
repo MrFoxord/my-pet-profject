@@ -106,6 +106,11 @@ export const BoardScalarFieldEnum = {
   description: 'description',
   logoUrl: 'logoUrl',
   themeColor: 'themeColor',
+  allowPersonalInvites: 'allowPersonalInvites',
+  allowSharedInvites: 'allowSharedInvites',
+  defaultSharedInvitationMode: 'defaultSharedInvitationMode',
+  inviteExpiresHours: 'inviteExpiresHours',
+  sharedInviteMaxUses: 'sharedInviteMaxUses',
   ownerId: 'ownerId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

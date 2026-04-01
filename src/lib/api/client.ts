@@ -1,5 +1,6 @@
 import { Board, BoardDto, Ticket, TicketAccessPolicy, TicketComment, TicketEstimate } from "@/types";
 import { apiRoutes } from "@/lib/api/routes";
+import type { TicketPriority, TicketStatus, TicketType } from "@/shared/tickets";
 
 export type BoardRole = {
   id: string;
@@ -29,6 +30,7 @@ export type BoardMember = {
   role: "OWNER" | "ADMIN" | "MEMBER" | "VIEWER";
   customRoleId: string | null;
   customRoleName: string | null;
+  customRolePermissions?: string[];
   email: string | null;
   name: string | null;
   nickname: string | null;
@@ -113,9 +115,21 @@ export type CreateBoardInput = {
   dashboardRole?: string;
 };
 
+export type UpdateBoardInput = {
+  title?: string;
+  description?: string | null;
+  themeColor?: string | null;
+  logoUrl?: string | null;
+  allowPersonalInvites?: boolean;
+  allowSharedInvites?: boolean;
+  defaultSharedInvitationMode?: SharedInvitationMode;
+  inviteExpiresHours?: number;
+  sharedInviteMaxUses?: number;
+};
+
 export type ApiTicketReorderItem = {
   id: string;
-  status: "todo" | "in-progress" | "done";
+  status: TicketStatus;
   sortIndex: number;
   columnId?: string;
 };
@@ -123,10 +137,10 @@ export type ApiTicketReorderItem = {
 export type CreateTicketInput = {
   title: string;
   boardId: string;
-  status: "todo" | "in-progress" | "done";
-  type: "bug" | "feature" | "task";
+  status: TicketStatus;
+  type: TicketType;
   description?: string;
-  priority?: "low" | "medium" | "high" | "critical";
+  priority?: TicketPriority;
   columnId?: string;
   accessPolicy?: TicketAccessPolicy;
   estimate?: TicketEstimate;
@@ -135,9 +149,9 @@ export type CreateTicketInput = {
 export type UpdateTicketInput = {
   title?: string;
   description?: string;
-  status?: "todo" | "in-progress" | "done";
-  type?: "bug" | "feature" | "task";
-  priority?: "low" | "medium" | "high" | "critical";
+  status?: TicketStatus;
+  type?: TicketType;
+  priority?: TicketPriority;
   columnId?: string;
   sortIndex?: number;
   accessPolicy?: TicketAccessPolicy;
@@ -356,6 +370,19 @@ export async function getBoardById(
 export async function deleteBoard(boardId: string): Promise<void> {
   await apiRequest(apiRoutes.boardById(boardId), {
     method: "DELETE",
+  });
+}
+
+export async function updateBoard(
+  boardId: string,
+  input: UpdateBoardInput
+): Promise<ApiBoardResponse | null> {
+  return apiRequest<ApiBoardResponse>(apiRoutes.boardById(boardId), {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(input),
   });
 }
 

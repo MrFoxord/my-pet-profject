@@ -466,13 +466,6 @@ export type BoardInvitationUncheckedUpdateManyWithoutBoardNestedInput = {
 export type EnumInvitationTypeFieldUpdateOperationsInput = {
     set?: $Enums.InvitationType;
 };
-export type IntFieldUpdateOperationsInput = {
-    set?: number;
-    increment?: number;
-    decrement?: number;
-    multiply?: number;
-    divide?: number;
-};
 export type BoardInvitationCreateWithoutBoardInput = {
     id?: string;
     token: string;

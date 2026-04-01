@@ -1,12 +1,12 @@
 import { Request } from 'express';
 import { ServiceJwtPayload } from '../auth/internal-auth.guard';
-import { BoardsService } from './boards.service';
+import { BoardNotificationsService } from './board-notifications.service';
 type AuthRequest = Request & {
     serviceUser?: ServiceJwtPayload;
 };
 export declare class NotificationsController {
-    private readonly boardsService;
-    constructor(boardsService: BoardsService);
+    private readonly boardNotificationsService;
+    constructor(boardNotificationsService: BoardNotificationsService);
     list(req: AuthRequest): Promise<{
         unreadCount: number;
         items: {

@@ -1,9 +1,10 @@
+import { TicketPriority, TicketStatus, TicketType } from '../../shared/tickets';
 export declare class CreateTicketDto {
     title: string;
     description?: string;
-    status: string;
-    type: string;
-    priority?: string;
+    status: TicketStatus;
+    type: TicketType;
+    priority?: TicketPriority;
     columnId?: string;
     accessPolicy?: {
         view?: string[];

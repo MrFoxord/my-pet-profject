@@ -26,7 +26,10 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { BoardsService } from './boards.service';
+import { BoardsService } from './board-workflow.service';
+import { BoardMembersService } from './board-members.service';
+import { BoardRolesService } from './board-roles.service';
+import { BoardInvitationsService } from './board-invitations.service';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { CreateColumnDto } from './dto/create-column.dto';
 import { ReorderColumnsDto } from './dto/reorder-columns.dto';
@@ -40,6 +43,7 @@ import { CreateBoardRoleDto } from './dto/create-board-role.dto';
 import { UpdateBoardRoleDto } from './dto/update-board-role.dto';
 import { CreateBoardInvitationDto } from './dto/create-board-invitation.dto';
 import { UpdateBoardMemberCustomRoleDto } from './dto/update-board-member-custom-role.dto';
+import { UpdateBoardDto } from './dto/update-board.dto';
 import { InternalAuthGuard, ServiceJwtPayload } from '../auth/internal-auth.guard';
 
 type AuthRequest = Request & { serviceUser?: ServiceJwtPayload };
@@ -51,7 +55,12 @@ type AuthRequest = Request & { serviceUser?: ServiceJwtPayload };
 @Controller('boards')
 @UseGuards(InternalAuthGuard)
 export class BoardsController {
-  constructor(private readonly boardsService: BoardsService) {}
+  constructor(
+    private readonly boardsService: BoardsService,
+    private readonly boardMembersService: BoardMembersService,
+    private readonly boardRolesService: BoardRolesService,
+    private readonly boardInvitationsService: BoardInvitationsService,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: 'List boards available to current user' })
@@ -91,6 +100,19 @@ export class BoardsController {
 
     if (!board) throw new NotFoundException();
     return board;
+  }
+
+  @Patch(':boardId')
+  @ApiOperation({ summary: 'Update board settings' })
+  @ApiParam({ name: 'boardId', description: 'Board ID' })
+  @ApiBody({ type: UpdateBoardDto })
+  @ApiOkResponse({ description: 'Board settings updated' })
+  updateBoard(
+    @Param('boardId') boardId: string,
+    @Body() dto: UpdateBoardDto,
+    @Req() req: AuthRequest,
+  ) {
+    return this.boardsService.updateBoard(boardId, dto, req.serviceUser?.sub);
   }
 
   @Delete(':boardId')
@@ -280,7 +302,7 @@ export class BoardsController {
     @Param('boardId') boardId: string,
     @Req() req: AuthRequest,
   ) {
-    return this.boardsService.listBoardMembers(boardId, req.serviceUser?.sub);
+    return this.boardMembersService.listBoardMembers(boardId, req.serviceUser?.sub);
   }
 
   @Patch(':boardId/members/:memberId/custom-role')
@@ -295,7 +317,7 @@ export class BoardsController {
     @Body() dto: UpdateBoardMemberCustomRoleDto,
     @Req() req: AuthRequest,
   ) {
-    return this.boardsService.updateBoardMemberCustomRole(boardId, memberId, dto, req.serviceUser?.sub);
+    return this.boardMembersService.updateBoardMemberCustomRole(boardId, memberId, dto, req.serviceUser?.sub);
   }
 
   @Delete(':boardId/members/me')
@@ -309,7 +331,7 @@ export class BoardsController {
     @Param('boardId') boardId: string,
     @Req() req: AuthRequest,
   ) {
-    await this.boardsService.leaveBoard(boardId, req.serviceUser?.sub);
+    await this.boardMembersService.leaveBoard(boardId, req.serviceUser?.sub);
     return { ok: true };
   }
 
@@ -326,7 +348,7 @@ export class BoardsController {
     @Param('memberId') memberId: string,
     @Req() req: AuthRequest,
   ) {
-    await this.boardsService.removeBoardMember(boardId, memberId, req.serviceUser?.sub);
+    await this.boardMembersService.removeBoardMember(boardId, memberId, req.serviceUser?.sub);
     return { ok: true };
   }
 
@@ -341,7 +363,7 @@ export class BoardsController {
     @Body() dto: CreateBoardRoleDto,
     @Req() req: AuthRequest,
   ) {
-    return this.boardsService.createBoardRole(boardId, dto, req.serviceUser?.sub);
+    return this.boardRolesService.createBoardRole(boardId, dto, req.serviceUser?.sub);
   }
 
   @Get(':boardId/roles')
@@ -352,7 +374,7 @@ export class BoardsController {
     @Param('boardId') boardId: string,
     @Req() req: AuthRequest,
   ) {
-    return this.boardsService.listBoardRoles(boardId, req.serviceUser?.sub);
+    return this.boardRolesService.listBoardRoles(boardId, req.serviceUser?.sub);
   }
 
   @Patch(':boardId/roles/:roleId')
@@ -367,7 +389,7 @@ export class BoardsController {
     @Body() dto: UpdateBoardRoleDto,
     @Req() req: AuthRequest,
   ) {
-    return this.boardsService.updateBoardRole(boardId, roleId, dto, req.serviceUser?.sub);
+    return this.boardRolesService.updateBoardRole(boardId, roleId, dto, req.serviceUser?.sub);
   }
 
   @Delete(':boardId/roles/:roleId')
@@ -383,7 +405,7 @@ export class BoardsController {
     @Param('roleId') roleId: string,
     @Req() req: AuthRequest,
   ) {
-    await this.boardsService.deleteBoardRole(boardId, roleId, req.serviceUser?.sub);
+    await this.boardRolesService.deleteBoardRole(boardId, roleId, req.serviceUser?.sub);
     return { ok: true };
   }
 
@@ -398,7 +420,7 @@ export class BoardsController {
     @Body() dto: CreateBoardInvitationDto,
     @Req() req: AuthRequest,
   ) {
-    return this.boardsService.createBoardInvitation(boardId, dto, req.serviceUser?.sub);
+    return this.boardInvitationsService.createBoardInvitation(boardId, dto, req.serviceUser?.sub);
   }
 
   @Get(':boardId/invitations')
@@ -409,7 +431,7 @@ export class BoardsController {
     @Param('boardId') boardId: string,
     @Req() req: AuthRequest,
   ) {
-    return this.boardsService.listBoardInvitations(boardId, req.serviceUser?.sub);
+    return this.boardInvitationsService.listBoardInvitations(boardId, req.serviceUser?.sub);
   }
 
   @Post(':boardId/invitations/:invitationId/accept')
@@ -425,7 +447,7 @@ export class BoardsController {
     @Param('invitationId') invitationId: string,
     @Req() req: AuthRequest,
   ) {
-    return this.boardsService.acceptBoardInvitation(boardId, invitationId, req.serviceUser?.sub);
+    return this.boardInvitationsService.acceptBoardInvitation(boardId, invitationId, req.serviceUser?.sub);
   }
 
   @Delete(':boardId/invitations/:invitationId')
@@ -441,7 +463,7 @@ export class BoardsController {
     @Param('invitationId') invitationId: string,
     @Req() req: AuthRequest,
   ) {
-    await this.boardsService.revokeBoardInvitation(boardId, invitationId, req.serviceUser?.sub);
+    await this.boardInvitationsService.revokeBoardInvitation(boardId, invitationId, req.serviceUser?.sub);
     return { ok: true };
   }
 }

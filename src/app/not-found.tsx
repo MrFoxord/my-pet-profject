@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Box, Button, Stack, Typography } from "@mui/material";
 
@@ -12,7 +11,7 @@ export default async function NotFound() {
           {t("notFoundTitle")}
         </Typography>
         <Typography color="text.secondary">{t("notFoundDescription")}</Typography>
-        <Button component={Link} href="/boards" variant="contained" sx={{ alignSelf: "center" }}>
+        <Button href="/boards" variant="contained" sx={{ alignSelf: "center" }}>
           {t("goBoards")}
         </Button>
       </Stack>

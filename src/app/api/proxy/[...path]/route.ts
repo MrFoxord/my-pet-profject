@@ -8,10 +8,6 @@ function isPublicInvitationLookup(method: string, path: string[]): boolean {
   return method === "GET" && path.length === 2 && path[0] === "invitations";
 }
 
-function isInvitationAccept(method: string, path: string[]): boolean {
-  return method === "POST" && path.length === 3 && path[0] === "invitations" && path[2] === "accept";
-}
-
 async function makeServiceToken(userId?: string | null): Promise<string> {
   const rawSecret = process.env.INTERNAL_API_SECRET ?? "";
   if (!rawSecret) {
@@ -32,7 +28,6 @@ async function proxy(req: NextRequest, { params }: RouteContext): Promise<NextRe
   const { path } = await params;
   const session = await auth();
   const isPublicLookup = isPublicInvitationLookup(req.method, path);
-  const isAccept = isInvitationAccept(req.method, path);
 
   if (!isPublicLookup && !session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -61,12 +56,7 @@ async function proxy(req: NextRequest, { params }: RouteContext): Promise<NextRe
   let body: ArrayBuffer | string | undefined;
 
   if (hasBody) {
-    if (isAccept && session?.user?.id) {
-      body = JSON.stringify({ userId: session.user.id });
-      headers["content-type"] = "application/json";
-    } else {
-      body = await req.arrayBuffer();
-    }
+    body = await req.arrayBuffer();
   }
 
   let res: Response;

@@ -422,6 +422,7 @@ export default function DashboardClient({
               boardRoleNames={boardRoleNames}
               currentUserRole={liveBoard.currentUserRole}
               currentUserCustomRoleName={liveBoard.currentUserCustomRoleName}
+              currentUserCustomRolePermissions={liveBoard.currentUserCustomRolePermissions}
               remoteUpdateVersion={remoteModalPulse}
               onSaveTicket={handleSaveTicket}
               onCreateComment={handleCreateComment}

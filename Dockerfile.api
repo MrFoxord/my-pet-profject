@@ -1,0 +1,36 @@
+# syntax=docker/dockerfile:1.7
+
+FROM node:22-alpine AS deps
+WORKDIR /app/server-nest
+
+COPY server-nest/package.json server-nest/package-lock.json ./
+RUN npm ci
+
+FROM node:22-alpine AS prod-deps
+WORKDIR /app/server-nest
+
+COPY server-nest/package.json server-nest/package-lock.json ./
+RUN npm ci --omit=dev
+
+FROM node:22-alpine AS builder
+WORKDIR /app/server-nest
+ENV NODE_ENV=production
+
+COPY --from=deps /app/server-nest/node_modules ./node_modules
+COPY server-nest/ ./
+
+RUN npx prisma generate --schema=prisma/schema.prisma
+RUN npm run build
+
+FROM node:22-alpine AS runner
+WORKDIR /app/server-nest
+ENV NODE_ENV=production
+ENV PORT=8082
+ENV SOCKET_SERVER_PORT=8082
+
+COPY --from=prod-deps /app/server-nest/node_modules ./node_modules
+COPY --from=builder /app/server-nest/dist ./dist
+
+EXPOSE 8082
+
+CMD ["node", "dist/src/main.js"]

@@ -27,6 +27,14 @@ export const InvitationType = {
 export type InvitationType = (typeof InvitationType)[keyof typeof InvitationType]
 
 
+export const SharedInvitationMode = {
+  SINGLE_USE: 'SINGLE_USE',
+  MULTI_USE: 'MULTI_USE'
+} as const
+
+export type SharedInvitationMode = (typeof SharedInvitationMode)[keyof typeof SharedInvitationMode]
+
+
 export const MonetizationRole = {
   FREE: 'FREE',
   SUBMITTED: 'SUBMITTED',

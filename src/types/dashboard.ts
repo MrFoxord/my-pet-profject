@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import type { TicketPriority, TicketStatus, TicketType } from "@/shared/tickets";
 
 export type MuiLikeTheme = {
   palette?: {
@@ -13,6 +14,11 @@ export type BoardDto = {
   description: string | null;
   logoUrl: string | null;
   themeColor: string | null;
+  allowPersonalInvites?: boolean;
+  allowSharedInvites?: boolean;
+  defaultSharedInvitationMode?: "SINGLE_USE" | "MULTI_USE";
+  inviteExpiresHours?: number;
+  sharedInviteMaxUses?: number;
   dashboardRole?: string | null;
   tickets: { id: string }[];
 };
@@ -23,6 +29,11 @@ export interface Board {
   description?: string;
   logoUrl?: string;
   themeColor?: string;
+  allowPersonalInvites?: boolean;
+  allowSharedInvites?: boolean;
+  defaultSharedInvitationMode?: "SINGLE_USE" | "MULTI_USE";
+  inviteExpiresHours?: number;
+  sharedInviteMaxUses?: number;
   stats?: {
     totalTasks: number;
     completedTasks: number;
@@ -36,6 +47,7 @@ export interface Board {
   tickets?: Ticket[];
   currentUserRole?: string | null;
   currentUserCustomRoleName?: string | null;
+  currentUserCustomRolePermissions?: TicketPermission[];
   columns: BoardColumn[];
 }
 
@@ -65,6 +77,8 @@ export type TicketAccessPolicy = {
   manageAccess: string[];
 };
 
+export type TicketPermission = keyof TicketAccessPolicy;
+
 export const DEFAULT_ACCESS_POLICY: TicketAccessPolicy = {
   view: [],
   fill: [],
@@ -86,9 +100,9 @@ export interface Ticket {
   id: string;
   title: string;
   description: string;
-  type: "bug" | "feature" | "task";
-  priority: "low" | "medium" | "high" | "critical";
-  status: "todo" | "in-progress" | "done";
+  type: TicketType;
+  priority: TicketPriority;
+  status: TicketStatus;
   sortIndex?: number;
   columnId?: string | null;
   accessPolicy: TicketAccessPolicy;
@@ -125,6 +139,7 @@ export interface TicketModalProps {
   boardRoleNames?: string[];
   currentUserRole?: string | null;
   currentUserCustomRoleName?: string | null;
+  currentUserCustomRolePermissions?: TicketPermission[];
   onSaveTicket?: (
     ticketId: string,
     payload: {

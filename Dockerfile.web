@@ -1,32 +1,43 @@
-# Multi-stage build for Next.js app
-FROM node:22-alpine AS builder
+# syntax=docker/dockerfile:1.7
 
+FROM node:22-alpine AS deps
 WORKDIR /app
+ENV NEXT_TELEMETRY_DISABLED=1
 
-# Install deps separately for better caching
-COPY package.json package-lock.json* pnpm-lock.yaml* yarn.lock* bun.lockb* ./
-RUN npm ci || yarn install || pnpm install || bun install
+COPY package.json package-lock.json ./
+RUN npm ci
 
-# Copy source
-COPY . .
-
-# Build Next app
-RUN npm run build
-
-# Production image
-FROM node:22-alpine AS runner
-
+FROM node:22-alpine AS builder
 WORKDIR /app
 ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
-# Copy only necessary artefacts
-COPY --from=builder /app/package.json ./
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
+ARG NEXT_PUBLIC_API_BASE_URL
+ARG NEXT_PUBLIC_APP_URL
+ARG NEXT_PUBLIC_SOCKET_PORT
+ARG NEXT_PUBLIC_WS_URL
 
-# Next.js respects PORT env (Cloud Run sets it automatically)
+ENV NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
+ENV NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
+ENV NEXT_PUBLIC_SOCKET_PORT=${NEXT_PUBLIC_SOCKET_PORT}
+ENV NEXT_PUBLIC_WS_URL=${NEXT_PUBLIC_WS_URL}
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+RUN npx prisma generate
+RUN npm run build
+
+FROM node:22-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
 ENV PORT=3000
+ENV NEXT_TELEMETRY_DISABLED=1
+
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+
 EXPOSE 3000
 
-CMD ["npm", "run", "start"]
+CMD ["node", "server.js"]

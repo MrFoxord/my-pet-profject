@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   Alert,
@@ -47,6 +47,7 @@ import {
   useDeleteBoardInvitationMutation,
   useDeleteBoardMemberMutation,
   useGetBoardInvitationsQuery,
+  useGetBoardByIdQuery,
   useGetBoardMembersQuery,
   useGetBoardRolesQuery,
   useUpdateBoardMemberCustomRoleMutation,
@@ -80,11 +81,14 @@ export default function BoardUsersClient({ boardId }: BoardUsersClientProps) {
     isLoading: isRolesLoading,
     error: rolesError,
   } = useGetBoardRolesQuery(boardId);
+  const { data: board } = useGetBoardByIdQuery(boardId);
   const {
     data: invitationsData = [],
     isLoading: isInvitationsLoading,
     error: invitationsError,
-  } = useGetBoardInvitationsQuery(boardId);
+  } = useGetBoardInvitationsQuery(boardId, {
+    skip: board ? !(board.currentUserRole === "OWNER" || board.currentUserRole === "ADMIN") : true,
+  });
 
   const [updateBoardMemberCustomRoleMutation] = useUpdateBoardMemberCustomRoleMutation();
   const [deleteBoardMemberMutation] = useDeleteBoardMemberMutation();
@@ -96,8 +100,33 @@ export default function BoardUsersClient({ boardId }: BoardUsersClientProps) {
   const invitations: BoardInvitation[] = invitationsData;
   const loading = isMembersLoading || isRolesLoading || isInvitationsLoading;
   const hasLoadError = Boolean(membersError || rolesError || invitationsError);
+  const canManageBoardUsers = board?.currentUserRole === "OWNER" || board?.currentUserRole === "ADMIN";
+  const canCreatePersonalInvite = board?.allowPersonalInvites ?? true;
+  const canCreateSharedInvite = board?.allowSharedInvites ?? true;
+  const canCreateAnyInvite = canManageBoardUsers && (canCreatePersonalInvite || canCreateSharedInvite);
+
+  useEffect(() => {
+    if (board?.defaultSharedInvitationMode) {
+      setSharedInvitationMode(board.defaultSharedInvitationMode);
+    }
+  }, [board?.defaultSharedInvitationMode]);
+
+  useEffect(() => {
+    if (inviteType === "PERSONAL" && !canCreatePersonalInvite && canCreateSharedInvite) {
+      setInviteType("SHARED");
+    }
+
+    if (inviteType === "SHARED" && !canCreateSharedInvite && canCreatePersonalInvite) {
+      setInviteType("PERSONAL");
+    }
+  }, [canCreatePersonalInvite, canCreateSharedInvite, inviteType]);
 
   const handleRoleChange = async (memberId: string, customRoleId: string) => {
+    if (!canManageBoardUsers) {
+      setError(t("managementRestricted"));
+      return;
+    }
+
     try {
       setSavingMemberId(memberId);
       setError(null);
@@ -115,6 +144,21 @@ export default function BoardUsersClient({ boardId }: BoardUsersClientProps) {
   };
 
   const handleCreateInvitation = async () => {
+    if (!canManageBoardUsers) {
+      setError(t("managementRestricted"));
+      return;
+    }
+
+    if (inviteType === "PERSONAL" && !canCreatePersonalInvite) {
+      setError(t("personalInvitesDisabled"));
+      return;
+    }
+
+    if (inviteType === "SHARED" && !canCreateSharedInvite) {
+      setError(t("sharedInvitesDisabled"));
+      return;
+    }
+
     if (inviteType === "PERSONAL" && !inviteEmail.trim()) {
       setError(t("errorEmailRequired"));
       return;
@@ -152,6 +196,11 @@ export default function BoardUsersClient({ boardId }: BoardUsersClientProps) {
   };
 
   const handleRemoveMember = async (member: BoardMember) => {
+    if (!canManageBoardUsers) {
+      setError(t("managementRestricted"));
+      return;
+    }
+
     const displayName = member.name || member.nickname || member.email || member.userId;
     const confirmed = window.confirm(
       t("removeMemberConfirm", { name: displayName }),
@@ -187,6 +236,11 @@ export default function BoardUsersClient({ boardId }: BoardUsersClientProps) {
   };
 
   const handleDeleteInvitation = async (invitation: BoardInvitation) => {
+    if (!canManageBoardUsers) {
+      setError(t("managementRestricted"));
+      return;
+    }
+
     const confirmed = window.confirm(
       t("deleteInvitationConfirm"),
     );
@@ -258,6 +312,7 @@ export default function BoardUsersClient({ boardId }: BoardUsersClientProps) {
           variant="contained"
           color="primary"
           onClick={() => setShowInviteForm(true)}
+          disabled={!canCreateAnyInvite}
         >
           {t("inviteMember")}
         </Button>
@@ -265,6 +320,8 @@ export default function BoardUsersClient({ boardId }: BoardUsersClientProps) {
 
       {error ? <Alert severity="error">{error}</Alert> : null}
       {hasLoadError ? <Alert severity="error">{t("errorLoadData")}</Alert> : null}
+      {!canManageBoardUsers ? <Alert severity="info">{t("managementRestricted")}</Alert> : null}
+      {canManageBoardUsers && !canCreateAnyInvite ? <Alert severity="info">{t("allInvitesDisabled")}</Alert> : null}
       {loading ? <Typography>{t("loading")}</Typography> : null}
 
       {!loading && members.length === 0 ? (
@@ -315,12 +372,13 @@ export default function BoardUsersClient({ boardId }: BoardUsersClientProps) {
                   </Box>
                 </Box>
 
-                <FormControl fullWidth size="small" disabled={savingMemberId === member.id}>
+                <FormControl fullWidth size="small" disabled={!canManageBoardUsers || savingMemberId === member.id}>
                   <InputLabel id={`member-custom-role-${member.id}`}>{t("customRoleLabel")}</InputLabel>
                   <Select
                     labelId={`member-custom-role-${member.id}`}
                     value={member.customRoleId ?? ""}
                     label={t("customRoleLabel")}
+                    disabled={!canManageBoardUsers || savingMemberId === member.id}
                     onChange={(event) => void handleRoleChange(member.id, String(event.target.value))}
                   >
                     <MenuItem value="">{t("noCustomRole")}</MenuItem>
@@ -338,7 +396,7 @@ export default function BoardUsersClient({ boardId }: BoardUsersClientProps) {
                     color="error"
                     variant="contained"
                     sx={{ color: "common.white" }}
-                    disabled={savingMemberId === member.id || removingMemberId === member.id}
+                    disabled={!canManageBoardUsers || savingMemberId === member.id || removingMemberId === member.id}
                     onClick={() => void handleRemoveMember(member)}
                   >
                     {removingMemberId === member.id ? (
@@ -354,7 +412,7 @@ export default function BoardUsersClient({ boardId }: BoardUsersClientProps) {
         </Box>
       ) : null}
 
-        {!loading && invitations.length > 0 ? (
+        {!loading && canManageBoardUsers && invitations.length > 0 ? (
           <Box>
             <Typography variant="h6" sx={{ mb: 2, mt: 2 }}>
               {t("pendingInvitations")}
@@ -457,13 +515,25 @@ export default function BoardUsersClient({ boardId }: BoardUsersClientProps) {
                 <Checkbox
                   checked={inviteType === "SHARED"}
                   onChange={(event) => {
-                    setInviteType(event.target.checked ? "SHARED" : "PERSONAL");
+                    const nextType = event.target.checked ? "SHARED" : "PERSONAL";
+                    if ((nextType === "SHARED" && !canCreateSharedInvite) || (nextType === "PERSONAL" && !canCreatePersonalInvite)) {
+                      return;
+                    }
+                    setInviteType(nextType);
                     setError(null);
                   }}
-                  disabled={inviting}
+                  disabled={inviting || !canManageBoardUsers || !canCreatePersonalInvite || !canCreateSharedInvite}
                 />
                 <Typography variant="body2">{t("sharedLinkCheckbox")}</Typography>
               </Box>
+
+              {inviteType === "PERSONAL" && !canCreatePersonalInvite ? (
+                <Alert severity="info">{t("personalInvitesDisabled")}</Alert>
+              ) : null}
+
+              {inviteType === "SHARED" && !canCreateSharedInvite ? (
+                <Alert severity="info">{t("sharedInvitesDisabled")}</Alert>
+              ) : null}
 
               {inviteType === "PERSONAL" ? (
                 <TextField
@@ -484,7 +554,7 @@ export default function BoardUsersClient({ boardId }: BoardUsersClientProps) {
                     onChange={(e) =>
                       setSharedInvitationMode(e.target.value as SharedInvitationMode)
                     }
-                    disabled={inviting}
+                    disabled={inviting || !canCreateSharedInvite}
                   >
                     <MenuItem value="SINGLE_USE">{t("singleUse")}</MenuItem>
                     <MenuItem value="MULTI_USE">{t("multiUse")}</MenuItem>
@@ -498,7 +568,7 @@ export default function BoardUsersClient({ boardId }: BoardUsersClientProps) {
                   value={inviteCustomRoleId}
                   label={t("customRoleLabel")}
                   onChange={(e) => setInviteCustomRoleId(String(e.target.value))}
-                  disabled={inviting}
+                  disabled={inviting || !canManageBoardUsers}
                 >
                   <MenuItem value="">{t("noCustomRole")}</MenuItem>
                   {roles.map((role) => (
@@ -520,7 +590,13 @@ export default function BoardUsersClient({ boardId }: BoardUsersClientProps) {
             <Button
               onClick={() => void handleCreateInvitation()}
               variant="contained"
-              disabled={inviting || (inviteType === "PERSONAL" && !inviteEmail.trim())}
+              disabled={
+                inviting ||
+                !canCreateAnyInvite ||
+                (inviteType === "PERSONAL" && !inviteEmail.trim()) ||
+                (inviteType === "PERSONAL" && !canCreatePersonalInvite) ||
+                (inviteType === "SHARED" && !canCreateSharedInvite)
+              }
             >
               {inviting ? <CircularProgress size={20} /> : t("createInvitation")}
             </Button>

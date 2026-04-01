@@ -3,9 +3,76 @@
 Этот файл — конспект решений и плана работ, чтобы можно было продолжать разработку с другого ноутбука / другим Copilot, не теряя контекст.
 
 Быстрая навигация:
-- Актуальное состояние: `Актуализация на 2026-03-25`
-- Текущий план: `TODO на следующую итерацию` (в разделе 2026-03-24)
+- Актуальное состояние: `Актуализация на 2026-04-01`
+- Текущий план: `Приоритетный TODO на 2026-04-01`
 - Предложенная стратегия: `7. Стратегия дальнейшей разработки`
+
+---
+
+## Актуализация на 2026-04-01
+
+### Что сделали за текущий этап
+
+1. Завершили backend-декомпозицию board-domain на отдельные сервисы:
+  - `BoardsAccessService` отвечает за membership и ticket access policy;
+  - `BoardNotificationsService` отвечает за persistence + realtime уведомлений;
+  - `BoardInvitationsService` отвечает за invite lifecycle и public token flow;
+  - `BoardMembersService` отвечает за участников борды;
+  - `BoardRolesService` отвечает за CRUD кастомных ролей;
+  - `BoardStructureService` отвечает за колонки;
+  - `BoardTicketsService` отвечает за тикеты, комментарии и ticket-level permission enforcement.
+2. Сузили ответственность главного board service:
+  - `server-nest/src/boards/board-workflow.service.ts` оставлен как board-level facade/orchestration;
+  - ticket/column flow вынесен из него в отдельные сервисы;
+  - внешний HTTP-контракт не ломался: `BoardsController` продолжает работать через стабильный фасад.
+3. Закрыли основной frontend-разрыв между backend и UI:
+  - реализована страница `src/app/dashboard/[boardId]/settings/page.tsx`;
+  - добавлены UI для кастомных ролей, invite policy, удаления борды и редактирования theme color;
+  - страница пользователей и settings теперь покрывают основной board-admin flow.
+4. Разбили клиентский RTK Query-монолит без изменения публичного импорта:
+  - `src/store/api.ts` оставлен как тонкий barrel;
+  - выделены `src/store/api-base.ts`, `src/store/api-utils.ts`, `src/store/api-boards.ts`, `src/store/api-tickets.ts`, `src/store/api-notifications.ts`.
+5. Упростили Prisma migration history до одной baseline-миграции:
+  - старая цепочка миграций удалена как мешающая и уже неактуальная;
+  - создана baseline-миграция `prisma/migrations/20260401100000_baseline_current_schema/`;
+  - dev-база сброшена и синхронизирована с текущей схемой.
+6. Усилили тестовое покрытие на критичных board-flow:
+  - unit guardrail coverage добавлен в `server-nest/src/boards/boards-domain.spec.ts`;
+  - helper-spec `server-nest/src/boards/boards.service.spec.ts` сохранен;
+  - HTTP/e2e-покрытие добавлено в `server-nest/test/boards-risk-flows.e2e-spec.ts`.
+7. Зафиксировали продуктовый scope по уведомлениям:
+  - текущий notification layer остается in-app + realtime;
+  - email notifications вынесены в post-MVP и не считаются активной задачей текущего релизного цикла.
+
+### Что важно понимать по текущему состоянию
+
+1. Board-domain сейчас уже разделен достаточно, чтобы безопасно продолжать разработку:
+  - access/invitations/members/roles/columns/tickets вынесены из одной большой кучной логики;
+  - `BoardsService` больше не является монолитом на весь board-domain.
+2. Frontend admin-сценарии теперь значительно ближе к backend-возможностям:
+  - settings-страница существует;
+  - кастомные роли, invite policy и delete board доступны из UI;
+  - shared/personal invite flow уже не является незавершенным черновиком.
+3. Критичные guardrails теперь покрыты не только unit-helper тестами:
+  - есть unit-тесты на permissions/invites/roles/member flows;
+  - есть e2e HTTP-покрытие на invite accept/revoke и owner-only delete board.
+4. Notification system по-прежнему означает только БД + realtime:
+  - email delivery, provider config, шаблоны, async dispatch и user preferences пока отсутствуют;
+  - это сознательно вынесено в post-MVP.
+5. Все TODO и планы ниже этого блока считать историческими, если они противоречат секции `Актуализация на 2026-04-01`.
+
+### Приоритетный TODO на 2026-04-01
+
+1. Обязательный pre-MVP backlog по board-domain в рамках текущего согласованного плана закрыт.
+2. Email notifications оставлены как post-MVP:
+  - это отдельный delivery channel поверх уже существующих notification events;
+  - для него понадобятся provider config, async dispatch, шаблоны и observability;
+  - в текущий релизный scope это не включаем.
+3. Если продолжать именно техническое усиление pre-MVP, то следующий полезный слой — не новая feature-разработка, а hardening:
+  - дополнительные integration tests для ticket permission matrix и notification dispatch;
+  - runtime smoke-check `next build` / `nest build` / dev startup;
+  - при необходимости дальнейшее сужение зависимостей `BoardsController`, если он снова начнет разрастаться.
+4. Нижележащие секции файла сохраняем как журнал эволюции проекта, а не как актуальный backlog.
 
 ---
 
@@ -240,14 +307,15 @@
 
 ### Важно (следующие итерации)
 
-1. Реализовать приглашения в доску (рекомендуемый следующий продуктовый шаг):
-  - основной сценарий: invite по email + выбранная роль;
-  - статусная модель инвайтов: pending/accepted/expired/revoked;
-  - принятие инвайта после входа (для существующего и нового пользователя).
-2. После инвайтов — расширить права доступа:
-  - матрица permissions по dashboard role;
-  - запрет операций вне membership на всех mutation endpoints.
-3. Далее — ticket/subtask/comment CRUD и persistence drag-and-drop порядка.
+1. Дошлифовать board management UX:
+  - не показывать или блокировать member/invite actions для `MEMBER` / `VIEWER`;
+  - не маскировать `401/403/500` на dashboard-страницах под `404`.
+2. Унифицировать ticket enums между frontend и backend:
+  - один источник правды для `status`, `type`, `priority`;
+  - убрать риск попадания произвольных строк в БД и последующей поломки колонок/UI.
+3. Продолжить regression/e2e-покрытие критичных flows:
+  - invite accept/revoke/create с role-based ограничениями;
+  - board settings/users сценарии для OWNER / ADMIN / MEMBER.
 
 ### В ближайший релизный цикл
 

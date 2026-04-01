@@ -1,32 +1,22 @@
 import { BoardMemberRole, InvitationType } from '../generated/prisma/client';
-import { BoardsService } from './boards.service';
+import { BoardInvitationsService } from './board-invitations.service';
+import { BoardsAccessService } from './boards-access.service';
 
-describe('BoardsService permission and invitation logic', () => {
+describe('Board helper services', () => {
   const prismaMock = {} as never;
-  const realtimeMock = {
-    emitNotificationToUsers: jest.fn(),
-    emitBoardStateChanged: jest.fn(),
-    emitTicketStateChanged: jest.fn(),
+  const notificationsMock = {
+    notifyBoardMembers: jest.fn(),
   } as never;
 
-  const service = new BoardsService(prismaMock, realtimeMock);
-  const serviceInternals = service as unknown as {
-    getInvitationState: (invitation: {
-      type: InvitationType;
-      status: string;
-      expiresAt: Date;
-      usedCount: number;
-      maxUses: number;
-    }) => string;
-    canUseTicketPermission: (
-      accessPolicy: Partial<Record<'view' | 'fill' | 'edit' | 'delete' | 'estimate' | 'comment' | 'manageAccess', string[]>>,
-      membership: { role: BoardMemberRole; customRoleName: string | null },
-      permission: 'view' | 'fill' | 'edit' | 'delete' | 'estimate' | 'comment' | 'manageAccess',
-    ) => boolean;
-  };
+  const accessService = new BoardsAccessService(prismaMock);
+  const invitationsService = new BoardInvitationsService(
+    prismaMock,
+    accessService,
+    notificationsMock,
+  );
 
   it('returns pending invitation state for active pending invitation', () => {
-    const state = serviceInternals.getInvitationState({
+    const state = invitationsService.getInvitationState({
       type: InvitationType.PERSONAL,
       status: 'pending',
       expiresAt: new Date(Date.now() + 60_000),
@@ -38,7 +28,7 @@ describe('BoardsService permission and invitation logic', () => {
   });
 
   it('returns limit_reached for shared invitation when max uses consumed', () => {
-    const state = serviceInternals.getInvitationState({
+    const state = invitationsService.getInvitationState({
       type: InvitationType.SHARED,
       status: 'pending',
       expiresAt: new Date(Date.now() + 60_000),
@@ -50,9 +40,9 @@ describe('BoardsService permission and invitation logic', () => {
   });
 
   it('allows owner to manage access regardless of access policy', () => {
-    const canManage = serviceInternals.canUseTicketPermission(
+    const canManage = accessService.canUseTicketPermission(
       { manageAccess: ['custom_role'] },
-      { role: BoardMemberRole.OWNER, customRoleName: null },
+      { role: BoardMemberRole.OWNER, customRoleName: null, customRolePermissions: [] },
       'manageAccess',
     );
 
@@ -60,9 +50,9 @@ describe('BoardsService permission and invitation logic', () => {
   });
 
   it('denies viewer edit when policy only allows admin', () => {
-    const canEdit = serviceInternals.canUseTicketPermission(
+    const canEdit = accessService.canUseTicketPermission(
       { edit: ['admin'] },
-      { role: BoardMemberRole.VIEWER, customRoleName: null },
+      { role: BoardMemberRole.VIEWER, customRoleName: null, customRolePermissions: [] },
       'edit',
     );
 

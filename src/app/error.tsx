@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Box, Button, Stack, Typography } from "@mui/material";
 
@@ -18,7 +17,7 @@ export default function GlobalError({ reset }: { error: Error & { digest?: strin
           <Button variant="contained" onClick={() => reset()}>
             {t("tryAgain")}
           </Button>
-          <Button component={Link} href="/boards" variant="outlined">
+          <Button href="/boards" variant="outlined">
             {t("goBoards")}
           </Button>
         </Stack>

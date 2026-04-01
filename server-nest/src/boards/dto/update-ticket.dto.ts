@@ -1,34 +1,46 @@
-import { IsInt, IsOptional, IsString, IsObject, Min } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsIn, IsInt, IsOptional, IsString, IsObject, Min } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { TICKET_PRIORITY_VALUES, TICKET_STATUS_VALUES, TICKET_TYPE_VALUES } from '../boards.constants';
+import { TicketPriority, TicketStatus, TicketType } from '../../shared/tickets';
 
 export class UpdateTicketDto {
   @ApiPropertyOptional({ example: 'Refine webhook retries' })
   @IsOptional()
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
   @IsString()
   title?: string;
 
   @ApiPropertyOptional({ example: 'Need exponential backoff and idempotency key.' })
   @IsOptional()
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
   @IsString()
   description?: string;
 
   @ApiPropertyOptional({ example: 'done' })
   @IsOptional()
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim().toLowerCase() : value))
   @IsString()
-  status?: string;
+  @IsIn(TICKET_STATUS_VALUES)
+  status?: TicketStatus;
 
   @ApiPropertyOptional({ example: 'bug' })
   @IsOptional()
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim().toLowerCase() : value))
   @IsString()
-  type?: string;
+  @IsIn(TICKET_TYPE_VALUES)
+  type?: TicketType;
 
   @ApiPropertyOptional({ example: 'critical' })
   @IsOptional()
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim().toLowerCase() : value))
   @IsString()
-  priority?: string;
+  @IsIn(TICKET_PRIORITY_VALUES)
+  priority?: TicketPriority;
 
   @ApiPropertyOptional({ example: 'col_done' })
   @IsOptional()
+  @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
   @IsString()
   columnId?: string;
 

@@ -37,6 +37,11 @@ model Board {
   description String?
   logoUrl     String?
   themeColor  String?
+  allowPersonalInvites      Boolean            @default(true)
+  allowSharedInvites        Boolean            @default(true)
+  defaultSharedInvitationMode SharedInvitationMode @default(SINGLE_USE)
+  inviteExpiresHours        Int                @default(168)
+  sharedInviteMaxUses       Int                @default(10)
 
   ownerId String?
   owner   User?     @relation("BoardOwner", fields: [ownerId], references: [id])
@@ -233,6 +238,11 @@ enum BoardMemberRole {
 enum InvitationType {
   PERSONAL
   SHARED
+}
+
+enum SharedInvitationMode {
+  SINGLE_USE
+  MULTI_USE
 }
 
 enum MonetizationRole {

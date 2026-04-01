@@ -54,6 +54,11 @@ export declare const BoardScalarFieldEnum: {
     readonly description: "description";
     readonly logoUrl: "logoUrl";
     readonly themeColor: "themeColor";
+    readonly allowPersonalInvites: "allowPersonalInvites";
+    readonly allowSharedInvites: "allowSharedInvites";
+    readonly defaultSharedInvitationMode: "defaultSharedInvitationMode";
+    readonly inviteExpiresHours: "inviteExpiresHours";
+    readonly sharedInviteMaxUses: "sharedInviteMaxUses";
     readonly ownerId: "ownerId";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";

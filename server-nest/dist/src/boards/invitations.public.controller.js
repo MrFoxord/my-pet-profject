@@ -16,16 +16,17 @@ exports.InvitationsPublicController = void 0;
 const common_1 = require("@nestjs/common");
 const throttler_1 = require("@nestjs/throttler");
 const swagger_1 = require("@nestjs/swagger");
-const boards_service_1 = require("./boards.service");
+const board_invitations_service_1 = require("./board-invitations.service");
+const internal_auth_guard_1 = require("../auth/internal-auth.guard");
 let InvitationsPublicController = class InvitationsPublicController {
-    constructor(boardsService) {
-        this.boardsService = boardsService;
+    constructor(boardInvitationsService) {
+        this.boardInvitationsService = boardInvitationsService;
     }
     async getInvitationByToken(token) {
-        return this.boardsService.getInvitationByToken(token);
+        return this.boardInvitationsService.getInvitationByToken(token);
     }
-    async acceptInvitationByToken(token, body) {
-        return this.boardsService.acceptInvitationByToken(token, body.userId);
+    async acceptInvitationByToken(token, req) {
+        return this.boardInvitationsService.acceptInvitationByToken(token, req.serviceUser?.sub);
     }
 };
 exports.InvitationsPublicController = InvitationsPublicController;
@@ -59,23 +60,24 @@ __decorate([
 __decorate([
     (0, common_1.Post)(':token/accept'),
     (0, throttler_1.Throttle)({ default: { limit: 10, ttl: 60_000 } }),
+    (0, common_1.UseGuards)(internal_auth_guard_1.InternalAuthGuard),
+    (0, swagger_1.ApiBearerAuth)('bearer'),
     (0, swagger_1.ApiOperation)({ summary: 'Accept invitation by token' }),
     (0, swagger_1.ApiParam)({ name: 'token', description: 'Invitation token' }),
     (0, swagger_1.ApiBody)({
         schema: {
             type: 'object',
-            properties: {
-                userId: { type: 'string', nullable: true },
-            },
-            example: { userId: 'user_123' },
+            properties: {},
+            example: {},
         },
     }),
     (0, swagger_1.ApiOkResponse)({
         description: 'Invitation accepted',
         schema: { example: { success: true, boardId: 'board_1' } },
     }),
+    (0, swagger_1.ApiUnauthorizedResponse)({ description: 'Authentication is required to accept invitation' }),
     __param(0, (0, common_1.Param)('token')),
-    __param(1, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
@@ -83,6 +85,6 @@ __decorate([
 exports.InvitationsPublicController = InvitationsPublicController = __decorate([
     (0, swagger_1.ApiTags)('Invitations (Public)'),
     (0, common_1.Controller)('invitations'),
-    __metadata("design:paramtypes", [boards_service_1.BoardsService])
+    __metadata("design:paramtypes", [board_invitations_service_1.BoardInvitationsService])
 ], InvitationsPublicController);
 //# sourceMappingURL=invitations.public.controller.js.map

@@ -20,8 +20,20 @@ export type BoardModel = runtime.Types.Result.DefaultSelection<Prisma.$BoardPayl
 
 export type AggregateBoard = {
   _count: BoardCountAggregateOutputType | null
+  _avg: BoardAvgAggregateOutputType | null
+  _sum: BoardSumAggregateOutputType | null
   _min: BoardMinAggregateOutputType | null
   _max: BoardMaxAggregateOutputType | null
+}
+
+export type BoardAvgAggregateOutputType = {
+  inviteExpiresHours: number | null
+  sharedInviteMaxUses: number | null
+}
+
+export type BoardSumAggregateOutputType = {
+  inviteExpiresHours: number | null
+  sharedInviteMaxUses: number | null
 }
 
 export type BoardMinAggregateOutputType = {
@@ -30,6 +42,11 @@ export type BoardMinAggregateOutputType = {
   description: string | null
   logoUrl: string | null
   themeColor: string | null
+  allowPersonalInvites: boolean | null
+  allowSharedInvites: boolean | null
+  defaultSharedInvitationMode: $Enums.SharedInvitationMode | null
+  inviteExpiresHours: number | null
+  sharedInviteMaxUses: number | null
   ownerId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -41,6 +58,11 @@ export type BoardMaxAggregateOutputType = {
   description: string | null
   logoUrl: string | null
   themeColor: string | null
+  allowPersonalInvites: boolean | null
+  allowSharedInvites: boolean | null
+  defaultSharedInvitationMode: $Enums.SharedInvitationMode | null
+  inviteExpiresHours: number | null
+  sharedInviteMaxUses: number | null
   ownerId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -52,6 +74,11 @@ export type BoardCountAggregateOutputType = {
   description: number
   logoUrl: number
   themeColor: number
+  allowPersonalInvites: number
+  allowSharedInvites: number
+  defaultSharedInvitationMode: number
+  inviteExpiresHours: number
+  sharedInviteMaxUses: number
   ownerId: number
   createdAt: number
   updatedAt: number
@@ -59,12 +86,27 @@ export type BoardCountAggregateOutputType = {
 }
 
 
+export type BoardAvgAggregateInputType = {
+  inviteExpiresHours?: true
+  sharedInviteMaxUses?: true
+}
+
+export type BoardSumAggregateInputType = {
+  inviteExpiresHours?: true
+  sharedInviteMaxUses?: true
+}
+
 export type BoardMinAggregateInputType = {
   id?: true
   title?: true
   description?: true
   logoUrl?: true
   themeColor?: true
+  allowPersonalInvites?: true
+  allowSharedInvites?: true
+  defaultSharedInvitationMode?: true
+  inviteExpiresHours?: true
+  sharedInviteMaxUses?: true
   ownerId?: true
   createdAt?: true
   updatedAt?: true
@@ -76,6 +118,11 @@ export type BoardMaxAggregateInputType = {
   description?: true
   logoUrl?: true
   themeColor?: true
+  allowPersonalInvites?: true
+  allowSharedInvites?: true
+  defaultSharedInvitationMode?: true
+  inviteExpiresHours?: true
+  sharedInviteMaxUses?: true
   ownerId?: true
   createdAt?: true
   updatedAt?: true
@@ -87,6 +134,11 @@ export type BoardCountAggregateInputType = {
   description?: true
   logoUrl?: true
   themeColor?: true
+  allowPersonalInvites?: true
+  allowSharedInvites?: true
+  defaultSharedInvitationMode?: true
+  inviteExpiresHours?: true
+  sharedInviteMaxUses?: true
   ownerId?: true
   createdAt?: true
   updatedAt?: true
@@ -131,6 +183,18 @@ export type BoardAggregateArgs<ExtArgs extends runtime.Types.Extensions.Internal
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: BoardAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: BoardSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: BoardMinAggregateInputType
@@ -161,6 +225,8 @@ export type BoardGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   _count?: BoardCountAggregateInputType | true
+  _avg?: BoardAvgAggregateInputType
+  _sum?: BoardSumAggregateInputType
   _min?: BoardMinAggregateInputType
   _max?: BoardMaxAggregateInputType
 }
@@ -171,10 +237,17 @@ export type BoardGroupByOutputType = {
   description: string | null
   logoUrl: string | null
   themeColor: string | null
+  allowPersonalInvites: boolean
+  allowSharedInvites: boolean
+  defaultSharedInvitationMode: $Enums.SharedInvitationMode
+  inviteExpiresHours: number
+  sharedInviteMaxUses: number
   ownerId: string | null
   createdAt: Date
   updatedAt: Date
   _count: BoardCountAggregateOutputType | null
+  _avg: BoardAvgAggregateOutputType | null
+  _sum: BoardSumAggregateOutputType | null
   _min: BoardMinAggregateOutputType | null
   _max: BoardMaxAggregateOutputType | null
 }
@@ -203,6 +276,11 @@ export type BoardWhereInput = {
   description?: Prisma.StringNullableFilter<"Board"> | string | null
   logoUrl?: Prisma.StringNullableFilter<"Board"> | string | null
   themeColor?: Prisma.StringNullableFilter<"Board"> | string | null
+  allowPersonalInvites?: Prisma.BoolFilter<"Board"> | boolean
+  allowSharedInvites?: Prisma.BoolFilter<"Board"> | boolean
+  defaultSharedInvitationMode?: Prisma.EnumSharedInvitationModeFilter<"Board"> | $Enums.SharedInvitationMode
+  inviteExpiresHours?: Prisma.IntFilter<"Board"> | number
+  sharedInviteMaxUses?: Prisma.IntFilter<"Board"> | number
   ownerId?: Prisma.StringNullableFilter<"Board"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Board"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Board"> | Date | string
@@ -221,6 +299,11 @@ export type BoardOrderByWithRelationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   logoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   themeColor?: Prisma.SortOrderInput | Prisma.SortOrder
+  allowPersonalInvites?: Prisma.SortOrder
+  allowSharedInvites?: Prisma.SortOrder
+  defaultSharedInvitationMode?: Prisma.SortOrder
+  inviteExpiresHours?: Prisma.SortOrder
+  sharedInviteMaxUses?: Prisma.SortOrder
   ownerId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -242,6 +325,11 @@ export type BoardWhereUniqueInput = Prisma.AtLeast<{
   description?: Prisma.StringNullableFilter<"Board"> | string | null
   logoUrl?: Prisma.StringNullableFilter<"Board"> | string | null
   themeColor?: Prisma.StringNullableFilter<"Board"> | string | null
+  allowPersonalInvites?: Prisma.BoolFilter<"Board"> | boolean
+  allowSharedInvites?: Prisma.BoolFilter<"Board"> | boolean
+  defaultSharedInvitationMode?: Prisma.EnumSharedInvitationModeFilter<"Board"> | $Enums.SharedInvitationMode
+  inviteExpiresHours?: Prisma.IntFilter<"Board"> | number
+  sharedInviteMaxUses?: Prisma.IntFilter<"Board"> | number
   ownerId?: Prisma.StringNullableFilter<"Board"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Board"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Board"> | Date | string
@@ -260,12 +348,19 @@ export type BoardOrderByWithAggregationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   logoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   themeColor?: Prisma.SortOrderInput | Prisma.SortOrder
+  allowPersonalInvites?: Prisma.SortOrder
+  allowSharedInvites?: Prisma.SortOrder
+  defaultSharedInvitationMode?: Prisma.SortOrder
+  inviteExpiresHours?: Prisma.SortOrder
+  sharedInviteMaxUses?: Prisma.SortOrder
   ownerId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.BoardCountOrderByAggregateInput
+  _avg?: Prisma.BoardAvgOrderByAggregateInput
   _max?: Prisma.BoardMaxOrderByAggregateInput
   _min?: Prisma.BoardMinOrderByAggregateInput
+  _sum?: Prisma.BoardSumOrderByAggregateInput
 }
 
 export type BoardScalarWhereWithAggregatesInput = {
@@ -277,6 +372,11 @@ export type BoardScalarWhereWithAggregatesInput = {
   description?: Prisma.StringNullableWithAggregatesFilter<"Board"> | string | null
   logoUrl?: Prisma.StringNullableWithAggregatesFilter<"Board"> | string | null
   themeColor?: Prisma.StringNullableWithAggregatesFilter<"Board"> | string | null
+  allowPersonalInvites?: Prisma.BoolWithAggregatesFilter<"Board"> | boolean
+  allowSharedInvites?: Prisma.BoolWithAggregatesFilter<"Board"> | boolean
+  defaultSharedInvitationMode?: Prisma.EnumSharedInvitationModeWithAggregatesFilter<"Board"> | $Enums.SharedInvitationMode
+  inviteExpiresHours?: Prisma.IntWithAggregatesFilter<"Board"> | number
+  sharedInviteMaxUses?: Prisma.IntWithAggregatesFilter<"Board"> | number
   ownerId?: Prisma.StringNullableWithAggregatesFilter<"Board"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Board"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Board"> | Date | string
@@ -288,6 +388,11 @@ export type BoardCreateInput = {
   description?: string | null
   logoUrl?: string | null
   themeColor?: string | null
+  allowPersonalInvites?: boolean
+  allowSharedInvites?: boolean
+  defaultSharedInvitationMode?: $Enums.SharedInvitationMode
+  inviteExpiresHours?: number
+  sharedInviteMaxUses?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   owner?: Prisma.UserCreateNestedOneWithoutOwnedBoardsInput
@@ -305,6 +410,11 @@ export type BoardUncheckedCreateInput = {
   description?: string | null
   logoUrl?: string | null
   themeColor?: string | null
+  allowPersonalInvites?: boolean
+  allowSharedInvites?: boolean
+  defaultSharedInvitationMode?: $Enums.SharedInvitationMode
+  inviteExpiresHours?: number
+  sharedInviteMaxUses?: number
   ownerId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -322,6 +432,11 @@ export type BoardUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   themeColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  allowPersonalInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  allowSharedInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  defaultSharedInvitationMode?: Prisma.EnumSharedInvitationModeFieldUpdateOperationsInput | $Enums.SharedInvitationMode
+  inviteExpiresHours?: Prisma.IntFieldUpdateOperationsInput | number
+  sharedInviteMaxUses?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneWithoutOwnedBoardsNestedInput
@@ -339,6 +454,11 @@ export type BoardUncheckedUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   themeColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  allowPersonalInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  allowSharedInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  defaultSharedInvitationMode?: Prisma.EnumSharedInvitationModeFieldUpdateOperationsInput | $Enums.SharedInvitationMode
+  inviteExpiresHours?: Prisma.IntFieldUpdateOperationsInput | number
+  sharedInviteMaxUses?: Prisma.IntFieldUpdateOperationsInput | number
   ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -356,6 +476,11 @@ export type BoardCreateManyInput = {
   description?: string | null
   logoUrl?: string | null
   themeColor?: string | null
+  allowPersonalInvites?: boolean
+  allowSharedInvites?: boolean
+  defaultSharedInvitationMode?: $Enums.SharedInvitationMode
+  inviteExpiresHours?: number
+  sharedInviteMaxUses?: number
   ownerId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -367,6 +492,11 @@ export type BoardUpdateManyMutationInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   themeColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  allowPersonalInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  allowSharedInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  defaultSharedInvitationMode?: Prisma.EnumSharedInvitationModeFieldUpdateOperationsInput | $Enums.SharedInvitationMode
+  inviteExpiresHours?: Prisma.IntFieldUpdateOperationsInput | number
+  sharedInviteMaxUses?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -377,6 +507,11 @@ export type BoardUncheckedUpdateManyInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   themeColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  allowPersonalInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  allowSharedInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  defaultSharedInvitationMode?: Prisma.EnumSharedInvitationModeFieldUpdateOperationsInput | $Enums.SharedInvitationMode
+  inviteExpiresHours?: Prisma.IntFieldUpdateOperationsInput | number
+  sharedInviteMaxUses?: Prisma.IntFieldUpdateOperationsInput | number
   ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -398,9 +533,19 @@ export type BoardCountOrderByAggregateInput = {
   description?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrder
   themeColor?: Prisma.SortOrder
+  allowPersonalInvites?: Prisma.SortOrder
+  allowSharedInvites?: Prisma.SortOrder
+  defaultSharedInvitationMode?: Prisma.SortOrder
+  inviteExpiresHours?: Prisma.SortOrder
+  sharedInviteMaxUses?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type BoardAvgOrderByAggregateInput = {
+  inviteExpiresHours?: Prisma.SortOrder
+  sharedInviteMaxUses?: Prisma.SortOrder
 }
 
 export type BoardMaxOrderByAggregateInput = {
@@ -409,6 +554,11 @@ export type BoardMaxOrderByAggregateInput = {
   description?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrder
   themeColor?: Prisma.SortOrder
+  allowPersonalInvites?: Prisma.SortOrder
+  allowSharedInvites?: Prisma.SortOrder
+  defaultSharedInvitationMode?: Prisma.SortOrder
+  inviteExpiresHours?: Prisma.SortOrder
+  sharedInviteMaxUses?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -420,9 +570,19 @@ export type BoardMinOrderByAggregateInput = {
   description?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrder
   themeColor?: Prisma.SortOrder
+  allowPersonalInvites?: Prisma.SortOrder
+  allowSharedInvites?: Prisma.SortOrder
+  defaultSharedInvitationMode?: Prisma.SortOrder
+  inviteExpiresHours?: Prisma.SortOrder
+  sharedInviteMaxUses?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type BoardSumOrderByAggregateInput = {
+  inviteExpiresHours?: Prisma.SortOrder
+  sharedInviteMaxUses?: Prisma.SortOrder
 }
 
 export type BoardScalarRelationFilter = {
@@ -470,6 +630,18 @@ export type BoardUncheckedUpdateManyWithoutOwnerNestedInput = {
   update?: Prisma.BoardUpdateWithWhereUniqueWithoutOwnerInput | Prisma.BoardUpdateWithWhereUniqueWithoutOwnerInput[]
   updateMany?: Prisma.BoardUpdateManyWithWhereWithoutOwnerInput | Prisma.BoardUpdateManyWithWhereWithoutOwnerInput[]
   deleteMany?: Prisma.BoardScalarWhereInput | Prisma.BoardScalarWhereInput[]
+}
+
+export type EnumSharedInvitationModeFieldUpdateOperationsInput = {
+  set?: $Enums.SharedInvitationMode
+}
+
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type BoardCreateNestedOneWithoutMembershipsInput = {
@@ -562,6 +734,11 @@ export type BoardCreateWithoutOwnerInput = {
   description?: string | null
   logoUrl?: string | null
   themeColor?: string | null
+  allowPersonalInvites?: boolean
+  allowSharedInvites?: boolean
+  defaultSharedInvitationMode?: $Enums.SharedInvitationMode
+  inviteExpiresHours?: number
+  sharedInviteMaxUses?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tickets?: Prisma.TicketCreateNestedManyWithoutBoardInput
@@ -578,6 +755,11 @@ export type BoardUncheckedCreateWithoutOwnerInput = {
   description?: string | null
   logoUrl?: string | null
   themeColor?: string | null
+  allowPersonalInvites?: boolean
+  allowSharedInvites?: boolean
+  defaultSharedInvitationMode?: $Enums.SharedInvitationMode
+  inviteExpiresHours?: number
+  sharedInviteMaxUses?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutBoardInput
@@ -623,6 +805,11 @@ export type BoardScalarWhereInput = {
   description?: Prisma.StringNullableFilter<"Board"> | string | null
   logoUrl?: Prisma.StringNullableFilter<"Board"> | string | null
   themeColor?: Prisma.StringNullableFilter<"Board"> | string | null
+  allowPersonalInvites?: Prisma.BoolFilter<"Board"> | boolean
+  allowSharedInvites?: Prisma.BoolFilter<"Board"> | boolean
+  defaultSharedInvitationMode?: Prisma.EnumSharedInvitationModeFilter<"Board"> | $Enums.SharedInvitationMode
+  inviteExpiresHours?: Prisma.IntFilter<"Board"> | number
+  sharedInviteMaxUses?: Prisma.IntFilter<"Board"> | number
   ownerId?: Prisma.StringNullableFilter<"Board"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Board"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Board"> | Date | string
@@ -634,6 +821,11 @@ export type BoardCreateWithoutMembershipsInput = {
   description?: string | null
   logoUrl?: string | null
   themeColor?: string | null
+  allowPersonalInvites?: boolean
+  allowSharedInvites?: boolean
+  defaultSharedInvitationMode?: $Enums.SharedInvitationMode
+  inviteExpiresHours?: number
+  sharedInviteMaxUses?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   owner?: Prisma.UserCreateNestedOneWithoutOwnedBoardsInput
@@ -650,6 +842,11 @@ export type BoardUncheckedCreateWithoutMembershipsInput = {
   description?: string | null
   logoUrl?: string | null
   themeColor?: string | null
+  allowPersonalInvites?: boolean
+  allowSharedInvites?: boolean
+  defaultSharedInvitationMode?: $Enums.SharedInvitationMode
+  inviteExpiresHours?: number
+  sharedInviteMaxUses?: number
   ownerId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -682,6 +879,11 @@ export type BoardUpdateWithoutMembershipsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   themeColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  allowPersonalInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  allowSharedInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  defaultSharedInvitationMode?: Prisma.EnumSharedInvitationModeFieldUpdateOperationsInput | $Enums.SharedInvitationMode
+  inviteExpiresHours?: Prisma.IntFieldUpdateOperationsInput | number
+  sharedInviteMaxUses?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneWithoutOwnedBoardsNestedInput
@@ -698,6 +900,11 @@ export type BoardUncheckedUpdateWithoutMembershipsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   themeColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  allowPersonalInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  allowSharedInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  defaultSharedInvitationMode?: Prisma.EnumSharedInvitationModeFieldUpdateOperationsInput | $Enums.SharedInvitationMode
+  inviteExpiresHours?: Prisma.IntFieldUpdateOperationsInput | number
+  sharedInviteMaxUses?: Prisma.IntFieldUpdateOperationsInput | number
   ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -714,6 +921,11 @@ export type BoardCreateWithoutRolesInput = {
   description?: string | null
   logoUrl?: string | null
   themeColor?: string | null
+  allowPersonalInvites?: boolean
+  allowSharedInvites?: boolean
+  defaultSharedInvitationMode?: $Enums.SharedInvitationMode
+  inviteExpiresHours?: number
+  sharedInviteMaxUses?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   owner?: Prisma.UserCreateNestedOneWithoutOwnedBoardsInput
@@ -730,6 +942,11 @@ export type BoardUncheckedCreateWithoutRolesInput = {
   description?: string | null
   logoUrl?: string | null
   themeColor?: string | null
+  allowPersonalInvites?: boolean
+  allowSharedInvites?: boolean
+  defaultSharedInvitationMode?: $Enums.SharedInvitationMode
+  inviteExpiresHours?: number
+  sharedInviteMaxUses?: number
   ownerId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -762,6 +979,11 @@ export type BoardUpdateWithoutRolesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   themeColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  allowPersonalInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  allowSharedInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  defaultSharedInvitationMode?: Prisma.EnumSharedInvitationModeFieldUpdateOperationsInput | $Enums.SharedInvitationMode
+  inviteExpiresHours?: Prisma.IntFieldUpdateOperationsInput | number
+  sharedInviteMaxUses?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneWithoutOwnedBoardsNestedInput
@@ -778,6 +1000,11 @@ export type BoardUncheckedUpdateWithoutRolesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   themeColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  allowPersonalInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  allowSharedInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  defaultSharedInvitationMode?: Prisma.EnumSharedInvitationModeFieldUpdateOperationsInput | $Enums.SharedInvitationMode
+  inviteExpiresHours?: Prisma.IntFieldUpdateOperationsInput | number
+  sharedInviteMaxUses?: Prisma.IntFieldUpdateOperationsInput | number
   ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -794,6 +1021,11 @@ export type BoardCreateWithoutInvitationsInput = {
   description?: string | null
   logoUrl?: string | null
   themeColor?: string | null
+  allowPersonalInvites?: boolean
+  allowSharedInvites?: boolean
+  defaultSharedInvitationMode?: $Enums.SharedInvitationMode
+  inviteExpiresHours?: number
+  sharedInviteMaxUses?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   owner?: Prisma.UserCreateNestedOneWithoutOwnedBoardsInput
@@ -810,6 +1042,11 @@ export type BoardUncheckedCreateWithoutInvitationsInput = {
   description?: string | null
   logoUrl?: string | null
   themeColor?: string | null
+  allowPersonalInvites?: boolean
+  allowSharedInvites?: boolean
+  defaultSharedInvitationMode?: $Enums.SharedInvitationMode
+  inviteExpiresHours?: number
+  sharedInviteMaxUses?: number
   ownerId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -842,6 +1079,11 @@ export type BoardUpdateWithoutInvitationsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   themeColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  allowPersonalInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  allowSharedInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  defaultSharedInvitationMode?: Prisma.EnumSharedInvitationModeFieldUpdateOperationsInput | $Enums.SharedInvitationMode
+  inviteExpiresHours?: Prisma.IntFieldUpdateOperationsInput | number
+  sharedInviteMaxUses?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneWithoutOwnedBoardsNestedInput
@@ -858,6 +1100,11 @@ export type BoardUncheckedUpdateWithoutInvitationsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   themeColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  allowPersonalInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  allowSharedInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  defaultSharedInvitationMode?: Prisma.EnumSharedInvitationModeFieldUpdateOperationsInput | $Enums.SharedInvitationMode
+  inviteExpiresHours?: Prisma.IntFieldUpdateOperationsInput | number
+  sharedInviteMaxUses?: Prisma.IntFieldUpdateOperationsInput | number
   ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -874,6 +1121,11 @@ export type BoardCreateWithoutColumnsInput = {
   description?: string | null
   logoUrl?: string | null
   themeColor?: string | null
+  allowPersonalInvites?: boolean
+  allowSharedInvites?: boolean
+  defaultSharedInvitationMode?: $Enums.SharedInvitationMode
+  inviteExpiresHours?: number
+  sharedInviteMaxUses?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   owner?: Prisma.UserCreateNestedOneWithoutOwnedBoardsInput
@@ -890,6 +1142,11 @@ export type BoardUncheckedCreateWithoutColumnsInput = {
   description?: string | null
   logoUrl?: string | null
   themeColor?: string | null
+  allowPersonalInvites?: boolean
+  allowSharedInvites?: boolean
+  defaultSharedInvitationMode?: $Enums.SharedInvitationMode
+  inviteExpiresHours?: number
+  sharedInviteMaxUses?: number
   ownerId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -922,6 +1179,11 @@ export type BoardUpdateWithoutColumnsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   themeColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  allowPersonalInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  allowSharedInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  defaultSharedInvitationMode?: Prisma.EnumSharedInvitationModeFieldUpdateOperationsInput | $Enums.SharedInvitationMode
+  inviteExpiresHours?: Prisma.IntFieldUpdateOperationsInput | number
+  sharedInviteMaxUses?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneWithoutOwnedBoardsNestedInput
@@ -938,6 +1200,11 @@ export type BoardUncheckedUpdateWithoutColumnsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   themeColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  allowPersonalInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  allowSharedInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  defaultSharedInvitationMode?: Prisma.EnumSharedInvitationModeFieldUpdateOperationsInput | $Enums.SharedInvitationMode
+  inviteExpiresHours?: Prisma.IntFieldUpdateOperationsInput | number
+  sharedInviteMaxUses?: Prisma.IntFieldUpdateOperationsInput | number
   ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -954,6 +1221,11 @@ export type BoardCreateWithoutTicketsInput = {
   description?: string | null
   logoUrl?: string | null
   themeColor?: string | null
+  allowPersonalInvites?: boolean
+  allowSharedInvites?: boolean
+  defaultSharedInvitationMode?: $Enums.SharedInvitationMode
+  inviteExpiresHours?: number
+  sharedInviteMaxUses?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   owner?: Prisma.UserCreateNestedOneWithoutOwnedBoardsInput
@@ -970,6 +1242,11 @@ export type BoardUncheckedCreateWithoutTicketsInput = {
   description?: string | null
   logoUrl?: string | null
   themeColor?: string | null
+  allowPersonalInvites?: boolean
+  allowSharedInvites?: boolean
+  defaultSharedInvitationMode?: $Enums.SharedInvitationMode
+  inviteExpiresHours?: number
+  sharedInviteMaxUses?: number
   ownerId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1002,6 +1279,11 @@ export type BoardUpdateWithoutTicketsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   themeColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  allowPersonalInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  allowSharedInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  defaultSharedInvitationMode?: Prisma.EnumSharedInvitationModeFieldUpdateOperationsInput | $Enums.SharedInvitationMode
+  inviteExpiresHours?: Prisma.IntFieldUpdateOperationsInput | number
+  sharedInviteMaxUses?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneWithoutOwnedBoardsNestedInput
@@ -1018,6 +1300,11 @@ export type BoardUncheckedUpdateWithoutTicketsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   themeColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  allowPersonalInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  allowSharedInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  defaultSharedInvitationMode?: Prisma.EnumSharedInvitationModeFieldUpdateOperationsInput | $Enums.SharedInvitationMode
+  inviteExpiresHours?: Prisma.IntFieldUpdateOperationsInput | number
+  sharedInviteMaxUses?: Prisma.IntFieldUpdateOperationsInput | number
   ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1034,6 +1321,11 @@ export type BoardCreateWithoutNotificationsInput = {
   description?: string | null
   logoUrl?: string | null
   themeColor?: string | null
+  allowPersonalInvites?: boolean
+  allowSharedInvites?: boolean
+  defaultSharedInvitationMode?: $Enums.SharedInvitationMode
+  inviteExpiresHours?: number
+  sharedInviteMaxUses?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   owner?: Prisma.UserCreateNestedOneWithoutOwnedBoardsInput
@@ -1050,6 +1342,11 @@ export type BoardUncheckedCreateWithoutNotificationsInput = {
   description?: string | null
   logoUrl?: string | null
   themeColor?: string | null
+  allowPersonalInvites?: boolean
+  allowSharedInvites?: boolean
+  defaultSharedInvitationMode?: $Enums.SharedInvitationMode
+  inviteExpiresHours?: number
+  sharedInviteMaxUses?: number
   ownerId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1082,6 +1379,11 @@ export type BoardUpdateWithoutNotificationsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   themeColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  allowPersonalInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  allowSharedInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  defaultSharedInvitationMode?: Prisma.EnumSharedInvitationModeFieldUpdateOperationsInput | $Enums.SharedInvitationMode
+  inviteExpiresHours?: Prisma.IntFieldUpdateOperationsInput | number
+  sharedInviteMaxUses?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneWithoutOwnedBoardsNestedInput
@@ -1098,6 +1400,11 @@ export type BoardUncheckedUpdateWithoutNotificationsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   themeColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  allowPersonalInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  allowSharedInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  defaultSharedInvitationMode?: Prisma.EnumSharedInvitationModeFieldUpdateOperationsInput | $Enums.SharedInvitationMode
+  inviteExpiresHours?: Prisma.IntFieldUpdateOperationsInput | number
+  sharedInviteMaxUses?: Prisma.IntFieldUpdateOperationsInput | number
   ownerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1114,6 +1421,11 @@ export type BoardCreateManyOwnerInput = {
   description?: string | null
   logoUrl?: string | null
   themeColor?: string | null
+  allowPersonalInvites?: boolean
+  allowSharedInvites?: boolean
+  defaultSharedInvitationMode?: $Enums.SharedInvitationMode
+  inviteExpiresHours?: number
+  sharedInviteMaxUses?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1124,6 +1436,11 @@ export type BoardUpdateWithoutOwnerInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   themeColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  allowPersonalInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  allowSharedInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  defaultSharedInvitationMode?: Prisma.EnumSharedInvitationModeFieldUpdateOperationsInput | $Enums.SharedInvitationMode
+  inviteExpiresHours?: Prisma.IntFieldUpdateOperationsInput | number
+  sharedInviteMaxUses?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tickets?: Prisma.TicketUpdateManyWithoutBoardNestedInput
@@ -1140,6 +1457,11 @@ export type BoardUncheckedUpdateWithoutOwnerInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   themeColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  allowPersonalInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  allowSharedInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  defaultSharedInvitationMode?: Prisma.EnumSharedInvitationModeFieldUpdateOperationsInput | $Enums.SharedInvitationMode
+  inviteExpiresHours?: Prisma.IntFieldUpdateOperationsInput | number
+  sharedInviteMaxUses?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutBoardNestedInput
@@ -1156,6 +1478,11 @@ export type BoardUncheckedUpdateManyWithoutOwnerInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   themeColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  allowPersonalInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  allowSharedInvites?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  defaultSharedInvitationMode?: Prisma.EnumSharedInvitationModeFieldUpdateOperationsInput | $Enums.SharedInvitationMode
+  inviteExpiresHours?: Prisma.IntFieldUpdateOperationsInput | number
+  sharedInviteMaxUses?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1242,6 +1569,11 @@ export type BoardSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   description?: boolean
   logoUrl?: boolean
   themeColor?: boolean
+  allowPersonalInvites?: boolean
+  allowSharedInvites?: boolean
+  defaultSharedInvitationMode?: boolean
+  inviteExpiresHours?: boolean
+  sharedInviteMaxUses?: boolean
   ownerId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1261,6 +1593,11 @@ export type BoardSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   description?: boolean
   logoUrl?: boolean
   themeColor?: boolean
+  allowPersonalInvites?: boolean
+  allowSharedInvites?: boolean
+  defaultSharedInvitationMode?: boolean
+  inviteExpiresHours?: boolean
+  sharedInviteMaxUses?: boolean
   ownerId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1273,6 +1610,11 @@ export type BoardSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   description?: boolean
   logoUrl?: boolean
   themeColor?: boolean
+  allowPersonalInvites?: boolean
+  allowSharedInvites?: boolean
+  defaultSharedInvitationMode?: boolean
+  inviteExpiresHours?: boolean
+  sharedInviteMaxUses?: boolean
   ownerId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1285,12 +1627,17 @@ export type BoardSelectScalar = {
   description?: boolean
   logoUrl?: boolean
   themeColor?: boolean
+  allowPersonalInvites?: boolean
+  allowSharedInvites?: boolean
+  defaultSharedInvitationMode?: boolean
+  inviteExpiresHours?: boolean
+  sharedInviteMaxUses?: boolean
   ownerId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type BoardOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "logoUrl" | "themeColor" | "ownerId" | "createdAt" | "updatedAt", ExtArgs["result"]["board"]>
+export type BoardOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "logoUrl" | "themeColor" | "allowPersonalInvites" | "allowSharedInvites" | "defaultSharedInvitationMode" | "inviteExpiresHours" | "sharedInviteMaxUses" | "ownerId" | "createdAt" | "updatedAt", ExtArgs["result"]["board"]>
 export type BoardInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.Board$ownerArgs<ExtArgs>
   tickets?: boolean | Prisma.Board$ticketsArgs<ExtArgs>
@@ -1325,6 +1672,11 @@ export type $BoardPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     description: string | null
     logoUrl: string | null
     themeColor: string | null
+    allowPersonalInvites: boolean
+    allowSharedInvites: boolean
+    defaultSharedInvitationMode: $Enums.SharedInvitationMode
+    inviteExpiresHours: number
+    sharedInviteMaxUses: number
     ownerId: string | null
     createdAt: Date
     updatedAt: Date
@@ -1763,6 +2115,11 @@ export interface BoardFieldRefs {
   readonly description: Prisma.FieldRef<"Board", 'String'>
   readonly logoUrl: Prisma.FieldRef<"Board", 'String'>
   readonly themeColor: Prisma.FieldRef<"Board", 'String'>
+  readonly allowPersonalInvites: Prisma.FieldRef<"Board", 'Boolean'>
+  readonly allowSharedInvites: Prisma.FieldRef<"Board", 'Boolean'>
+  readonly defaultSharedInvitationMode: Prisma.FieldRef<"Board", 'SharedInvitationMode'>
+  readonly inviteExpiresHours: Prisma.FieldRef<"Board", 'Int'>
+  readonly sharedInviteMaxUses: Prisma.FieldRef<"Board", 'Int'>
   readonly ownerId: Prisma.FieldRef<"Board", 'String'>
   readonly createdAt: Prisma.FieldRef<"Board", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Board", 'DateTime'>

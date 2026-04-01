@@ -15,7 +15,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BoardsController = void 0;
 const common_1 = require("@nestjs/common");
 const swagger_1 = require("@nestjs/swagger");
-const boards_service_1 = require("./boards.service");
+const board_workflow_service_1 = require("./board-workflow.service");
+const board_members_service_1 = require("./board-members.service");
+const board_roles_service_1 = require("./board-roles.service");
+const board_invitations_service_1 = require("./board-invitations.service");
 const create_board_dto_1 = require("./dto/create-board.dto");
 const create_column_dto_1 = require("./dto/create-column.dto");
 const reorder_columns_dto_1 = require("./dto/reorder-columns.dto");
@@ -29,10 +32,14 @@ const create_board_role_dto_1 = require("./dto/create-board-role.dto");
 const update_board_role_dto_1 = require("./dto/update-board-role.dto");
 const create_board_invitation_dto_1 = require("./dto/create-board-invitation.dto");
 const update_board_member_custom_role_dto_1 = require("./dto/update-board-member-custom-role.dto");
+const update_board_dto_1 = require("./dto/update-board.dto");
 const internal_auth_guard_1 = require("../auth/internal-auth.guard");
 let BoardsController = class BoardsController {
-    constructor(boardsService) {
+    constructor(boardsService, boardMembersService, boardRolesService, boardInvitationsService) {
         this.boardsService = boardsService;
+        this.boardMembersService = boardMembersService;
+        this.boardRolesService = boardRolesService;
+        this.boardInvitationsService = boardInvitationsService;
     }
     findAll(req) {
         return this.boardsService.findAll(req.serviceUser?.sub);
@@ -50,6 +57,9 @@ let BoardsController = class BoardsController {
         if (!board)
             throw new common_1.NotFoundException();
         return board;
+    }
+    updateBoard(boardId, dto, req) {
+        return this.boardsService.updateBoard(boardId, dto, req.serviceUser?.sub);
     }
     async deleteBoard(boardId, req) {
         await this.boardsService.deleteBoard(boardId, req.serviceUser?.sub);
@@ -91,43 +101,43 @@ let BoardsController = class BoardsController {
         return { ok: true };
     }
     listBoardMembers(boardId, req) {
-        return this.boardsService.listBoardMembers(boardId, req.serviceUser?.sub);
+        return this.boardMembersService.listBoardMembers(boardId, req.serviceUser?.sub);
     }
     updateBoardMemberCustomRole(boardId, memberId, dto, req) {
-        return this.boardsService.updateBoardMemberCustomRole(boardId, memberId, dto, req.serviceUser?.sub);
+        return this.boardMembersService.updateBoardMemberCustomRole(boardId, memberId, dto, req.serviceUser?.sub);
     }
     async leaveBoard(boardId, req) {
-        await this.boardsService.leaveBoard(boardId, req.serviceUser?.sub);
+        await this.boardMembersService.leaveBoard(boardId, req.serviceUser?.sub);
         return { ok: true };
     }
     async removeBoardMember(boardId, memberId, req) {
-        await this.boardsService.removeBoardMember(boardId, memberId, req.serviceUser?.sub);
+        await this.boardMembersService.removeBoardMember(boardId, memberId, req.serviceUser?.sub);
         return { ok: true };
     }
     createBoardRole(boardId, dto, req) {
-        return this.boardsService.createBoardRole(boardId, dto, req.serviceUser?.sub);
+        return this.boardRolesService.createBoardRole(boardId, dto, req.serviceUser?.sub);
     }
     listBoardRoles(boardId, req) {
-        return this.boardsService.listBoardRoles(boardId, req.serviceUser?.sub);
+        return this.boardRolesService.listBoardRoles(boardId, req.serviceUser?.sub);
     }
     updateBoardRole(boardId, roleId, dto, req) {
-        return this.boardsService.updateBoardRole(boardId, roleId, dto, req.serviceUser?.sub);
+        return this.boardRolesService.updateBoardRole(boardId, roleId, dto, req.serviceUser?.sub);
     }
     async deleteBoardRole(boardId, roleId, req) {
-        await this.boardsService.deleteBoardRole(boardId, roleId, req.serviceUser?.sub);
+        await this.boardRolesService.deleteBoardRole(boardId, roleId, req.serviceUser?.sub);
         return { ok: true };
     }
     createBoardInvitation(boardId, dto, req) {
-        return this.boardsService.createBoardInvitation(boardId, dto, req.serviceUser?.sub);
+        return this.boardInvitationsService.createBoardInvitation(boardId, dto, req.serviceUser?.sub);
     }
     listBoardInvitations(boardId, req) {
-        return this.boardsService.listBoardInvitations(boardId, req.serviceUser?.sub);
+        return this.boardInvitationsService.listBoardInvitations(boardId, req.serviceUser?.sub);
     }
     acceptBoardInvitation(boardId, invitationId, req) {
-        return this.boardsService.acceptBoardInvitation(boardId, invitationId, req.serviceUser?.sub);
+        return this.boardInvitationsService.acceptBoardInvitation(boardId, invitationId, req.serviceUser?.sub);
     }
     async revokeBoardInvitation(boardId, invitationId, req) {
-        await this.boardsService.revokeBoardInvitation(boardId, invitationId, req.serviceUser?.sub);
+        await this.boardInvitationsService.revokeBoardInvitation(boardId, invitationId, req.serviceUser?.sub);
         return { ok: true };
     }
 };
@@ -167,6 +177,19 @@ __decorate([
     __metadata("design:paramtypes", [String, String, String, Object]),
     __metadata("design:returntype", Promise)
 ], BoardsController.prototype, "findById", null);
+__decorate([
+    (0, common_1.Patch)(':boardId'),
+    (0, swagger_1.ApiOperation)({ summary: 'Update board settings' }),
+    (0, swagger_1.ApiParam)({ name: 'boardId', description: 'Board ID' }),
+    (0, swagger_1.ApiBody)({ type: update_board_dto_1.UpdateBoardDto }),
+    (0, swagger_1.ApiOkResponse)({ description: 'Board settings updated' }),
+    __param(0, (0, common_1.Param)('boardId')),
+    __param(1, (0, common_1.Body)()),
+    __param(2, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, update_board_dto_1.UpdateBoardDto, Object]),
+    __metadata("design:returntype", void 0)
+], BoardsController.prototype, "updateBoard", null);
 __decorate([
     (0, common_1.Delete)(':boardId'),
     (0, swagger_1.ApiOperation)({ summary: 'Delete board' }),
@@ -515,6 +538,9 @@ exports.BoardsController = BoardsController = __decorate([
     (0, swagger_1.ApiForbiddenResponse)({ description: 'Forbidden' }),
     (0, common_1.Controller)('boards'),
     (0, common_1.UseGuards)(internal_auth_guard_1.InternalAuthGuard),
-    __metadata("design:paramtypes", [boards_service_1.BoardsService])
+    __metadata("design:paramtypes", [board_workflow_service_1.BoardsService,
+        board_members_service_1.BoardMembersService,
+        board_roles_service_1.BoardRolesService,
+        board_invitations_service_1.BoardInvitationsService])
 ], BoardsController);
 //# sourceMappingURL=boards.controller.js.map

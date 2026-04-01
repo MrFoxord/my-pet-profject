@@ -16,7 +16,7 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { InternalAuthGuard, ServiceJwtPayload } from '../auth/internal-auth.guard';
-import { BoardsService } from './boards.service';
+import { BoardNotificationsService } from './board-notifications.service';
 
 type AuthRequest = Request & { serviceUser?: ServiceJwtPayload };
 
@@ -25,7 +25,7 @@ type AuthRequest = Request & { serviceUser?: ServiceJwtPayload };
 @Controller('notifications')
 @UseGuards(InternalAuthGuard)
 export class NotificationsController {
-  constructor(private readonly boardsService: BoardsService) {}
+  constructor(private readonly boardNotificationsService: BoardNotificationsService) {}
 
   @Get()
   @ApiOperation({ summary: 'List user notifications' })
@@ -51,7 +51,7 @@ export class NotificationsController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   list(@Req() req: AuthRequest) {
-    return this.boardsService.listUserNotifications(req.serviceUser?.sub);
+    return this.boardNotificationsService.listUserNotifications(req.serviceUser?.sub);
   }
 
   @Patch('read-all')
@@ -62,7 +62,7 @@ export class NotificationsController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   markAllAsRead(@Req() req: AuthRequest) {
-    return this.boardsService.markAllNotificationsRead(req.serviceUser?.sub);
+    return this.boardNotificationsService.markAllNotificationsRead(req.serviceUser?.sub);
   }
 
   @Patch(':notificationId/read')
@@ -77,6 +77,6 @@ export class NotificationsController {
     @Param('notificationId') notificationId: string,
     @Req() req: AuthRequest,
   ) {
-    return this.boardsService.markNotificationRead(notificationId, req.serviceUser?.sub);
+    return this.boardNotificationsService.markNotificationRead(notificationId, req.serviceUser?.sub);
   }
 }
