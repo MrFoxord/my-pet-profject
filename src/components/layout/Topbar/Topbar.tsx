@@ -14,7 +14,6 @@ import {
     MenuItem,
 } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { SearchInput } from "./SearchInput/SearchInput";
 import { Notifications } from "./Notifications/Notifications";
 import { LocaleSwitcher } from "./LocaleSwitcher/LocaleSwitcher";
 import { Button } from "@/components/ui";
@@ -112,21 +111,57 @@ export function Topbar() {
                     background: DASHBOARD_CHROME_BACKGROUND,
                 }}
             >
-                <Toolbar sx={{ display: "flex", justifyContent: "space-between", minHeight: 66 }}>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1.25, minWidth: 0 }}>
+                <Toolbar
+                    sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        flexWrap: { xs: "wrap", md: "nowrap" },
+                        rowGap: { xs: 1, sm: 1.25 },
+                        columnGap: 1,
+                        py: { xs: 1, sm: 0.75 },
+                        minHeight: { xs: 76, sm: 66 },
+                    }}
+                >
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1.25, minWidth: 0, flex: "1 1 auto", pr: 1 }}>
                         {boardLogo ? (
                             <Avatar src={boardLogo} alt={heading} sx={{ width: 34, height: 34 }} />
                         ) : (
                             <Avatar sx={{ width: 34, height: 34 }}>{heading.charAt(0).toUpperCase()}</Avatar>
                         )}
-                        <Typography variant="h6" noWrap component="div" sx={{ fontSize: { xs: 16, sm: 18 } }}>
+                        <Typography
+                            variant="h6"
+                            noWrap
+                            component="div"
+                            sx={{
+                                fontSize: { xs: 15, sm: 18 },
+                                maxWidth: { xs: "calc(100vw - 132px)", sm: "none" },
+                            }}
+                        >
                             {heading}
                         </Typography>
                     </Box>
 
-                    <Box sx={{ display: "flex", alignItems: "center", gap: { xs: 0.8, md: 1.6 } }}>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: { xs: "flex-end", sm: "flex-end" },
+                            flexWrap: "wrap",
+                            gap: { xs: 0.6, sm: 0.9, md: 1.2 },
+                            width: { xs: "100%", md: "auto" },
+                        }}
+                    >
                         {isBackendUnavailable ? (
-                            <Typography variant="caption" sx={{ color: "#ffe3b2", fontWeight: 600 }}>
+                            <Typography
+                                variant="caption"
+                                sx={{
+                                    color: "#ffe3b2",
+                                    fontWeight: 600,
+                                    mr: { xs: "auto", md: 0 },
+                                    maxWidth: { xs: "100%", md: 220 },
+                                }}
+                            >
                                 {t("backendUnavailable")}
                             </Typography>
                         ) : null}
@@ -137,7 +172,12 @@ export function Topbar() {
                                     size="small"
                                     variant="outlined"
                                     color="inherit"
-                                    sx={{ borderColor: "rgba(255, 255, 255, 0.44)" }}
+                                    sx={{
+                                        borderColor: "rgba(255, 255, 255, 0.44)",
+                                        px: { xs: 1, sm: 1.5 },
+                                        minWidth: 0,
+                                        whiteSpace: "nowrap",
+                                    }}
                                     onClick={() => router.push("/boards")}
                                 >
                                     {t("home")}
@@ -148,7 +188,12 @@ export function Topbar() {
                                         size="small"
                                         variant="outlined"
                                         color="inherit"
-                                        sx={{ borderColor: "rgba(255, 255, 255, 0.44)" }}
+                                        sx={{
+                                            borderColor: "rgba(255, 255, 255, 0.44)",
+                                            px: { xs: 1, sm: 1.5 },
+                                            minWidth: 0,
+                                            whiteSpace: "nowrap",
+                                        }}
                                         onClick={() => router.push(`/dashboard/${boardId}`)}
                                     >
                                         {t("backToBoard")}
@@ -158,7 +203,12 @@ export function Topbar() {
                                         size="small"
                                         variant="contained"
                                         color="error"
-                                        sx={{ boxShadow: "none" }}
+                                        sx={{
+                                            boxShadow: "none",
+                                            px: { xs: 1, sm: 1.5 },
+                                            minWidth: 0,
+                                            whiteSpace: "nowrap",
+                                        }}
                                         disabled={isLeaving || isOwner}
                                         onClick={() => void handleLeaveBoard()}
                                     >
@@ -172,7 +222,6 @@ export function Topbar() {
                             </>
                         ) : null}
 
-                        <SearchInput />
                         <Notifications />
                         <LocaleSwitcher />
                         <IconButton color="inherit" onClick={handleOpenProfileMenu} sx={{ p: 0.25 }}>
@@ -191,7 +240,7 @@ export function Topbar() {
                             PaperProps={{
                                 sx: {
                                     borderRadius: 2,
-                                    minWidth: 220,
+                                    minWidth: { xs: 180, sm: 220 },
                                     border: "1px solid",
                                     borderColor: "divider",
                                 },

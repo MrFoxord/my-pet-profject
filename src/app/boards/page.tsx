@@ -252,10 +252,21 @@ export default function BoardsPage() {
           creating={creating}
         />
 
-        <Dialog open={defaultModalOpen} disableEscapeKeyDown>
+        <Dialog
+          open={defaultModalOpen}
+          disableEscapeKeyDown
+          fullWidth
+          maxWidth="xs"
+          PaperProps={{
+            sx: {
+              mx: { xs: 1, sm: 2 },
+              width: { xs: "calc(100% - 16px)", sm: "auto" },
+            },
+          }}
+        >
           <DialogTitle>{t("profileRequiredTitle")}</DialogTitle>
           <DialogContent>
-            <Stack spacing={2} sx={{ mt: 1, minWidth: 360 }}>
+            <Stack spacing={2} sx={{ mt: 1, width: "100%" }}>
               <TextField
                 label={t("firstName")}
                 value={firstName}

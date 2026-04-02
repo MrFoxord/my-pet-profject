@@ -11,12 +11,20 @@ export const PageRoot = styled.div`
     radial-gradient(circle at 84% 12%, rgba(14, 165, 164, 0.08), transparent 30%),
     #f6f8fc;
   padding: 22px 0;
+
+  @media (max-width: 600px) {
+    padding: 14px 0;
+  }
 `;
 
 export const PageMain = styled.main`
   width: 100%;
   max-width: 1040px;
   padding: 30px 24px;
+
+  @media (max-width: 600px) {
+    padding: 18px 12px 26px;
+  }
 `;
 
 export const Header = styled.header`
@@ -26,6 +34,11 @@ export const Header = styled.header`
   background: rgba(255, 255, 255, 0.84);
   border: 1px solid rgba(15, 23, 42, 0.06);
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+
+  @media (max-width: 600px) {
+    padding: 16px 14px;
+    border-radius: 12px;
+  }
 `;
 
 export const HeaderTop = styled.div`
@@ -42,6 +55,10 @@ export const Title = styled.h1`
   margin: 0;
   color: #142036;
   letter-spacing: -0.01em;
+
+  @media (max-width: 600px) {
+    font-size: 22px;
+  }
 `;
 
 export const Subtitle = styled.p`
@@ -54,6 +71,10 @@ export const BoardsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 14px;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 export const BoardCard = styled.div`

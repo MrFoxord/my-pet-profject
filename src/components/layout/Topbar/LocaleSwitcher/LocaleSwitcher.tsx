@@ -28,15 +28,16 @@ export function LocaleSwitcher() {
       value={locale}
       onChange={handleChange}
       aria-label={t("language")}
+      renderValue={(value) => String(value).toUpperCase()}
       sx={{
-        minWidth: 108,
+        minWidth: { xs: 72, sm: 108 },
         color: "#f5f9ff",
         borderRadius: 999,
         fontSize: 13,
         fontWeight: 600,
         "& .MuiSelect-select": {
           py: 0.5,
-          px: 1.2,
+          px: { xs: 1, sm: 1.2 },
         },
         "& .MuiOutlinedInput-notchedOutline": {
           borderColor: "rgba(255, 255, 255, 0.38)",

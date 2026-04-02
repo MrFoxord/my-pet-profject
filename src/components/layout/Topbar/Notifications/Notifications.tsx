@@ -77,7 +77,8 @@ export function Notifications() {
                 onClose={handleClose}
                 PaperProps={{
                     sx: {
-                        width: 360,
+                        width: { xs: "calc(100vw - 16px)", sm: 360 },
+                        maxWidth: 360,
                         maxHeight: 420,
                         borderRadius: 2,
                         border: "1px solid",
