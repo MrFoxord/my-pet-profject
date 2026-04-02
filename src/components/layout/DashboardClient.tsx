@@ -33,6 +33,8 @@ import {
   EmptyBoardText,
 } from "./styled";
 import { Button } from "@/components/ui";
+import { Box, IconButton } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
 import { useSocket } from "@/contexts/SocketContext";
 import { useSession } from "next-auth/react";
 import { closeTicketModal, openTicketModal, selectBoardUiState } from "@/store/slices/dashboardUiSlice";
@@ -61,6 +63,7 @@ export default function DashboardClient({
   const { data: session } = useSession();
   const [isHydrated, setIsHydrated] = useState(false);
   const [isCreatingColumn, setIsCreatingColumn] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [remoteBoardPulse, setRemoteBoardPulse] = useState(0);
   const [remoteModalPulse, setRemoteModalPulse] = useState(0);
   const [remoteMovedTicketIds, setRemoteMovedTicketIds] = useState<Record<string, number>>({});
@@ -364,15 +367,29 @@ export default function DashboardClient({
 
   return (
     <Root $bg={liveBoard.themeColor}>
-      <Sidebar boardId={liveBoard.id} themeColor={liveBoard.themeColor} />
+      <Sidebar
+        boardId={liveBoard.id}
+        themeColor={liveBoard.themeColor}
+        mobileOpen={isMobileSidebarOpen}
+        onMobileClose={() => setIsMobileSidebarOpen(false)}
+      />
 
       <Main>
         <Content>
           <BoardHeader $remotePulseToken={remoteBoardPulse}>
-            {liveBoard.logoUrl && (
-              <BoardAvatar src={liveBoard.logoUrl} alt={liveBoard.title} />
-            )}
-            <BoardTitle variant="h6">{liveBoard.title}</BoardTitle>
+            <Box sx={{ display: "flex", alignItems: "center", minWidth: 0, flex: 1 }}>
+              <IconButton
+                onClick={() => setIsMobileSidebarOpen(true)}
+                aria-label="Open board navigation"
+                sx={{ display: { xs: "inline-flex", md: "none" }, mr: 1 }}
+              >
+                <MenuIcon />
+              </IconButton>
+              {liveBoard.logoUrl && (
+                <BoardAvatar src={liveBoard.logoUrl} alt={liveBoard.title} />
+              )}
+              <BoardTitle variant="h6">{liveBoard.title}</BoardTitle>
+            </Box>
           </BoardHeader>
 
           {liveBoard.description && (

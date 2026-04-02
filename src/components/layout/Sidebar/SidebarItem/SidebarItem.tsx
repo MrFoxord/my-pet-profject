@@ -9,10 +9,12 @@ export function SidebarItem({
     label,
     icon,
     href = "#",
+    onClick,
 }: {
     label: string;
     icon?: ReactNode;
     href?: string;
+    onClick?: () => void;
 }) {
     const pathname = usePathname();
 
@@ -20,6 +22,7 @@ export function SidebarItem({
         <ListItemButton
             component={Link}
             href={href}
+            onClick={onClick}
             selected={pathname === href}
             sx={{
                 borderRadius: 2,

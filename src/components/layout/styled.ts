@@ -23,6 +23,10 @@ export const Root = styled.div<{ $bg?: string }>`
     radial-gradient(circle at 8% 10%, rgba(11, 99, 206, 0.08), transparent 35%),
     radial-gradient(circle at 92% 5%, rgba(14, 165, 164, 0.06), transparent 28%),
     ${({ $bg }) => $bg || "#f6f8fc"};
+
+  @media (max-width: 900px) {
+    display: block;
+  }
 `;
 
 export const Main = styled.main`
@@ -36,11 +40,16 @@ export const Content = styled.div`
   padding: 24px;
   min-width: 0;
   overflow-x: hidden;
+
+  @media (max-width: 900px) {
+    padding: 16px 12px 20px;
+  }
 `;
 
 export const BoardHeader = styled.div<{ $remotePulseToken?: number }>`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: 14px;
   padding: 10px 12px;
   border-radius: 12px;
@@ -62,7 +71,12 @@ export const BoardAvatar = styled(MuiAvatar)`
   height: 34px;
 `;
 
-export const BoardTitle = styled(MuiTypography)``;
+export const BoardTitle = styled(MuiTypography)`
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
 
 export const BoardDescription = styled(MuiTypography)`
   margin-bottom: 18px;

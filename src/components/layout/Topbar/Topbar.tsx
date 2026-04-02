@@ -146,7 +146,7 @@ export function Topbar() {
                         sx={{
                             display: "flex",
                             alignItems: "center",
-                            justifyContent: { xs: "flex-end", sm: "flex-end" },
+                            justifyContent: { xs: "flex-start", md: "flex-end" },
                             flexWrap: "wrap",
                             gap: { xs: 0.6, sm: 0.9, md: 1.2 },
                             width: { xs: "100%", md: "auto" },
