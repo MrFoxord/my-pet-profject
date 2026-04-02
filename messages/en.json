@@ -409,6 +409,7 @@
     "unexpectedDescription": "An unexpected error occurred while rendering this page.",
     "tryAgain": "Try again",
     "goBoards": "Go to boards",
+    "goHome": "Go home",
     "notFoundTitle": "Page not found",
     "notFoundDescription": "The page you requested does not exist or was moved."
   }
