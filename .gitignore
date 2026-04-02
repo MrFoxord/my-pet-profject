@@ -3,6 +3,7 @@
 # dependencies
 /node_modules
 /server-nest/node_modules
+/server-nest/dist
 /.pnp
 .pnp.*
 .yarn/*
