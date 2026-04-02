@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
+    Alert,
 	Box,
 	Button,
 	Card,
@@ -13,7 +14,7 @@ import { getTranslations } from "next-intl/server";
 import { auth, authProviderStates, signIn } from "@/auth";
 
 interface SignInPageProps {
-	searchParams: Promise<{ redirectTo?: string }>;
+	searchParams: Promise<{ redirectTo?: string; error?: string }>;
 }
 
 function normalizeRedirectTarget(redirectTo?: string) {
@@ -24,11 +25,30 @@ function normalizeRedirectTarget(redirectTo?: string) {
 	return redirectTo;
 }
 
+function mapAuthErrorMessage(t: Awaited<ReturnType<typeof getTranslations>>, error?: string) {
+	if (!error) {
+		return null;
+	}
+
+	switch (error) {
+		case "Configuration":
+		case "CallbackRouteError":
+		case "OAuthCallbackError":
+		case "InvalidCheck":
+			return t("oauthFlowExpired");
+		case "AccessDenied":
+			return t("oauthAccessDenied");
+		default:
+			return t("oauthGenericError");
+	}
+}
+
 export default async function SignInPage({ searchParams }: SignInPageProps) {
 	const t = await getTranslations("auth");
 	const session = await auth();
 	const params = await searchParams;
 	const redirectTo = normalizeRedirectTarget(params.redirectTo);
+	const authErrorMessage = mapAuthErrorMessage(t, params.error);
 
 	if (session) {
 		redirect(redirectTo);
@@ -39,6 +59,15 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
 			<Card sx={{ borderRadius: 4, boxShadow: 12 }}>
 				<CardContent sx={{ p: 5 }}>
 					<Stack spacing={3}>
+						{authErrorMessage ? (
+							<Alert severity="warning" variant="outlined">
+								<Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5 }}>
+									{t("oauthRetryTitle")}
+								</Typography>
+								<Typography variant="body2">{authErrorMessage}</Typography>
+							</Alert>
+						) : null}
+
 						<Box>
 							<Typography variant="overline">{t("authorization")}</Typography>
 							<Typography variant="h4" sx={{ fontWeight: 700 }}>
