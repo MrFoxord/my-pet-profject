@@ -209,6 +209,11 @@ export function Topbar() {
                                             px: { xs: 1, sm: 1.5 },
                                             minWidth: 0,
                                             whiteSpace: "nowrap",
+                                            color: "#ffffff",
+                                            "&.Mui-disabled": {
+                                                color: "#ffffff",
+                                                backgroundColor: "rgba(211, 47, 47, 0.78)",
+                                            },
                                         }}
                                         disabled={isLeaving || isOwner}
                                         onClick={() => void handleLeaveBoard()}
