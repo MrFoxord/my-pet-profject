@@ -21,12 +21,6 @@ import { useGetBoardByIdQuery, useLeaveBoardMutation } from "@/store/api";
 import { signOut, useSession } from "next-auth/react";
 import { DASHBOARD_CHROME_BACKGROUND } from "@/components/layout/chrome";
 
-const TOPBAR_OFFSET_SX = {
-    xs: 112,
-    sm: 76,
-    md: 66,
-};
-
 export function Topbar() {
     const router = useRouter();
     const pathname = usePathname();
@@ -111,10 +105,11 @@ export function Topbar() {
     return (
         <>
             <AppBar
-                position="fixed"
+                position="sticky"
                 sx={{
                     zIndex: (theme) => theme.zIndex.drawer + 1,
                     background: DASHBOARD_CHROME_BACKGROUND,
+                    top: 0,
                 }}
             >
                 <Toolbar
@@ -126,7 +121,7 @@ export function Topbar() {
                         rowGap: { xs: 1, sm: 1.25 },
                         columnGap: 1,
                         py: { xs: 1, sm: 0.75 },
-                        minHeight: TOPBAR_OFFSET_SX,
+                        minHeight: { xs: 76, sm: 76, md: 66 },
                     }}
                 >
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1.25, minWidth: 0, flex: "1 1 auto", pr: 1 }}>
@@ -267,7 +262,6 @@ export function Topbar() {
                     </Box>
                 </Toolbar>
             </AppBar>
-            <Toolbar sx={{ minHeight: TOPBAR_OFFSET_SX }} />
         </>
     );
 };
