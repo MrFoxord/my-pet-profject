@@ -104,10 +104,6 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
 							))}
 						</Stack>
 
-						<Typography color="text.secondary" variant="body2">
-							{t("envHint")}
-						</Typography>
-
 						<Typography variant="body2" color="text.secondary">
 							{t("registerInfo")} <Link href={`/auth/register?redirectTo=${encodeURIComponent(redirectTo)}`}>{t("registerMore")}</Link>
 						</Typography>

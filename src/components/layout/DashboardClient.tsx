@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { DashboardClientProps, Ticket } from "@/types";
 import { Loader } from "../ui/Loader/Loader";
@@ -58,6 +59,7 @@ export default function DashboardClient({
   board,
   children,
 }: DashboardClientProps) {
+  const t = useTranslations("dashboard");
   const dispatch = useAppDispatch();
   const { socket } = useSocket();
   const { data: session } = useSession();
@@ -313,7 +315,7 @@ export default function DashboardClient({
     accessPolicy?: Ticket["accessPolicy"];
   }) => {
     if (input.columnId.startsWith("fallback-")) {
-      window.alert("Сначала создайте реальные колонки в базе данных для этой доски.");
+      window.alert(t("createRealColumnsAlert"));
       return null;
     }
 
@@ -345,7 +347,7 @@ export default function DashboardClient({
   };
 
   const handleCreateColumn = async () => {
-    const title = window.prompt("Название новой колонки", "Новая колонка");
+    const title = window.prompt(t("newColumnPromptTitle"), t("newColumnDefaultTitle"));
     if (!title?.trim()) {
       return;
     }
@@ -354,12 +356,12 @@ export default function DashboardClient({
       setIsCreatingColumn(true);
       const created = await createBoardColumnMutation({ boardId, title: title.trim() }).unwrap();
       if (!created) {
-        window.alert("Не удалось создать колонку");
+        window.alert(t("createColumnError"));
         return;
       }
     } catch (error) {
       console.error("failed to create column", error);
-      window.alert("Не удалось создать колонку. Попробуйте снова.");
+      window.alert(t("createColumnRetry"));
     } finally {
       setIsCreatingColumn(false);
     }
@@ -380,7 +382,7 @@ export default function DashboardClient({
             <Box sx={{ display: "flex", alignItems: "center", minWidth: 0, flex: 1 }}>
               <IconButton
                 onClick={() => setIsMobileSidebarOpen(true)}
-                aria-label="Open board navigation"
+                aria-label={t("openBoardNavigation")}
                 sx={{ display: { xs: "inline-flex", md: "none" }, mr: 1 }}
               >
                 <MenuIcon />
@@ -405,7 +407,7 @@ export default function DashboardClient({
             disabled={isCreatingColumn}
             sx={{ mb: 2 }}
           >
-            {isCreatingColumn ? "Добавление..." : "Добавить колонку"}
+            {isCreatingColumn ? t("addingColumn") : t("addColumn")}
           </Button>
 
           {!isHydrated && <Loader />}
@@ -427,7 +429,7 @@ export default function DashboardClient({
               </TicketsWrapper>
             ) : null
           ) : (
-            <EmptyBoardText>No tickets in this board yet</EmptyBoardText>
+            <EmptyBoardText>{t("emptyBoardText")}</EmptyBoardText>
           )}
 
           {selectedTicket && modalOpen && (

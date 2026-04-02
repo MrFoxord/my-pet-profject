@@ -3,7 +3,8 @@
     "language": "Язык",
     "russian": "Русский",
     "english": "English",
-    "ukrainian": "Украинский"
+    "ukrainian": "Украинский",
+    "openActions": "Открыть действия"
   },
   "topbar": {
     "home": "На главную",
@@ -22,11 +23,11 @@
     "leaveBoardErrorAlert": "Не удалось покинуть борду. Попробуйте снова."
   },
   "sidebar": {
-    "main": "Main",
-    "settings": "Settings",
-    "dashboard": "Dashboard",
-    "users": "Users",
-    "preferences": "Preferences"
+    "main": "Главная",
+    "settings": "Настройки",
+    "dashboard": "Дашборд",
+    "users": "Участники",
+    "preferences": "Параметры"
   },
   "notifications": {
     "empty": "Нет новых уведомлений",
@@ -51,10 +52,60 @@
     "profileNameRequired": "Имя и фамилия обязательны",
     "profileSaveError": "Не удалось сохранить профиль. Проверь никнейм и попробуй снова.",
     "unknownEmail": "Email не указан",
-    "boardLabel": "Board",
+    "boardLabel": "Доска",
     "deleteBoard": "Удалить борду",
     "deleteBoardConfirm": "Удалить эту борду? Действие нельзя отменить.",
-    "deleteBoardError": "Не удалось удалить борду. Это может сделать только владелец."
+    "deleteBoardError": "Не удалось удалить борду. Это может сделать только владелец.",
+    "workRole": {
+      "client": "Клиент",
+      "executor": "Исполнитель",
+      "organizer": "Организатор",
+      "ceo": "CEO"
+    },
+    "monetization": {
+      "free": "Бесплатный",
+      "submitted": "На рассмотрении",
+      "premium": "Премиум"
+    },
+    "boardRole": {
+      "owner": "Владелец",
+      "admin": "Админ",
+      "member": "Участник",
+      "viewer": "Наблюдатель"
+    }
+  },
+  "createBoardModal": {
+    "title": "Создать доску",
+    "nameLabel": "Название",
+    "descriptionLabel": "Описание",
+    "themeColorLabel": "Цвет темы",
+    "columnsSectionTitle": "Колонки дашборда",
+    "addColumn": "Добавить колонку",
+    "columnLabel": "Колонка {index}",
+    "removeColumn": "Удалить колонку",
+    "columnsHint": "Нужна минимум одна колонка с названием.",
+    "rolesSectionTitle": "Кастомные роли доски",
+    "addRole": "Добавить роль",
+    "roleLabel": "Роль {index}",
+    "removeRole": "Удалить роль",
+    "rolesHint": "Стандартные роли OWNER/ADMIN/MEMBER/VIEWER добавляются автоматически.",
+    "iconLabel": "Иконка",
+    "previewTitle": "Новая доска",
+    "previewDescription": "Описание появится после заполнения поля.",
+    "cancel": "Отмена",
+    "creating": "Создаем...",
+    "create": "Создать",
+    "defaultColumnBacklog": "Бэклог",
+    "defaultColumnInProgress": "В работе",
+    "defaultColumnDone": "Готово",
+    "iconDashboard": "Дашборд",
+    "iconMarketing": "Маркетинг",
+    "iconDevelopment": "Разработка",
+    "iconDesign": "Дизайн",
+    "themeSlate": "Сланец",
+    "themeAqua": "Аква",
+    "themeAmber": "Янтарь",
+    "themeRose": "Роза"
   },
   "auth": {
     "authorization": "Authorization",
@@ -66,7 +117,6 @@
     "oauthGenericError": "Не удалось завершить вход. Запустите авторизацию заново и завершите её в одном и том же режиме браузера.",
     "continueWith": "Продолжить через {provider}",
     "providerNotConfigured": "{provider} не настроен",
-    "envHint": "Если хочешь добавить провайдеры, нужны переменные окружения GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, FACEBOOK_CLIENT_ID, FACEBOOK_CLIENT_SECRET, AUTH_SECRET.",
     "registerInfo": "Регистрация отдельной формой не нужна. Первый вход через OAuth создаёт пользователя автоматически.",
     "registerMore": "Подробнее"
   },
@@ -97,7 +147,7 @@
     "noCommentPermission": "У вас нет прав для комментирования",
     "send": "Отправить",
     "sending": "Отправка...",
-    "estimateLog": "Estimate log",
+    "estimateLog": "История оценок",
     "noComments": "Комментариев пока нет. Начните обсуждение выше.",
     "sectionEstimates": "Оценки",
     "originalHours": "Плановые (часы)",
@@ -116,6 +166,7 @@
     "deleteLabel": "Удаление",
     "estimateLabel": "Оценки",
     "commentLabel": "Комментарии",
+    "descriptionLabel": "Описание",
     "accessRulesHint": "Правила доступа изменяются в режиме редактирования.",
     "sectionDetails": "Детали тикета",
     "created": "Создан: {date}",
@@ -166,6 +217,15 @@
     "statePending": "Ожидает",
     "copied": "Скопировано!",
     "copyInviteLink": "Скопировать ссылку приглашения",
+    "boardRoleChip": "Роль в доске: {role}",
+    "customRoleChip": "Кастомная роль: {role}",
+    "customRoleNoneChip": "Кастомная роль: нет",
+    "role": {
+      "owner": "Владелец",
+      "admin": "Админ",
+      "member": "Участник",
+      "viewer": "Наблюдатель"
+    },
     "deleteInvitation": "Удалить",
     "inviteDialogTitle": "Пригласить участника",
     "sharedLinkCheckbox": "Ссылка без email",
@@ -249,6 +309,37 @@
     "deleteBoardError": "Не удалось удалить борду.",
     "deleteBoardConfirm": "Удалить борду \"{name}\" навсегда? Это действие нельзя отменить."
   },
+  "boardColumns": {
+    "renameColumnPrompt": "Новое название колонки",
+    "keepAtLeastOneColumn": "Нужно оставить хотя бы одну колонку.",
+    "deleteColumnConfirm": "Удалить колонку и все тикеты внутри неё? Это действие нельзя отменить.",
+    "createTicketTitle": "Создать тикет",
+    "ticketNameLabel": "Название",
+    "ticketDescriptionLabel": "Описание",
+    "permissionView": "Доступ",
+    "permissionFill": "Заполнение",
+    "permissionEdit": "Редактирование",
+    "permissionDelete": "Удаление",
+    "cancel": "Отмена",
+    "creatingTicket": "Создаём...",
+    "create": "Создать",
+    "renameColumn": "Переименовать",
+    "deleteColumn": "Удалить колонку",
+    "addTicket": "Добавить тикет",
+    "actionsDialogTitle": "Действия: {column}",
+    "openActions": "Открыть действия колонки"
+  },
+  "dashboard": {
+    "createRealColumnsAlert": "Сначала создайте реальные колонки в базе данных для этой доски.",
+    "newColumnPromptTitle": "Название новой колонки",
+    "newColumnDefaultTitle": "Новая колонка",
+    "createColumnError": "Не удалось создать колонку.",
+    "createColumnRetry": "Не удалось создать колонку. Попробуйте снова.",
+    "openBoardNavigation": "Открыть навигацию по доске",
+    "addingColumn": "Добавление...",
+    "addColumn": "Добавить колонку",
+    "emptyBoardText": "В этой доске пока нет тикетов"
+  },
   "invite": {
     "loading": "Загрузка...",
     "loadingError": "Приглашение не найдено или истекло.",
@@ -288,6 +379,30 @@
     "acceptButton": "Принять приглашение",
     "signInButton": "Войти / Зарегистрироваться",
     "newLinkNeeded": "Нужна новая ссылка"
+  },
+  "rolesSelect": {
+    "accessRoles": "Роли доступа",
+    "standardRolesSection": "Стандартные роли",
+    "boardRolesSection": "Роли доски",
+    "owner": "Владелец",
+    "admin": "Админ",
+    "member": "Участник",
+    "viewer": "Наблюдатель"
+  },
+  "ticketFields": {
+    "typeLabel": "Тип",
+    "priorityLabel": "Приоритет",
+    "statusLabel": "Статус",
+    "typeBug": "Баг",
+    "typeFeature": "Фича",
+    "typeTask": "Задача",
+    "priorityLow": "Низкий",
+    "priorityMedium": "Средний",
+    "priorityHigh": "Высокий",
+    "priorityCritical": "Критический",
+    "statusTodo": "К выполнению",
+    "statusInProgress": "В работе",
+    "statusDone": "Готово"
   },
   "errors": {
     "unexpectedTitle": "Что-то пошло не так",

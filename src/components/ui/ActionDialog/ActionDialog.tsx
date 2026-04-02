@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import {
   ClickAwayListener,
   ListSubheader,
@@ -24,8 +25,10 @@ interface ActionDialogProps {
 export default function ActionDialog({
   title,
   actions,
-  iconButtonLabel = "Открыть действия",
+  iconButtonLabel,
 }: ActionDialogProps) {
+  const t = useTranslations("common");
+  const resolvedIconButtonLabel = iconButtonLabel ?? t("openActions");
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const entries = useMemo(() => Object.entries(actions), [actions]);
@@ -49,7 +52,7 @@ export default function ActionDialog({
   return (
     <>
       <IconButton
-        aria-label={iconButtonLabel}
+        aria-label={resolvedIconButtonLabel}
         size="small"
         onClick={handleOpen}
         onMouseDown={(event) => event.stopPropagation()}

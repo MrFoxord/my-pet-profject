@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import styled from "styled-components";
 import {
   Dialog,
@@ -24,27 +25,27 @@ import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 
 type IconOption = {
   value: string;
-  label: string;
+  labelKey: string;
   Icon: typeof DashboardRoundedIcon;
 };
 
 type ThemeOption = {
   value: string;
-  label: string;
+  labelKey: string;
 };
 
 const iconOptions: IconOption[] = [
-  { value: "dashboard", label: "Dashboard", Icon: DashboardRoundedIcon },
-  { value: "campaign", label: "Marketing", Icon: CampaignRoundedIcon },
-  { value: "code", label: "Development", Icon: CodeRoundedIcon },
-  { value: "design", label: "Design", Icon: DesignServicesRoundedIcon },
+  { value: "dashboard", labelKey: "iconDashboard", Icon: DashboardRoundedIcon },
+  { value: "campaign", labelKey: "iconMarketing", Icon: CampaignRoundedIcon },
+  { value: "code", labelKey: "iconDevelopment", Icon: CodeRoundedIcon },
+  { value: "design", labelKey: "iconDesign", Icon: DesignServicesRoundedIcon },
 ];
 
 const themeOptions: ThemeOption[] = [
-  { value: "#f3f4f6", label: "Slate" },
-  { value: "#e0f7fa", label: "Aqua" },
-  { value: "#fff3e0", label: "Amber" },
-  { value: "#fce4ec", label: "Rose" },
+  { value: "#f3f4f6", labelKey: "themeSlate" },
+  { value: "#e0f7fa", labelKey: "themeAqua" },
+  { value: "#fff3e0", labelKey: "themeAmber" },
+  { value: "#fce4ec", labelKey: "themeRose" },
 ];
 
 function getThemeOption(value: string): ThemeOption {
@@ -115,11 +116,16 @@ export default function CreateBoardModal({
   onCreate,
   creating,
 }: CreateBoardModalProps) {
+  const t = useTranslations("createBoardModal");
+  const defaultColumns = useMemo(
+    () => [t("defaultColumnBacklog"), t("defaultColumnInProgress"), t("defaultColumnDone")],
+    [t]
+  );
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [themeColor, setThemeColor] = useState(themeOptions[0].value);
   const [icon, setIcon] = useState(iconOptions[0].value);
-  const [columns, setColumns] = useState(["Backlog", "In Progress", "Done"]);
+  const [columns, setColumns] = useState<string[]>(() => [...defaultColumns]);
   const [customRoles, setCustomRoles] = useState([""]);
 
   const selectedIcon = useMemo(
@@ -132,7 +138,7 @@ export default function CreateBoardModal({
     setDescription("");
     setThemeColor(themeOptions[0].value);
     setIcon(iconOptions[0].value);
-    setColumns(["Backlog", "In Progress", "Done"]);
+    setColumns([...defaultColumns]);
     setCustomRoles([""]);
   };
 
@@ -193,11 +199,11 @@ export default function CreateBoardModal({
 
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
-      <DialogTitle>Создать доску</DialogTitle>
+      <DialogTitle>{t("title")}</DialogTitle>
       <DialogContent>
         <Content>
           <TextField
-            label="Название"
+            label={t("nameLabel")}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
@@ -205,7 +211,7 @@ export default function CreateBoardModal({
           />
 
           <TextField
-            label="Описание"
+            label={t("descriptionLabel")}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             multiline
@@ -214,7 +220,7 @@ export default function CreateBoardModal({
           />
 
           <TextField
-            label="Цвет темы"
+            label={t("themeColorLabel")}
             value={themeColor}
             onChange={(e) => setThemeColor(e.target.value)}
             select
@@ -233,7 +239,7 @@ export default function CreateBoardModal({
                         border: "1px solid #d1d5db",
                       }}
                     />
-                    {option.label}
+                    {t(option.labelKey)}
                   </Box>
                 );
               },
@@ -251,7 +257,7 @@ export default function CreateBoardModal({
                       border: "1px solid #d1d5db",
                     }}
                   />
-                  {option.label}
+                  {t(option.labelKey)}
                 </Box>
               </MenuItem>
             ))}
@@ -266,9 +272,9 @@ export default function CreateBoardModal({
                 gap: 1,
               }}
             >
-              <Typography variant="subtitle2">Колонки дашборда</Typography>
+              <Typography variant="subtitle2">{t("columnsSectionTitle")}</Typography>
               <Button onClick={addColumn} startIcon={<AddRoundedIcon />} variant="outlined" size="small">
-                Добавить
+                {t("addColumn")}
               </Button>
             </Box>
 
@@ -276,13 +282,13 @@ export default function CreateBoardModal({
               <ColumnRow key={index}>
                 <TextField
                   size="small"
-                  label={`Колонка ${index + 1}`}
+                  label={t("columnLabel", { index: index + 1 })}
                   value={column}
                   onChange={(e) => updateColumn(index, e.target.value)}
                   fullWidth
                 />
                 <IconButton
-                  aria-label="Удалить колонку"
+                  aria-label={t("removeColumn")}
                   onClick={() => removeColumn(index)}
                   disabled={columns.length <= 1}
                 >
@@ -292,7 +298,7 @@ export default function CreateBoardModal({
             ))}
 
             <Typography variant="caption" color="text.secondary">
-              Нужно минимум 1 колонка с названием.
+              {t("columnsHint")}
             </Typography>
           </ColumnsSection>
 
@@ -305,9 +311,9 @@ export default function CreateBoardModal({
                 gap: 1,
               }}
             >
-              <Typography variant="subtitle2">Кастомные роли доски</Typography>
+              <Typography variant="subtitle2">{t("rolesSectionTitle")}</Typography>
               <Button onClick={addCustomRole} startIcon={<AddRoundedIcon />} variant="outlined" size="small">
-                Добавить
+                {t("addRole")}
               </Button>
             </Box>
 
@@ -315,13 +321,13 @@ export default function CreateBoardModal({
               <ColumnRow key={`role-${index}`}>
                 <TextField
                   size="small"
-                  label={`Роль ${index + 1}`}
+                  label={t("roleLabel", { index: index + 1 })}
                   value={role}
                   onChange={(e) => updateCustomRole(index, e.target.value)}
                   fullWidth
                 />
                 <IconButton
-                  aria-label="Удалить роль"
+                  aria-label={t("removeRole")}
                   onClick={() => removeCustomRole(index)}
                   disabled={customRoles.length <= 1}
                 >
@@ -331,12 +337,12 @@ export default function CreateBoardModal({
             ))}
 
             <Typography variant="caption" color="text.secondary">
-              Стандартные роли OWNER/ADMIN/MEMBER/VIEWER добавляются автоматически.
+              {t("rolesHint")}
             </Typography>
           </ColumnsSection>
 
           <TextField
-            label="Иконка"
+            label={t("iconLabel")}
             value={icon}
             onChange={(e) => setIcon(e.target.value)}
             select
@@ -348,7 +354,7 @@ export default function CreateBoardModal({
                 <MenuItem key={option.value} value={option.value}>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     <IconComponent fontSize="small" />
-                    {option.label}
+                    {t(option.labelKey)}
                   </Box>
                 </MenuItem>
               );
@@ -358,10 +364,10 @@ export default function CreateBoardModal({
           <PreviewCard $bg={themeColor}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <selectedIcon.Icon fontSize="small" />
-              <Typography variant="subtitle2">{title || "Новая доска"}</Typography>
+              <Typography variant="subtitle2">{title || t("previewTitle")}</Typography>
             </Box>
             <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-              {description || "Описание появится после заполнения поля."}
+              {description || t("previewDescription")}
             </Typography>
             <PreviewColumns>
               {normalizedColumns.map((column, index) => (
@@ -378,14 +384,14 @@ export default function CreateBoardModal({
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} disabled={creating} variant="text">
-          Отмена
+          {t("cancel")}
         </Button>
         <Button
           onClick={handleSubmit}
           disabled={creating || !title.trim() || normalizedColumns.length === 0}
           variant="contained"
         >
-          {creating ? "Создаем..." : "Создать"}
+          {creating ? t("creating") : t("create")}
         </Button>
       </DialogActions>
     </Dialog>

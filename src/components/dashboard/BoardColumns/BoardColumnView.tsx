@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { useSortable, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { BoardColumn, Ticket } from "@/types";
@@ -37,6 +38,7 @@ export function BoardColumnView({
   onDeleteColumn,
   onCreateTicket,
 }: BoardColumnViewProps) {
+  const t = useTranslations("boardColumns");
   const {
     attributes,
     listeners,
@@ -61,20 +63,20 @@ export function BoardColumnView({
   const ticketIds = useMemo(() => tickets.map((t) => t.id), [tickets]);
   const actions = useMemo(
     () => ({
-      "Переименовать": async () => {
+      [t("renameColumn")]: async () => {
         if (!onRenameColumn) return;
         await onRenameColumn(column.id, column.title);
       },
-      "Удалить колонку": async () => {
+      [t("deleteColumn")]: async () => {
         if (!onDeleteColumn) return;
         await onDeleteColumn(column.id, ticketIds);
       },
-      "Добавить тикет": async () => {
+      [t("addTicket")]: async () => {
         if (!onCreateTicket) return;
         await onCreateTicket(column.id, column.title);
       },
     }),
-    [column.id, column.title, onCreateTicket, onDeleteColumn, onRenameColumn, ticketIds]
+    [column.id, column.title, onCreateTicket, onDeleteColumn, onRenameColumn, t, ticketIds]
   );
 
   return (
@@ -85,12 +87,16 @@ export function BoardColumnView({
           <ColumnActions>
             <AddTicketButton
               type="button"
-              aria-label="Добавить тикет"
+              aria-label={t("addTicket")}
               onClick={() => void onCreateTicket?.(column.id, column.title)}
             >
               +
             </AddTicketButton>
-            <ActionDialog title={`Действия: ${column.title}`} actions={actions} />
+            <ActionDialog
+              title={t("actionsDialogTitle", { column: column.title })}
+              actions={actions}
+              iconButtonLabel={t("openActions")}
+            />
           </ColumnActions>
         </ColumnHeader>
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import {
   Box,
   Button,
@@ -65,6 +66,7 @@ export function BoardColumns({
   onCreateTicket,
   onTicketsReorder,
 }: BoardColumnsProps) {
+  const t = useTranslations("boardColumns");
   const canManageTicketAccess =
     board.currentUserRole === "OWNER" || board.currentUserRole === "ADMIN";
 
@@ -198,10 +200,22 @@ export function BoardColumns({
 
   const mapColumnToStatus = (title: string): Ticket["status"] => {
     const value = title.toLowerCase();
-    if (value.includes("progress") || value.includes("doing") || value.includes("wip")) {
+    if (
+      value.includes("progress") ||
+      value.includes("doing") ||
+      value.includes("wip") ||
+      value.includes("работ") ||
+      value.includes("робот")
+    ) {
       return "in-progress";
     }
-    if (value.includes("done") || value.includes("complete")) {
+    if (
+      value.includes("done") ||
+      value.includes("complete") ||
+      value.includes("готов") ||
+      value.includes("заверш") ||
+      value.includes("викон")
+    ) {
       return "done";
     }
     return "todo";
@@ -354,7 +368,7 @@ export function BoardColumns({
     };
 
     const handleRenameColumn = async (columnId: string, currentTitle: string) => {
-      const nextTitle = window.prompt("Новое название колонки", currentTitle)?.trim();
+      const nextTitle = window.prompt(t("renameColumnPrompt"), currentTitle)?.trim();
       if (!nextTitle || nextTitle === currentTitle) return;
 
       let canUpdate = true;
@@ -373,13 +387,11 @@ export function BoardColumns({
 
     const handleDeleteColumn = async (columnId: string, ticketIds: string[]) => {
       if (columns.length <= 1) {
-        window.alert("Нужно оставить хотя бы одну колонку.");
+        window.alert(t("keepAtLeastOneColumn"));
         return;
       }
 
-      const confirmed = window.confirm(
-        "Удалить колонку и все тикеты внутри неё? Это действие нельзя отменить."
-      );
+      const confirmed = window.confirm(t("deleteColumnConfirm"));
       if (!confirmed) return;
 
       let canDelete = true;
@@ -472,18 +484,18 @@ export function BoardColumns({
         </SortableContext>
 
         <Dialog open={createOpen} onClose={() => !creating && setCreateOpen(false)} fullWidth maxWidth="sm">
-          <DialogTitle>Создать тикет</DialogTitle>
+          <DialogTitle>{t("createTicketTitle")}</DialogTitle>
           <DialogContent>
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
               <TextField
-                label="Название"
+                label={t("ticketNameLabel")}
                 value={createTitle}
                 onChange={(e) => setCreateTitle(e.target.value)}
                 required
                 fullWidth
               />
               <TextField
-                label="Описание"
+                label={t("ticketDescriptionLabel")}
                 value={createDescription}
                 onChange={(e) => setCreateDescription(e.target.value)}
                 multiline
@@ -498,25 +510,25 @@ export function BoardColumns({
                     value={createAccessPolicy.view}
                     onChange={(roles) => setCreateAccessPolicy({ ...createAccessPolicy, view: roles })}
                     boardRoleNames={boardRoleNames}
-                    label="Доступ"
+                    label={t("permissionView")}
                   />
                   <RolesSelect
                     value={createAccessPolicy.fill}
                     onChange={(roles) => setCreateAccessPolicy({ ...createAccessPolicy, fill: roles })}
                     boardRoleNames={boardRoleNames}
-                    label="Заполнение"
+                    label={t("permissionFill")}
                   />
                   <RolesSelect
                     value={createAccessPolicy.edit}
                     onChange={(roles) => setCreateAccessPolicy({ ...createAccessPolicy, edit: roles })}
                     boardRoleNames={boardRoleNames}
-                    label="Редактирование"
+                    label={t("permissionEdit")}
                   />
                   <RolesSelect
                     value={createAccessPolicy.delete}
                     onChange={(roles) => setCreateAccessPolicy({ ...createAccessPolicy, delete: roles })}
                     boardRoleNames={boardRoleNames}
-                    label="Удаление"
+                    label={t("permissionDelete")}
                   />
                 </>
               ) : null}
@@ -524,14 +536,14 @@ export function BoardColumns({
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setCreateOpen(false)} disabled={creating}>
-              Отмена
+              {t("cancel")}
             </Button>
             <Button
               onClick={submitCreateTicket}
               variant="contained"
               disabled={creating || !createTitle.trim()}
             >
-              {creating ? "Создаём..." : "Создать"}
+              {creating ? t("creatingTicket") : t("create")}
             </Button>
           </DialogActions>
         </Dialog>

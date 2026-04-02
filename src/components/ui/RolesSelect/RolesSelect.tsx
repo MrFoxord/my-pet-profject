@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import {
   Checkbox,
   FormControl,
@@ -24,13 +25,30 @@ export interface RolesSelectProps {
 export function RolesSelect({
   value,
   onChange,
-  label = "Access roles",
+  label,
   boardRoleNames = [],
   fullWidth = true,
 }: RolesSelectProps) {
+  const t = useTranslations("rolesSelect");
+  const resolvedLabel = label ?? t("accessRoles");
   const customRoles = boardRoleNames.filter(
     (name) => !STANDARD_ROLES.includes(name.toLowerCase() as (typeof STANDARD_ROLES)[number])
   );
+
+  const getRoleLabel = (role: string) => {
+    switch (role.toLowerCase()) {
+      case "owner":
+        return t("owner");
+      case "admin":
+        return t("admin");
+      case "member":
+        return t("member");
+      case "viewer":
+        return t("viewer");
+      default:
+        return role;
+    }
+  };
 
   const handleChange = (event: SelectChangeEvent<unknown>) => {
     onChange(event.target.value as string[]);
@@ -38,29 +56,29 @@ export function RolesSelect({
 
   return (
     <FormControl fullWidth={fullWidth}>
-      <InputLabel id="roles-select-label">{label}</InputLabel>
+      <InputLabel id="roles-select-label">{resolvedLabel}</InputLabel>
       <Select
         labelId="roles-select-label"
         multiple
         value={value}
         onChange={handleChange}
-        input={<OutlinedInput label={label} />}
-        renderValue={(selected) => (selected as string[]).join(", ")}
+        input={<OutlinedInput label={resolvedLabel} />}
+        renderValue={(selected) => (selected as string[]).map(getRoleLabel).join(", ")}
       >
-        <MenuItem disabled>— Стандартные роли —</MenuItem>
+        <MenuItem disabled>{t("standardRolesSection")}</MenuItem>
         {STANDARD_ROLES.map((role) => (
           <MenuItem key={role} value={role}>
             <Checkbox checked={value.includes(role)} />
-            <ListItemText primary={role} />
+            <ListItemText primary={getRoleLabel(role)} />
           </MenuItem>
         ))}
         {customRoles.length > 0 && (
-          <MenuItem disabled>— Роли доски —</MenuItem>
+          <MenuItem disabled>{t("boardRolesSection")}</MenuItem>
         )}
         {customRoles.map((role) => (
           <MenuItem key={role} value={role}>
             <Checkbox checked={value.includes(role)} />
-            <ListItemText primary={role} />
+            <ListItemText primary={getRoleLabel(role)} />
           </MenuItem>
         ))}
       </Select>

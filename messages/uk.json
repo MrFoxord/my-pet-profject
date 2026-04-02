@@ -3,7 +3,8 @@
     "language": "Мова",
     "russian": "Русский",
     "english": "English",
-    "ukrainian": "Українська"
+    "ukrainian": "Українська",
+    "openActions": "Відкрити дії"
   },
   "topbar": {
     "home": "На головну",
@@ -54,7 +55,57 @@
     "boardLabel": "Дошка",
     "deleteBoard": "Видалити борду",
     "deleteBoardConfirm": "Видалити цю борду? Дію не можна скасувати.",
-    "deleteBoardError": "Не вдалося видалити борду. Це може зробити тільки власник."
+    "deleteBoardError": "Не вдалося видалити борду. Це може зробити тільки власник.",
+    "workRole": {
+      "client": "Клієнт",
+      "executor": "Виконавець",
+      "organizer": "Організатор",
+      "ceo": "CEO"
+    },
+    "monetization": {
+      "free": "Безкоштовний",
+      "submitted": "На розгляді",
+      "premium": "Преміум"
+    },
+    "boardRole": {
+      "owner": "Власник",
+      "admin": "Адмін",
+      "member": "Учасник",
+      "viewer": "Спостерігач"
+    }
+  },
+  "createBoardModal": {
+    "title": "Створити дошку",
+    "nameLabel": "Назва",
+    "descriptionLabel": "Опис",
+    "themeColorLabel": "Колір теми",
+    "columnsSectionTitle": "Колонки дашборда",
+    "addColumn": "Додати колонку",
+    "columnLabel": "Колонка {index}",
+    "removeColumn": "Видалити колонку",
+    "columnsHint": "Потрібна щонайменше одна колонка з назвою.",
+    "rolesSectionTitle": "Кастомні ролі дошки",
+    "addRole": "Додати роль",
+    "roleLabel": "Роль {index}",
+    "removeRole": "Видалити роль",
+    "rolesHint": "Стандартні ролі OWNER/ADMIN/MEMBER/VIEWER додаються автоматично.",
+    "iconLabel": "Іконка",
+    "previewTitle": "Нова дошка",
+    "previewDescription": "Опис з'явиться після заповнення поля.",
+    "cancel": "Скасувати",
+    "creating": "Створюємо...",
+    "create": "Створити",
+    "defaultColumnBacklog": "Беклог",
+    "defaultColumnInProgress": "У роботі",
+    "defaultColumnDone": "Готово",
+    "iconDashboard": "Дашборд",
+    "iconMarketing": "Маркетинг",
+    "iconDevelopment": "Розробка",
+    "iconDesign": "Дизайн",
+    "themeSlate": "Сланець",
+    "themeAqua": "Аква",
+    "themeAmber": "Бурштин",
+    "themeRose": "Троянда"
   },
   "auth": {
     "authorization": "Авторизація",
@@ -66,7 +117,6 @@
     "oauthGenericError": "Не вдалося завершити вхід. Запустіть авторизацію знову та завершіть її в одному й тому самому режимі браузера.",
     "continueWith": "Продовжити через {provider}",
     "providerNotConfigured": "{provider} не налаштовано",
-    "envHint": "Щоб додати провайдери, потрібні змінні середовища GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, FACEBOOK_CLIENT_ID, FACEBOOK_CLIENT_SECRET, AUTH_SECRET.",
     "registerInfo": "Окрема форма реєстрації не потрібна. Перший вхід через OAuth створює користувача автоматично.",
     "registerMore": "Детальніше"
   },
@@ -97,7 +147,7 @@
     "noCommentPermission": "У вас немає прав для коментування",
     "send": "Надіслати",
     "sending": "Надсилання...",
-    "estimateLog": "Estimate log",
+    "estimateLog": "Історія оцінок",
     "noComments": "Коментарів поки немає. Почніть обговорення вище.",
     "sectionEstimates": "Оцінки",
     "originalHours": "Заплановані (год)",
@@ -116,6 +166,7 @@
     "deleteLabel": "Видалення",
     "estimateLabel": "Оцінки",
     "commentLabel": "Коментарі",
+    "descriptionLabel": "Опис",
     "accessRulesHint": "Правила доступу змінюються в режимі редагування.",
     "sectionDetails": "Деталі тікету",
     "created": "Створено: {date}",
@@ -166,6 +217,15 @@
     "statePending": "Очікує",
     "copied": "Скопійовано!",
     "copyInviteLink": "Скопіювати посилання запрошення",
+    "boardRoleChip": "Роль у дошці: {role}",
+    "customRoleChip": "Кастомна роль: {role}",
+    "customRoleNoneChip": "Кастомна роль: немає",
+    "role": {
+      "owner": "Власник",
+      "admin": "Адмін",
+      "member": "Учасник",
+      "viewer": "Спостерігач"
+    },
     "deleteInvitation": "Видалити",
     "inviteDialogTitle": "Запросити учасника",
     "sharedLinkCheckbox": "Посилання без email",
@@ -249,6 +309,37 @@
     "deleteBoardError": "Не вдалося видалити дошку.",
     "deleteBoardConfirm": "Видалити дошку \"{name}\" назавжди? Цю дію не можна скасувати."
   },
+  "boardColumns": {
+    "renameColumnPrompt": "Нова назва колонки",
+    "keepAtLeastOneColumn": "Потрібно залишити хоча б одну колонку.",
+    "deleteColumnConfirm": "Видалити колонку і всі тікети всередині неї? Цю дію не можна скасувати.",
+    "createTicketTitle": "Створити тікет",
+    "ticketNameLabel": "Назва",
+    "ticketDescriptionLabel": "Опис",
+    "permissionView": "Перегляд",
+    "permissionFill": "Заповнення",
+    "permissionEdit": "Редагування",
+    "permissionDelete": "Видалення",
+    "cancel": "Скасувати",
+    "creatingTicket": "Створюємо...",
+    "create": "Створити",
+    "renameColumn": "Перейменувати",
+    "deleteColumn": "Видалити колонку",
+    "addTicket": "Додати тікет",
+    "actionsDialogTitle": "Дії: {column}",
+    "openActions": "Відкрити дії колонки"
+  },
+  "dashboard": {
+    "createRealColumnsAlert": "Спочатку створіть реальні колонки в базі даних для цієї дошки.",
+    "newColumnPromptTitle": "Назва нової колонки",
+    "newColumnDefaultTitle": "Нова колонка",
+    "createColumnError": "Не вдалося створити колонку.",
+    "createColumnRetry": "Не вдалося створити колонку. Спробуйте ще раз.",
+    "openBoardNavigation": "Відкрити навігацію дошки",
+    "addingColumn": "Додаємо...",
+    "addColumn": "Додати колонку",
+    "emptyBoardText": "У цій дошці поки немає тікетів"
+  },
   "invite": {
     "loading": "Завантаження...",
     "loadingError": "Запрошення не знайдено або закінчилось.",
@@ -288,6 +379,30 @@
     "acceptButton": "Прийняти запрошення",
     "signInButton": "Увійти / Зареєструватись",
     "newLinkNeeded": "Потрібне нове посилання"
+  },
+  "rolesSelect": {
+    "accessRoles": "Ролі доступу",
+    "standardRolesSection": "Стандартні ролі",
+    "boardRolesSection": "Ролі дошки",
+    "owner": "Власник",
+    "admin": "Адмін",
+    "member": "Учасник",
+    "viewer": "Спостерігач"
+  },
+  "ticketFields": {
+    "typeLabel": "Тип",
+    "priorityLabel": "Пріоритет",
+    "statusLabel": "Статус",
+    "typeBug": "Баг",
+    "typeFeature": "Фіча",
+    "typeTask": "Задача",
+    "priorityLow": "Низький",
+    "priorityMedium": "Середній",
+    "priorityHigh": "Високий",
+    "priorityCritical": "Критичний",
+    "statusTodo": "До виконання",
+    "statusInProgress": "У роботі",
+    "statusDone": "Готово"
   },
   "errors": {
     "unexpectedTitle": "Щось пішло не так",

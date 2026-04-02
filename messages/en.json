@@ -3,7 +3,8 @@
     "language": "Language",
     "russian": "Russian",
     "english": "English",
-    "ukrainian": "Ukrainian"
+    "ukrainian": "Ukrainian",
+    "openActions": "Open actions"
   },
   "topbar": {
     "home": "Home",
@@ -54,7 +55,57 @@
     "boardLabel": "Board",
     "deleteBoard": "Delete board",
     "deleteBoardConfirm": "Delete this board? This action cannot be undone.",
-    "deleteBoardError": "Could not delete the board. Only board owner can do this."
+    "deleteBoardError": "Could not delete the board. Only board owner can do this.",
+    "workRole": {
+      "client": "Client",
+      "executor": "Executor",
+      "organizer": "Organizer",
+      "ceo": "CEO"
+    },
+    "monetization": {
+      "free": "Free",
+      "submitted": "Submitted",
+      "premium": "Premium"
+    },
+    "boardRole": {
+      "owner": "Owner",
+      "admin": "Admin",
+      "member": "Member",
+      "viewer": "Viewer"
+    }
+  },
+  "createBoardModal": {
+    "title": "Create board",
+    "nameLabel": "Name",
+    "descriptionLabel": "Description",
+    "themeColorLabel": "Theme color",
+    "columnsSectionTitle": "Dashboard columns",
+    "addColumn": "Add column",
+    "columnLabel": "Column {index}",
+    "removeColumn": "Remove column",
+    "columnsHint": "At least one named column is required.",
+    "rolesSectionTitle": "Custom board roles",
+    "addRole": "Add role",
+    "roleLabel": "Role {index}",
+    "removeRole": "Remove role",
+    "rolesHint": "Standard roles OWNER/ADMIN/MEMBER/VIEWER are added automatically.",
+    "iconLabel": "Icon",
+    "previewTitle": "New board",
+    "previewDescription": "Description will appear after you fill in the field.",
+    "cancel": "Cancel",
+    "creating": "Creating...",
+    "create": "Create",
+    "defaultColumnBacklog": "Backlog",
+    "defaultColumnInProgress": "In Progress",
+    "defaultColumnDone": "Done",
+    "iconDashboard": "Dashboard",
+    "iconMarketing": "Marketing",
+    "iconDevelopment": "Development",
+    "iconDesign": "Design",
+    "themeSlate": "Slate",
+    "themeAqua": "Aqua",
+    "themeAmber": "Amber",
+    "themeRose": "Rose"
   },
   "auth": {
     "authorization": "Authorization",
@@ -66,7 +117,6 @@
     "oauthGenericError": "The sign-in request could not be completed. Start the sign-in again and finish it in the same browser mode.",
     "continueWith": "Continue with {provider}",
     "providerNotConfigured": "{provider} is not configured",
-    "envHint": "To add providers, configure GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, FACEBOOK_CLIENT_ID, FACEBOOK_CLIENT_SECRET, AUTH_SECRET.",
     "registerInfo": "Separate registration form is not required. First OAuth sign-in creates a user automatically.",
     "registerMore": "Learn more"
   },
@@ -116,6 +166,7 @@
     "deleteLabel": "Delete",
     "estimateLabel": "Estimate",
     "commentLabel": "Comment",
+    "descriptionLabel": "Description",
     "accessRulesHint": "Access rules are changed in Edit mode.",
     "sectionDetails": "Ticket details",
     "created": "Created: {date}",
@@ -166,6 +217,15 @@
     "statePending": "Pending",
     "copied": "Copied!",
     "copyInviteLink": "Copy invitation link",
+    "boardRoleChip": "Board role: {role}",
+    "customRoleChip": "Custom role: {role}",
+    "customRoleNoneChip": "Custom role: none",
+    "role": {
+      "owner": "Owner",
+      "admin": "Admin",
+      "member": "Member",
+      "viewer": "Viewer"
+    },
     "deleteInvitation": "Delete",
     "inviteDialogTitle": "Invite member",
     "sharedLinkCheckbox": "Link without email",
@@ -249,6 +309,37 @@
     "deleteBoardError": "Failed to delete board.",
     "deleteBoardConfirm": "Delete board \"{name}\" permanently? This action cannot be undone."
   },
+  "boardColumns": {
+    "renameColumnPrompt": "New column title",
+    "keepAtLeastOneColumn": "At least one column must remain.",
+    "deleteColumnConfirm": "Delete this column and all tickets inside it? This action cannot be undone.",
+    "createTicketTitle": "Create ticket",
+    "ticketNameLabel": "Name",
+    "ticketDescriptionLabel": "Description",
+    "permissionView": "View",
+    "permissionFill": "Fill",
+    "permissionEdit": "Edit",
+    "permissionDelete": "Delete",
+    "cancel": "Cancel",
+    "creatingTicket": "Creating...",
+    "create": "Create",
+    "renameColumn": "Rename column",
+    "deleteColumn": "Delete column",
+    "addTicket": "Add ticket",
+    "actionsDialogTitle": "Actions: {column}",
+    "openActions": "Open column actions"
+  },
+  "dashboard": {
+    "createRealColumnsAlert": "Create real columns in the database for this board first.",
+    "newColumnPromptTitle": "New column title",
+    "newColumnDefaultTitle": "New column",
+    "createColumnError": "Could not create the column.",
+    "createColumnRetry": "Could not create the column. Please try again.",
+    "openBoardNavigation": "Open board navigation",
+    "addingColumn": "Adding...",
+    "addColumn": "Add column",
+    "emptyBoardText": "No tickets in this board yet"
+  },
   "invite": {
     "loading": "Loading...",
     "loadingError": "Invitation not found or expired.",
@@ -288,6 +379,30 @@
     "acceptButton": "Accept invitation",
     "signInButton": "Sign in / Register",
     "newLinkNeeded": "New link needed"
+  },
+  "rolesSelect": {
+    "accessRoles": "Access roles",
+    "standardRolesSection": "Standard roles",
+    "boardRolesSection": "Board roles",
+    "owner": "Owner",
+    "admin": "Admin",
+    "member": "Member",
+    "viewer": "Viewer"
+  },
+  "ticketFields": {
+    "typeLabel": "Type",
+    "priorityLabel": "Priority",
+    "statusLabel": "Status",
+    "typeBug": "Bug",
+    "typeFeature": "Feature",
+    "typeTask": "Task",
+    "priorityLow": "Low",
+    "priorityMedium": "Medium",
+    "priorityHigh": "High",
+    "priorityCritical": "Critical",
+    "statusTodo": "To Do",
+    "statusInProgress": "In Progress",
+    "statusDone": "Done"
   },
   "errors": {
     "unexpectedTitle": "Something went wrong",

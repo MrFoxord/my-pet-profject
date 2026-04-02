@@ -137,7 +137,7 @@ export default function BoardUsersClient({ boardId }: BoardUsersClientProps) {
       }).unwrap();
     } catch (saveError) {
       console.error("failed to update custom role", saveError);
-      setError("Не удалось обновить кастомную роль участника.");
+      setError(t("errorUpdateRole"));
     } finally {
       setSavingMemberId(null);
     }
@@ -358,16 +358,16 @@ export default function BoardUsersClient({ boardId }: BoardUsersClientProps) {
                     {member.email || t("emailNotProvided")}
                   </Typography>
                   <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
-                    <Chip label={`Board role: ${member.role}`} size="small" />
+                    <Chip label={t("boardRoleChip", { role: t(`role.${member.role.toLowerCase()}`) })} size="small" />
                     {member.customRoleName ? (
                       <Chip
-                        label={`Custom role: ${member.customRoleName}`}
+                        label={t("customRoleChip", { role: member.customRoleName })}
                         size="small"
                         variant="outlined"
                         color="primary"
                       />
                     ) : (
-                      <Chip label="Custom role: none" size="small" variant="outlined" />
+                      <Chip label={t("customRoleNoneChip")} size="small" variant="outlined" />
                     )}
                   </Box>
                 </Box>

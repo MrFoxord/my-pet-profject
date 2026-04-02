@@ -1,26 +1,27 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { MenuItem, TextField } from "@mui/material";
 import { TICKET_PRIORITY_VALUES, TICKET_STATUS_VALUES, TICKET_TYPE_VALUES } from "@/shared/tickets";
 import type { Ticket } from "@/types";
 
-const TICKET_TYPE_LABELS: Record<Ticket["type"], string> = {
-  bug: "Bug",
-  feature: "Feature",
-  task: "Task",
+const TICKET_TYPE_LABEL_KEYS: Record<Ticket["type"], string> = {
+  bug: "typeBug",
+  feature: "typeFeature",
+  task: "typeTask",
 };
 
-const TICKET_PRIORITY_LABELS: Record<Ticket["priority"], string> = {
-  low: "Low",
-  medium: "Medium",
-  high: "High",
-  critical: "Critical",
+const TICKET_PRIORITY_LABEL_KEYS: Record<Ticket["priority"], string> = {
+  low: "priorityLow",
+  medium: "priorityMedium",
+  high: "priorityHigh",
+  critical: "priorityCritical",
 };
 
-const TICKET_STATUS_LABELS: Record<Ticket["status"], string> = {
-  todo: "To Do",
-  "in-progress": "In Progress",
-  done: "Done",
+const TICKET_STATUS_LABEL_KEYS: Record<Ticket["status"], string> = {
+  todo: "statusTodo",
+  "in-progress": "statusInProgress",
+  done: "statusDone",
 };
 
 interface BaseSelectProps {
@@ -40,15 +41,18 @@ interface TicketTypeSelectProps extends BaseSelectProps {
 export function TicketTypeSelect({
   value,
   onChange,
-  label = "Тип",
+  label,
   fullWidth = true,
   size,
   disabled,
 }: TicketTypeSelectProps) {
+  const t = useTranslations("ticketFields");
+  const resolvedLabel = label ?? t("typeLabel");
+
   return (
     <TextField
       select
-      label={label}
+      label={resolvedLabel}
       value={value}
       onChange={(e) => onChange(e.target.value as Ticket["type"])}
       fullWidth={fullWidth}
@@ -57,7 +61,7 @@ export function TicketTypeSelect({
     >
       {TICKET_TYPE_VALUES.map((type) => (
         <MenuItem key={type} value={type}>
-          {TICKET_TYPE_LABELS[type]}
+          {t(TICKET_TYPE_LABEL_KEYS[type])}
         </MenuItem>
       ))}
     </TextField>
@@ -75,15 +79,18 @@ interface TicketPrioritySelectProps extends BaseSelectProps {
 export function TicketPrioritySelect({
   value,
   onChange,
-  label = "Приоритет",
+  label,
   fullWidth = true,
   size,
   disabled,
 }: TicketPrioritySelectProps) {
+  const t = useTranslations("ticketFields");
+  const resolvedLabel = label ?? t("priorityLabel");
+
   return (
     <TextField
       select
-      label={label}
+      label={resolvedLabel}
       value={value}
       onChange={(e) => onChange(e.target.value as Ticket["priority"])}
       fullWidth={fullWidth}
@@ -92,7 +99,7 @@ export function TicketPrioritySelect({
     >
       {TICKET_PRIORITY_VALUES.map((priority) => (
         <MenuItem key={priority} value={priority}>
-          {TICKET_PRIORITY_LABELS[priority]}
+          {t(TICKET_PRIORITY_LABEL_KEYS[priority])}
         </MenuItem>
       ))}
     </TextField>
@@ -110,15 +117,18 @@ interface TicketStatusSelectProps extends BaseSelectProps {
 export function TicketStatusSelect({
   value,
   onChange,
-  label = "Статус",
+  label,
   fullWidth = true,
   size,
   disabled,
 }: TicketStatusSelectProps) {
+  const t = useTranslations("ticketFields");
+  const resolvedLabel = label ?? t("statusLabel");
+
   return (
     <TextField
       select
-      label={label}
+      label={resolvedLabel}
       value={value}
       onChange={(e) => onChange(e.target.value as Ticket["status"])}
       fullWidth={fullWidth}
@@ -127,7 +137,7 @@ export function TicketStatusSelect({
     >
       {TICKET_STATUS_VALUES.map((status) => (
         <MenuItem key={status} value={status}>
-          {TICKET_STATUS_LABELS[status]}
+          {t(TICKET_STATUS_LABEL_KEYS[status])}
         </MenuItem>
       ))}
     </TextField>

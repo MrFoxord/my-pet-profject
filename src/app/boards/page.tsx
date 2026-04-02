@@ -49,12 +49,51 @@ export default function BoardsPage() {
   const t = useTranslations("boards");
   const router = useRouter();
   const { data: session, status } = useSession();
-    const WORK_ROLE_OPTIONS: { value: WorkRole; label: string }[] = [
-      { value: "CLIENT", label: "CLIENT" },
-      { value: "EXECUTOR", label: "EXECUTOR" },
-      { value: "ORGANIZER", label: "ORGANIZER" },
-      { value: "CEO", label: "CEO" },
-    ];
+  const WORK_ROLE_OPTIONS: { value: WorkRole; label: string }[] = [
+    { value: "CLIENT", label: t("workRole.client") },
+    { value: "EXECUTOR", label: t("workRole.executor") },
+    { value: "ORGANIZER", label: t("workRole.organizer") },
+    { value: "CEO", label: t("workRole.ceo") },
+  ];
+
+  const translateWorkRole = (role: WorkRole) => {
+    switch (role) {
+      case "EXECUTOR":
+        return t("workRole.executor");
+      case "ORGANIZER":
+        return t("workRole.organizer");
+      case "CEO":
+        return t("workRole.ceo");
+      default:
+        return t("workRole.client");
+    }
+  };
+
+  const translateMonetizationRole = (role: string) => {
+    switch (role) {
+      case "SUBMITTED":
+        return t("monetization.submitted");
+      case "PREMIUM":
+        return t("monetization.premium");
+      default:
+        return t("monetization.free");
+    }
+  };
+
+  const translateBoardRole = (role: string) => {
+    switch (role.toLowerCase()) {
+      case "owner":
+        return t("boardRole.owner");
+      case "admin":
+        return t("boardRole.admin");
+      case "viewer":
+        return t("boardRole.viewer");
+      case "member":
+        return t("boardRole.member");
+      default:
+        return role;
+    }
+  };
 
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [creating, setCreating] = useState(false);
@@ -195,7 +234,7 @@ export default function BoardsPage() {
             <Title>{t("title")}</Title>
           </HeaderTop>
           <Subtitle>
-            {displayNameOverride ?? session?.user?.name ?? session?.user?.email ?? t("userFallback")} · {displayRoleOverride ?? session?.user?.workRole ?? "CLIENT"} · {session?.user?.monetizationRole ?? "FREE"}
+            {displayNameOverride ?? session?.user?.name ?? session?.user?.email ?? t("userFallback")} · {translateWorkRole(displayRoleOverride ?? session?.user?.workRole ?? "CLIENT")} · {translateMonetizationRole(session?.user?.monetizationRole ?? "FREE")}
           </Subtitle>
         </Header>
 
@@ -238,7 +277,7 @@ export default function BoardsPage() {
                   <BoardDescription>{board.description}</BoardDescription>
                 )}
                 <BoardMeta>
-                  {t("role")}: {board.dashboardRole ?? "member"} · {board.tickets?.length ?? 0} {t("tickets")}
+                  {t("role")}: {translateBoardRole(board.dashboardRole ?? "member")} · {board.tickets?.length ?? 0} {t("tickets")}
                 </BoardMeta>
               </BoardCard>
             ))}

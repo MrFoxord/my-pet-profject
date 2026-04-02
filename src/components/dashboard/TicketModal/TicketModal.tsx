@@ -628,7 +628,7 @@ const TicketModalContent = ({
           {isEditing ? (
             <>
               <TextField
-                label="Description"
+                label={t("descriptionLabel")}
                 multiline
                 minRows={4}
                 value={description}
