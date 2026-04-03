@@ -11,27 +11,27 @@ export declare class BoardRolesService {
     private ensureCanManageRoles;
     createBoardRole(boardId: string, dto: CreateBoardRoleDto, userId?: string): Promise<{
         id: string;
-        boardId: string;
+        name: string;
         createdAt: Date;
         updatedAt: Date;
-        name: string;
+        boardId: string;
         permissions: string[];
     }>;
     updateBoardRole(boardId: string, roleId: string, dto: UpdateBoardRoleDto, userId?: string): Promise<{
         id: string;
-        boardId: string;
+        name: string;
         createdAt: Date;
         updatedAt: Date;
-        name: string;
+        boardId: string;
         permissions: string[];
     }>;
     deleteBoardRole(boardId: string, roleId: string, userId?: string): Promise<void>;
     listBoardRoles(boardId: string, userId?: string): Promise<{
         id: string;
-        boardId: string;
+        name: string;
         createdAt: Date;
         updatedAt: Date;
-        name: string;
+        boardId: string;
         permissions: string[];
     }[]>;
 }
