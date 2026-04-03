@@ -1,15 +1,14 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
-    Alert,
+	Alert,
 	Box,
 	Button,
 	Card,
-	CardContent,
-	Container,
+	CenteredPage,
 	Stack,
 	Typography,
-} from "@mui/material";
+} from "@/components/ui";
 import { getTranslations } from "next-intl/server";
 import { auth, authProviderStates, signIn } from "@/auth";
 
@@ -55,10 +54,9 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
 	}
 
 	return (
-		<Container maxWidth="sm" sx={{ py: 10 }}>
-			<Card sx={{ borderRadius: 4, boxShadow: 12 }}>
-				<CardContent sx={{ p: 5 }}>
-					<Stack spacing={3}>
+		<CenteredPage>
+			<Card sx={{ borderRadius: 4, boxShadow: 12 }} contentSx={{ p: 5 }}>
+				<Stack spacing={3}>
 						{authErrorMessage ? (
 							<Alert severity="warning" variant="outlined">
 								<Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 0.5 }}>
@@ -107,9 +105,8 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
 						<Typography variant="body2" color="text.secondary">
 							{t("registerInfo")} <Link href={`/auth/register?redirectTo=${encodeURIComponent(redirectTo)}`}>{t("registerMore")}</Link>
 						</Typography>
-					</Stack>
-				</CardContent>
+				</Stack>
 			</Card>
-		</Container>
+		</CenteredPage>
 	);
 }

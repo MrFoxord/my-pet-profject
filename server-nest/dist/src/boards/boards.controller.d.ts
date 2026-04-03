@@ -351,26 +351,26 @@ export declare class BoardsController {
     }>;
     createBoardRole(boardId: string, dto: CreateBoardRoleDto, req: AuthRequest): Promise<{
         id: string;
-        name: string;
+        boardId: string;
         createdAt: Date;
         updatedAt: Date;
-        boardId: string;
+        name: string;
         permissions: string[];
     }>;
     listBoardRoles(boardId: string, req: AuthRequest): Promise<{
         id: string;
-        name: string;
+        boardId: string;
         createdAt: Date;
         updatedAt: Date;
-        boardId: string;
+        name: string;
         permissions: string[];
     }[]>;
     updateBoardRole(boardId: string, roleId: string, dto: UpdateBoardRoleDto, req: AuthRequest): Promise<{
         id: string;
-        name: string;
+        boardId: string;
         createdAt: Date;
         updatedAt: Date;
-        boardId: string;
+        name: string;
         permissions: string[];
     }>;
     deleteBoardRole(boardId: string, roleId: string, req: AuthRequest): Promise<{

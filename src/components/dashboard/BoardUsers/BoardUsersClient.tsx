@@ -10,7 +10,10 @@ import {
   FormControl,
   InputLabel,
   MenuItem,
+  PageIntro,
   Select,
+  SectionHeading,
+  SectionCard,
   Typography,
 } from "@/components/ui";
 import {
@@ -297,26 +300,22 @@ export default function BoardUsersClient({ boardId }: BoardUsersClientProps) {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 3, p: 3 }}>
-      <Box>
-        <Typography variant="h5" sx={{ mb: 1 }}>
-          {t("title")}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {t("subtitle")}
-        </Typography>
-      </Box>
+      <PageIntro
+        title={t("title")}
+        subtitle={t("subtitle")}
+        action={
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setShowInviteForm(true)}
+            disabled={!canCreateAnyInvite}
+          >
+            {t("inviteMember")}
+          </Button>
+        }
+      />
 
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <Typography variant="h6">{t("membersAndInvitations")}</Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setShowInviteForm(true)}
-          disabled={!canCreateAnyInvite}
-        >
-          {t("inviteMember")}
-        </Button>
-      </Box>
+      <Typography variant="h6">{t("membersAndInvitations")}</Typography>
 
       {error ? <Alert severity="error">{error}</Alert> : null}
       {hasLoadError ? <Alert severity="error">{t("errorLoadData")}</Alert> : null}
@@ -331,15 +330,10 @@ export default function BoardUsersClient({ boardId }: BoardUsersClientProps) {
       {!loading && members.length > 0 ? (
         <Box sx={{ display: "grid", gap: 2 }}>
           {members.map((member) => (
-            <Box
+            <SectionCard
               key={member.id}
               sx={{
-                border: "1px solid",
-                borderColor: "divider",
-                borderRadius: 3,
                 p: 2,
-                backgroundColor: "background.paper",
-                boxShadow: 1,
               }}
             >
               <Box
@@ -407,20 +401,18 @@ export default function BoardUsersClient({ boardId }: BoardUsersClientProps) {
                   </Button>
                 </Box>
               </Box>
-            </Box>
+            </SectionCard>
           ))}
         </Box>
       ) : null}
 
         {!loading && canManageBoardUsers && invitations.length > 0 ? (
-          <Box>
-            <Typography variant="h6" sx={{ mb: 2, mt: 2 }}>
-              {t("pendingInvitations")}
-            </Typography>
+          <SectionCard>
+              <SectionHeading title={t("pendingInvitations")} />
             <TableContainer component={Paper}>
               <Table size="small">
                 <TableHead>
-                  <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
+                  <TableRow sx={{ backgroundColor: "action.hover" }}>
                     <TableCell>{t("tableType")}</TableCell>
                     <TableCell>{t("tableRecipient")}</TableCell>
                     <TableCell>{t("tableCustomRole")}</TableCell>
@@ -499,7 +491,7 @@ export default function BoardUsersClient({ boardId }: BoardUsersClientProps) {
                 </TableBody>
               </Table>
             </TableContainer>
-          </Box>
+          </SectionCard>
         ) : null}
 
         <Dialog

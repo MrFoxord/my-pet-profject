@@ -1,5 +1,5 @@
 import styled, { css, keyframes } from "styled-components";
-import { MuiLikeTheme } from "@/types";
+import { modalSurface, mutedBlockSurface } from "@/lib/styled-surfaces";
 
 const modalRemotePulse = keyframes`
   0% {
@@ -49,10 +49,8 @@ export const ModalOuter = styled.div`
 export const ModalCard = styled.div<{ $isRemotePulse?: boolean }>`
   width: min(640px, 90vw);
   max-height: 90vh;
-  background: ${({ theme }) =>
-    (theme as MuiLikeTheme)?.palette?.background?.paper ?? "#ffffff"};
   border-radius: 16px;
-  box-shadow: 0 10px 40px rgba(15, 23, 42, 0.35);
+  ${modalSurface};
   padding: 24px;
   display: flex;
   flex-direction: column;
@@ -98,8 +96,7 @@ export const AccessRolesRow = styled.div`
   margin-top: 8px;
   padding: 4px 8px;
   border-radius: 8px;
-  background: ${({ theme }) =>
-    (theme as MuiLikeTheme)?.palette?.action?.hover ?? "#f4f4f5"};
+  ${mutedBlockSurface};
 `;
 
 export const HeaderActions = styled.div`
@@ -141,8 +138,7 @@ export const SubtaskRow = styled.div`
   gap: 8px;
   padding: 6px 8px;
   border-radius: 8px;
-  background: ${({ theme }) =>
-    (theme as MuiLikeTheme)?.palette?.action?.hover ?? "#f4f4f5"};
+  ${mutedBlockSurface};
 `;
 
 export const CommentsHeader = styled.div`
@@ -165,8 +161,7 @@ export const CommentsList = styled.div`
 export const CommentCard = styled.div<{ $isNew?: boolean }>`
   padding: 12px;
   border-radius: 8px;
-  background: ${({ theme }) =>
-    (theme as MuiLikeTheme)?.palette?.action?.hover ?? "#f4f4f5"};
+  ${mutedBlockSurface};
   display: flex;
   flex-direction: column;
   gap: 6px;

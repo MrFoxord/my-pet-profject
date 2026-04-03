@@ -5,10 +5,9 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useFormatter, useTranslations } from "next-intl";
 import {
+  Card,
+  CenteredPage,
   Box,
-  MuiCard as Card,
-  CardContent,
-  CardActions,
   Typography,
   Button,
   Alert,
@@ -118,46 +117,29 @@ export default function InvitePageContent({ token }: InvitePageContentProps) {
 
   if (loading) {
     return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "100vh",
-          backgroundColor: "#f5f5f5",
-        }}
-      >
+      <CenteredPage>
         <CircularProgress />
-      </Box>
+      </CenteredPage>
     );
   }
 
   if (error || !invitation) {
     return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "100vh",
-          backgroundColor: "#f5f5f5",
-          p: 2,
-        }}
-      >
-        <Card sx={{ maxWidth: 500, width: "100%" }}>
-          <CardContent>
+      <CenteredPage>
+        <Card
+          sx={{ maxWidth: 500, width: "100%" }}
+          actions={
+            <Button onClick={() => router.push("/")} variant="contained">
+              {t("backToHome")}
+            </Button>
+          }
+        >
             <Typography variant="h5" sx={{ mb: 2, color: "error.main" }}>
               {t("invalidTitle")}
             </Typography>
             <Alert severity="error">{error ?? t("notFound")}</Alert>
-          </CardContent>
-          <CardActions>
-            <Button onClick={() => router.push("/")} variant="contained">
-              {t("backToHome")}
-            </Button>
-          </CardActions>
         </Card>
-      </Box>
+      </CenteredPage>
     );
   }
 
@@ -229,18 +211,41 @@ export default function InvitePageContent({ token }: InvitePageContentProps) {
             : t("stateUsed");
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "100vh",
-        backgroundColor: "#f5f5f5",
-        p: 2,
-      }}
-    >
-      <Card sx={{ maxWidth: 500, width: "100%" }}>
-        <CardContent>
+    <CenteredPage>
+      <Card
+        sx={{ maxWidth: 500, width: "100%" }}
+        actions={
+          <>
+            <Button
+              onClick={() => router.push("/")}
+              variant="outlined"
+            >
+              {t("cancelButton")}
+            </Button>
+            {canAccept ? (
+              <Button
+                onClick={() => void handleAcceptInvitation()}
+                variant="contained"
+                color="primary"
+                disabled={accepting}
+                sx={{ flex: 1 }}
+              >
+                {accepting ? <CircularProgress size={20} /> : t("acceptButton")}
+              </Button>
+            ) : (
+              <Button
+                onClick={() => router.push(signInUrl)}
+                variant="contained"
+                color="primary"
+                disabled={invitation.state !== "pending"}
+                sx={{ flex: 1 }}
+              >
+                {invitation.state === "pending" ? t("signInButton") : t("newLinkNeeded")}
+              </Button>
+            )}
+          </>
+        }
+      >
           <Box sx={{ mb: 3 }}>
             {invitation.board.logoUrl && (
               <Box
@@ -267,9 +272,10 @@ export default function InvitePageContent({ token }: InvitePageContentProps) {
             <Box
               sx={{
                 p: 2,
-                backgroundColor: "#f9f9f9",
+                backgroundColor: "action.hover",
                 borderRadius: 1,
-                border: "1px solid #e0e0e0",
+                border: "1px solid",
+                borderColor: "divider",
               }}
             >
               <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
@@ -320,37 +326,7 @@ export default function InvitePageContent({ token }: InvitePageContentProps) {
           </Stack>
 
           {renderStateAlert()}
-        </CardContent>
-        <CardActions>
-          <Button
-            onClick={() => router.push("/")}
-            variant="outlined"
-          >
-            {t("cancelButton")}
-          </Button>
-          {canAccept ? (
-            <Button
-              onClick={() => void handleAcceptInvitation()}
-              variant="contained"
-              color="primary"
-              disabled={accepting}
-              sx={{ flex: 1 }}
-            >
-              {accepting ? <CircularProgress size={20} /> : t("acceptButton")}
-            </Button>
-          ) : (
-            <Button
-              onClick={() => router.push(signInUrl)}
-              variant="contained"
-              color="primary"
-              disabled={invitation.state !== "pending"}
-              sx={{ flex: 1 }}
-            >
-              {invitation.state === "pending" ? t("signInButton") : t("newLinkNeeded")}
-            </Button>
-          )}
-        </CardActions>
       </Card>
-    </Box>
+    </CenteredPage>
   );
 }

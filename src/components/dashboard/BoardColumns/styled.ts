@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Typography as MuiTypography } from "@mui/material";
-import { MuiLikeTheme } from "@/types";
+import { UI_COLORS } from "@/lib/ui-tokens";
+import { elevatedPanelSurface } from "@/lib/styled-surfaces";
 
 
 
@@ -19,12 +20,9 @@ export const ColumnWrapper = styled.div`
 `;
 
 export const ColumnCard = styled.div`
-  background: ${({ theme }) =>
-    (theme as MuiLikeTheme)?.palette?.background?.paper ?? "#ffffff"};
   border-radius: 14px;
   padding: 12px;
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+  ${elevatedPanelSurface};
   display: flex;
   flex-direction: column;
   gap: 9px;
@@ -45,8 +43,8 @@ export const ColumnActions = styled.div`
 
 export const AddTicketButton = styled.button`
   border: 0;
-  background: #0b63ce;
-  color: #fff;
+  background: ${UI_COLORS.primary};
+  color: ${UI_COLORS.primaryContrast};
   width: 26px;
   height: 26px;
   border-radius: 999px;
@@ -67,7 +65,7 @@ export const AddTicketButton = styled.button`
 export const ColumnTitle = styled(MuiTypography)`
   font-weight: 700;
   font-size: 0.95rem;
-  color: #1d2a44;
+  color: ${UI_COLORS.textPrimaryStrong};
 `;
 
 export const ColumnTicketList = styled.div`
