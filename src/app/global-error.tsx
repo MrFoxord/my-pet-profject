@@ -26,8 +26,15 @@ export default function GlobalError({ reset }: { error: Error & { digest?: strin
 
   useEffect(() => {
     const nextLocale = document.documentElement.lang || navigator.language || "en";
-    setLocale(nextLocale);
-    setMessages(resolveMessages(nextLocale.toLowerCase()));
+
+    const timerId = window.setTimeout(() => {
+      setLocale(nextLocale);
+      setMessages(resolveMessages(nextLocale.toLowerCase()));
+    }, 0);
+
+    return () => {
+      window.clearTimeout(timerId);
+    };
   }, []);
 
   return (
