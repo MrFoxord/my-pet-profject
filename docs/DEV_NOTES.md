@@ -1,688 +1,688 @@
 # DEV NOTES — my-pet-profect
 
-Этот файл — конспект решений и плана работ, чтобы можно было продолжать разработку с другого ноутбука / другим Copilot, не теряя контекст.
+Цей файл — конспект рішень і плану робіт, щоб можна було продовжувати розробку з іншого ноутбука / іншим Copilot, не втрачаючи контекст.
 
-Быстрая навигация:
-- Актуальное состояние: `Актуализация на 2026-04-01`
-- Текущий план: `Приоритетный TODO на 2026-04-01`
-- Предложенная стратегия: `7. Стратегия дальнейшей разработки`
+Швидка навігація:
+- Актуальний стан: `Актуалізація на 2026-04-01`
+- Поточний план: `Пріоритетний TODO на 2026-04-01`
+- Запропонована стратегія: `7. Стратегія подальшої розробки`
 
 ---
 
-## Актуализация на 2026-04-01
+## Актуалізація на 2026-04-01
 
-### Что сделали за текущий этап
+### Що зробили за поточний етап
 
-1. Завершили backend-декомпозицию board-domain на отдельные сервисы:
-  - `BoardsAccessService` отвечает за membership и ticket access policy;
-  - `BoardNotificationsService` отвечает за persistence + realtime уведомлений;
-  - `BoardInvitationsService` отвечает за invite lifecycle и public token flow;
-  - `BoardMembersService` отвечает за участников борды;
-  - `BoardRolesService` отвечает за CRUD кастомных ролей;
-  - `BoardStructureService` отвечает за колонки;
-  - `BoardTicketsService` отвечает за тикеты, комментарии и ticket-level permission enforcement.
-2. Сузили ответственность главного board service:
-  - `server-nest/src/boards/board-workflow.service.ts` оставлен как board-level facade/orchestration;
-  - ticket/column flow вынесен из него в отдельные сервисы;
-  - внешний HTTP-контракт не ломался: `BoardsController` продолжает работать через стабильный фасад.
-3. Закрыли основной frontend-разрыв между backend и UI:
-  - реализована страница `src/app/dashboard/[boardId]/settings/page.tsx`;
-  - добавлены UI для кастомных ролей, invite policy, удаления борды и редактирования theme color;
-  - страница пользователей и settings теперь покрывают основной board-admin flow.
-4. Разбили клиентский RTK Query-монолит без изменения публичного импорта:
-  - `src/store/api.ts` оставлен как тонкий barrel;
-  - выделены `src/store/api-base.ts`, `src/store/api-utils.ts`, `src/store/api-boards.ts`, `src/store/api-tickets.ts`, `src/store/api-notifications.ts`.
-5. Упростили Prisma migration history до одной baseline-миграции:
-  - старая цепочка миграций удалена как мешающая и уже неактуальная;
-  - создана baseline-миграция `prisma/migrations/20260401100000_baseline_current_schema/`;
-  - dev-база сброшена и синхронизирована с текущей схемой.
-6. Усилили тестовое покрытие на критичных board-flow:
-  - unit guardrail coverage добавлен в `server-nest/src/boards/boards-domain.spec.ts`;
-  - helper-spec `server-nest/src/boards/boards.service.spec.ts` сохранен;
-  - HTTP/e2e-покрытие добавлено в `server-nest/test/boards-risk-flows.e2e-spec.ts`.
-7. Зафиксировали продуктовый scope по уведомлениям:
-  - текущий notification layer остается in-app + realtime;
-  - email notifications вынесены в post-MVP и не считаются активной задачей текущего релизного цикла.
+1. Завершили backend-декомпозицію board-domain на окремі сервіси:
+  - `BoardsAccessService` відповідає за membership і ticket access policy;
+  - `BoardNotificationsService` відповідає за persistence + realtime сповіщень;
+  - `BoardInvitationsService` відповідає за invite lifecycle і public token flow;
+  - `BoardMembersService` відповідає за учасників борду;
+  - `BoardRolesService` відповідає за CRUD кастомних ролей;
+  - `BoardStructureService` відповідає за колонки;
+  - `BoardTicketsService` відповідає за тікети, коментарі та ticket-level permission enforcement.
+2. Звузили відповідальність головного board service:
+  - `server-nest/src/boards/board-workflow.service.ts` залишено як board-level facade/orchestration;
+  - ticket/column flow винесено з нього в окремі сервіси;
+  - зовнішній HTTP-контракт не ламався: `BoardsController` продовжує працювати через стабільний фасад.
+3. Закрили основний frontend-розрив між backend і UI:
+  - реалізовано сторінку `src/app/dashboard/[boardId]/settings/page.tsx`;
+  - додано UI для кастомних ролей, invite policy, видалення борду та редагування theme color;
+  - сторінка користувачів і settings тепер покривають основний board-admin flow.
+4. Розбили клієнтський RTK Query-моноліт без зміни публічного імпорту:
+  - `src/store/api.ts` залишено як тонкий barrel;
+  - виділено `src/store/api-base.ts`, `src/store/api-utils.ts`, `src/store/api-boards.ts`, `src/store/api-tickets.ts`, `src/store/api-notifications.ts`.
+5. Спростили Prisma migration history до однієї baseline-міграції:
+  - старий ланцюжок міграцій видалено як такий, що заважав і вже неактуальний;
+  - створено baseline-міграцію `prisma/migrations/20260401100000_baseline_current_schema/`;
+  - dev-базу скинуто і синхронізовано з поточною схемою.
+6. Посилили тестове покриття на критичних board-flow:
+  - unit guardrail coverage додано в `server-nest/src/boards/boards-domain.spec.ts`;
+  - helper-spec `server-nest/src/boards/boards.service.spec.ts` збережено;
+  - HTTP/e2e-покриття додано в `server-nest/test/boards-risk-flows.e2e-spec.ts`.
+7. Зафіксували продуктовий scope щодо сповіщень:
+  - поточний notification layer залишається in-app + realtime;
+  - email notifications винесено в post-MVP і не вважаються активним завданням поточного релізного циклу.
 
-### Что важно понимать по текущему состоянию
+### Що важливо розуміти щодо поточного стану
 
-1. Board-domain сейчас уже разделен достаточно, чтобы безопасно продолжать разработку:
-  - access/invitations/members/roles/columns/tickets вынесены из одной большой кучной логики;
-  - `BoardsService` больше не является монолитом на весь board-domain.
-2. Frontend admin-сценарии теперь значительно ближе к backend-возможностям:
-  - settings-страница существует;
-  - кастомные роли, invite policy и delete board доступны из UI;
-  - shared/personal invite flow уже не является незавершенным черновиком.
-3. Критичные guardrails теперь покрыты не только unit-helper тестами:
-  - есть unit-тесты на permissions/invites/roles/member flows;
-  - есть e2e HTTP-покрытие на invite accept/revoke и owner-only delete board.
-4. Notification system по-прежнему означает только БД + realtime:
-  - email delivery, provider config, шаблоны, async dispatch и user preferences пока отсутствуют;
-  - это сознательно вынесено в post-MVP.
-5. Все TODO и планы ниже этого блока считать историческими, если они противоречат секции `Актуализация на 2026-04-01`.
+1. Board-domain зараз уже поділено достатньо, щоб безпечно продовжувати розробку:
+  - access/invitations/members/roles/columns/tickets винесено з однієї великої купчастої логіки;
+  - `BoardsService` більше не є монолітом на весь board-domain.
+2. Frontend admin-сценарії тепер значно ближчі до backend-можливостей:
+  - settings-сторінка існує;
+  - кастомні ролі, invite policy і delete board доступні з UI;
+  - shared/personal invite flow уже не є незавершеною чернеткою.
+3. Критичні guardrails тепер покриті не лише unit-helper тестами:
+  - є unit-тести на permissions/invites/roles/member flows;
+  - є e2e HTTP-покриття на invite accept/revoke і owner-only delete board.
+4. Notification system, як і раніше, означає лише БД + realtime:
+  - email delivery, provider config, шаблони, async dispatch і user preferences поки відсутні;
+  - це свідомо винесено в post-MVP.
+5. Усі TODO і плани нижче цього блоку вважати історичними, якщо вони суперечать секції `Актуалізація на 2026-04-01`.
 
-### Приоритетный TODO на 2026-04-01
+### Пріоритетний TODO на 2026-04-01
 
-1. Обязательный pre-MVP backlog по board-domain в рамках текущего согласованного плана закрыт.
-2. Email notifications оставлены как post-MVP:
-  - это отдельный delivery channel поверх уже существующих notification events;
-  - для него понадобятся provider config, async dispatch, шаблоны и observability;
-  - в текущий релизный scope это не включаем.
-3. Если продолжать именно техническое усиление pre-MVP, то следующий полезный слой — не новая feature-разработка, а hardening:
-  - дополнительные integration tests для ticket permission matrix и notification dispatch;
+1. Обов'язковий pre-MVP backlog по board-domain у межах поточного узгодженого плану закрито.
+2. Email notifications залишено як post-MVP:
+  - це окремий delivery channel поверх уже наявних notification events;
+  - для нього знадобляться provider config, async dispatch, шаблони й observability;
+  - у поточний релізний scope це не включаємо.
+3. Якщо продовжувати саме технічне посилення pre-MVP, то наступний корисний шар — не нова feature-розробка, а hardening:
+  - додаткові integration tests для ticket permission matrix і notification dispatch;
   - runtime smoke-check `next build` / `nest build` / dev startup;
-  - при необходимости дальнейшее сужение зависимостей `BoardsController`, если он снова начнет разрастаться.
-4. Нижележащие секции файла сохраняем как журнал эволюции проекта, а не как актуальный backlog.
+  - за потреби подальше звуження залежностей `BoardsController`, якщо він знову почне розростатися.
+4. Нижчі секції файла зберігаємо як журнал еволюції проєкту, а не як актуальний backlog.
 
 ---
 
-## Актуализация на 2026-03-19
+## Актуалізація на 2026-03-19
 
-### Что сделали за текущий этап
+### Що зробили за поточний етап
 
-1. Довели первую рабочую версию инвайтов по токену:
-  - в `BoardInvitation` добавлен `token`;
-  - реализован публичный lookup по токену;
-  - реализовано принятие инвайта по токену;
-  - ссылка формируется в виде `/invite/:token`.
-2. Добавили фронтовую страницу публичного инвайта:
+1. Довели першу робочу версію інвайтів за токеном:
+  - у `BoardInvitation` додано `token`;
+  - реалізовано публічний lookup за токеном;
+  - реалізовано прийняття інвайту за токеном;
+  - посилання формується у вигляді `/invite/:token`.
+2. Додали фронтову сторінку публічного інвайту:
   - маршрут `src/app/invite/[token]/page.tsx`;
   - компонент `src/components/invite/InvitePageContent.tsx`;
-  - страница умеет показывать состояние инвайта, срок действия и кнопку принятия.
-3. Добавили UI управления инвайтами на странице пользователей доски:
-  - форма создания инвайта в `BoardUsersClient`;
-  - таблица ожидающих приглашений;
-  - кнопка копирования ссылки приглашения.
-4. Исправили критичный баг публичной invite-страницы:
-  - раньше `GET /api/proxy/invitations/:token` шел через общий proxy, который всегда требовал сессию;
-  - теперь публичный lookup инвайта разрешен без авторизации;
-  - `accept` при этом по-прежнему остается привязанным к авторизованному пользователю.
-5. Улучшили обработку ошибок на invite-flow:
-  - фронтовый `apiRequest` теперь читает `message` из backend JSON-ошибок;
-  - mismatch email, expired, revoked/not pending отображаются внятным текстом;
-  - для обработанных invite-ошибок убраны лишние `console.error`, чтобы не поднимать лишний Next dev overlay.
-6. Исправили hydration mismatch на странице пользователей доски:
-  - корневая причина оказалась не только в MUI App Router cache, но и в `src/components/ui/Button/Button.tsx`;
-  - там был `styled-components` wrapper поверх MUI Button (`styled(MuiButton)`), что давало рассинхрон className между SSR и клиентом;
-  - обертка убрана, `Button` переведен на обычный MUI Button + `sx`.
-7. Подключили `@mui/material-nextjs` и завернули app в `AppRouterCacheProvider`:
-  - это нужно для корректной работы emotion/MUI в Next App Router.
-8. Применили все накопившиеся Prisma-миграции в корневом проекте:
-  - до этого Nest падал на `public.Board` / `public.User does not exist`;
-  - после применения миграций база пришла в sync со схемой.
+  - сторінка вміє показувати стан інвайту, строк дії та кнопку прийняття.
+3. Додали UI керування інвайтами на сторінці користувачів дошки:
+  - форма створення інвайту в `BoardUsersClient`;
+  - таблиця очікуваних запрошень;
+  - кнопка копіювання посилання запрошення.
+4. Виправили критичний баг публічної invite-сторінки:
+  - раніше `GET /api/proxy/invitations/:token` ішов через загальний proxy, який завжди вимагав сесію;
+  - тепер публічний lookup інвайту дозволено без авторизації;
+  - `accept` при цьому, як і раніше, залишається прив'язаним до авторизованого користувача.
+5. Покращили обробку помилок на invite-flow:
+  - фронтовий `apiRequest` тепер читає `message` з backend JSON-помилок;
+  - mismatch email, expired, revoked/not pending відображаються зрозумілим текстом;
+  - для оброблених invite-помилок прибрано зайві `console.error`, щоб не підіймати зайвий Next dev overlay.
+6. Виправили hydration mismatch на сторінці користувачів дошки:
+  - коренева причина виявилася не лише в MUI App Router cache, а й у `src/components/ui/Button/Button.tsx`;
+  - там був `styled-components` wrapper поверх MUI Button (`styled(MuiButton)`), що давало розсинхрон className між SSR і клієнтом;
+  - обгортку прибрано, `Button` переведено на звичайний MUI Button + `sx`.
+7. Підключили `@mui/material-nextjs` і обгорнули app в `AppRouterCacheProvider`:
+  - це потрібно для коректної роботи emotion/MUI в Next App Router.
+8. Застосували всі накопичені Prisma-міграції в кореневому проєкті:
+  - до цього Nest падав на `public.Board` / `public.User does not exist`;
+  - після застосування міграцій база прийшла в sync зі схемою.
 
-### Что важно понимать по текущему состоянию
+### Що важливо розуміти щодо поточного стану
 
-1. Текущая версия инвайтов пока еще персональная:
-  - email обязателен;
-  - acceptance проверяет совпадение email пользователя и email инвайта.
-2. Shared / массовые ссылки пока не реализованы.
-3. Страница `/invite/:token` уже существует и работает как публичная точка входа, то есть для shared-link модели не нужно изобретать новый entrypoint — нужно расширять текущую модель.
-4. На странице пользователей доски ссылка сейчас не показывается как текстовое поле:
-  - она уже генерируется;
-  - её можно скопировать через кнопку `📋` в секции ожидающих приглашений.
-5. В момент остановки работ `server-nest` локально был не поднят стабильно (`npm run start:dev` завершался с ошибкой), поэтому перед продолжением следующей итерации нужно сначала поднять dev backend и убедиться, что он стартует без runtime-ошибок.
+1. Поточна версія інвайтів поки що ще персональна:
+  - email обов'язковий;
+  - acceptance перевіряє збіг email користувача та email інвайту.
+2. Shared / масові посилання поки не реалізовані.
+3. Сторінка `/invite/:token` уже існує і працює як публічна точка входу, тобто для shared-link моделі не потрібно вигадувати новий entrypoint — потрібно розширювати поточну модель.
+4. На сторінці користувачів дошки посилання зараз не показується як текстове поле:
+  - воно вже генерується;
+  - його можна скопіювати через кнопку `📋` у секції очікуваних запрошень.
+5. На момент зупинки робіт `server-nest` локально не був піднятий стабільно (`npm run start:dev` завершувався з помилкою), тому перед продовженням наступної ітерації потрібно спершу підняти dev backend і переконатися, що він стартує без runtime-помилок.
 
-### Решение, согласованное на следующую итерацию
+### Рішення, узгоджене на наступну ітерацію
 
-Переходим к полноценной модели двух типов ссылок:
+Переходимо до повноцінної моделі двох типів посилань:
 
 1. `PERSONAL`
-  - ссылка привязана к email;
-  - acceptance разрешен только пользователю с совпадающим email.
+  - посилання прив'язане до email;
+  - acceptance дозволений лише користувачу зі збіжним email.
 2. `SHARED`
-  - ссылка без email;
-  - по одной ссылке можно принять несколько пользователей;
-  - лимит uses читается из env;
-  - срок жизни тоже читается из env.
+  - посилання без email;
+  - за одним посиланням можуть прийняти кілька користувачів;
+  - ліміт uses читається з env;
+  - строк життя теж читається з env.
 
-Дополнительно согласовано:
+Додатково узгоджено:
 
-1. Для shared-link нужен выбор одноразовая / многоразовая.
-2. Максимум uses пока берем из env, дефолтная бизнес-логика — до 10 пользователей.
-3. TTL ссылки — одна неделя, тоже через env.
-4. Через ссылку назначается только `customRoleId`.
-  - board role не меняется через invite;
-  - повышение board role потом будет отдельным механизмом.
-5. Если пользователь уже состоит в доске:
-  - accept должен быть идемпотентным;
-  - ничего не менять и не падать ошибкой.
-6. Если custom role удалили после генерации ссылки:
-  - acceptance должен завершаться отказом;
-  - пользователю показываем, что нужна новая ссылка.
-7. После логина/регистрации нужно продолжать invite flow:
-  - токен надо запоминать между `/invite/:token` и auth flow;
-  - после успешного входа/регистрации acceptance должен продолжаться автоматически.
-8. Для shared-link нужны все отдельные состояния UI:
+1. Для shared-link потрібен вибір одноразове / багаторазове.
+2. Максимум uses поки беремо з env, дефолтна бізнес-логіка — до 10 користувачів.
+3. TTL посилання — один тиждень, теж через env.
+4. Через посилання призначається лише `customRoleId`.
+  - board role не змінюється через invite;
+  - підвищення board role потім буде окремим механізмом.
+5. Якщо користувач уже перебуває в дошці:
+  - accept має бути ідемпотентним;
+  - нічого не змінювати й не падати з помилкою.
+6. Якщо custom role видалили після генерації посилання:
+  - acceptance має завершуватися відмовою;
+  - користувачу показуємо, що потрібне нове посилання.
+7. Після логіна/реєстрації потрібно продовжувати invite flow:
+  - токен треба запам'ятовувати між `/invite/:token` і auth flow;
+  - після успішного входу/реєстрації acceptance має продовжуватися автоматично.
+8. Для shared-link потрібні всі окремі стани UI:
   - revoked;
   - expired;
   - limit reached;
   - already accepted / already member;
   - email mismatch для personal invite.
-9. Для shared-link важно сделать атомарную проверку лимита uses, чтобы избежать гонки при одновременном принятии.
+9. Для shared-link важливо зробити атомарну перевірку ліміту uses, щоб уникнути race condition при одночасному прийнятті.
 
-### Что планировалось сделать следующим шагом
+### Що планувалося зробити наступним кроком
 
-Следующий незавершенный slice, на котором работа была остановлена:
+Наступний незавершений slice, на якому роботу було зупинено:
 
-1. Расширить `BoardInvitation` в Prisma:
+1. Розширити `BoardInvitation` у Prisma:
   - `type: PERSONAL | SHARED`;
   - `email: String?`;
   - `customRoleId: String?`;
   - `createdByUserId: String?`;
   - `maxUses: Int?`;
   - `usedCount: Int @default(0)`;
-  - убрать жесткую уникальность `@@unique([boardId, email])` как универсальное правило;
-  - добавить связи/индексы под новую модель.
-2. Переписать backend логику создания и принятия инвайтов:
-  - env-конфиг для TTL и shared max uses;
+  - прибрати жорстку унікальність `@@unique([boardId, email])` як універсальне правило;
+  - додати зв'язки/індекси під нову модель.
+2. Переписати backend-логіку створення і прийняття інвайтів:
+  - env-конфіг для TTL і shared max uses;
   - idempotent accept;
   - atomic increment для shared-link;
-  - проверка удаленной кастомной роли.
-3. Обновить UI `BoardUsersClient`:
-  - явный выбор между `PERSONAL` и `SHARED`;
-  - чекбокс/переключатель одноразовая vs многоразовая shared-link;
-  - показывать ссылку в явном виде, а не только кнопкой копирования.
-4. Реализовать resume flow после auth:
-  - invite token нужно переносить через signin/register redirect chain.
+  - перевірка видаленої кастомної ролі.
+3. Оновити UI `BoardUsersClient`:
+  - явний вибір між `PERSONAL` і `SHARED`;
+  - чекбокс/перемикач одноразове vs багаторазове shared-link;
+  - показувати посилання в явному вигляді, а не лише кнопкою копіювання.
+4. Реалізувати resume flow після auth:
+  - invite token потрібно переносити через signin/register redirect chain.
 
-### Практические заметки перед продолжением работы
+### Практичні нотатки перед продовженням роботи
 
-1. Перед следующей итерацией стоит проверить текущее состояние `package.json`, потому что во время фикса hydration был добавлен `@mui/material-nextjs`.
-2. При редактировании invite-flow надо особенно аккуратно проверять `src/lib/api/routes.ts` и `src/lib/api/client.ts`:
-  - ранее эти файлы уже ломались из-за неудачных массовых правок.
-3. Если повторно начнутся странные hydration warning'и, первым делом проверять, не обернули ли MUI-компонент через `styled-components`.
+1. Перед наступною ітерацією варто перевірити поточний стан `package.json`, тому що під час фіксу hydration було додано `@mui/material-nextjs`.
+2. Під час редагування invite-flow треба особливо акуратно перевіряти `src/lib/api/routes.ts` і `src/lib/api/client.ts`:
+  - раніше ці файли вже ламалися через невдалі масові правки.
+3. Якщо повторно почнуться дивні hydration warning'и, насамперед перевіряти, чи не обгорнули MUI-компонент через `styled-components`.
 
 ---
 
-## Актуализация на 2026-03-16
+## Актуалізація на 2026-03-16
 
-Ниже в документе есть исторические секции (как проект стартовал). Этот блок фиксирует текущее состояние после последних изменений.
+Нижче в документі є історичні секції (як проєкт стартував). Цей блок фіксує поточний стан після останніх змін.
 
-### Что сделали за текущий этап
+### Що зробили за поточний етап
 
-1. Подняли `server-nest/` как основной бэкенд и завершили вывод Go из runtime.
-2. Перенесли базовую логику бордов/колонок в Nest:
-  - список бордов;
-  - создание борда;
-  - получение борда;
+1. Підняли `server-nest/` як основний бекенд і завершили виведення Go з runtime.
+2. Перенесли базову логіку бордів/колонок у Nest:
+  - список бордів;
+  - створення борду;
+  - отримання борду;
   - reorder/rename/delete колонок.
-3. Обновили Prisma-схему под auth + роли + membership (в корне и в `server-nest/prisma/schema.prisma`):
-  - OAuth-модели: `Account`, `Session`, `VerificationToken`;
-  - расширили `User` (`image`, `emailVerified`, роли);
-  - добавили `BoardMember` для роли пользователя внутри конкретной доски.
-4. Внедрили Auth.js (NextAuth v5 beta) в Next:
-  - OAuth-провайдеры: Google, GitHub, Facebook;
-  - стратегия сессий: `database`;
-  - API-роут: `src/app/api/auth/[...nextauth]/route.ts`.
-5. Добавили ролевую модель в 3 измерениях:
+3. Оновили Prisma-схему під auth + ролі + membership (у корені та в `server-nest/prisma/schema.prisma`):
+  - OAuth-моделі: `Account`, `Session`, `VerificationToken`;
+  - розширили `User` (`image`, `emailVerified`, ролі);
+  - додали `BoardMember` для ролі користувача всередині конкретної дошки.
+4. Впровадили Auth.js (NextAuth v5 beta) у Next:
+  - OAuth-провайдери: Google, GitHub, Facebook;
+  - стратегія сесій: `database`;
+  - API-маршрут: `src/app/api/auth/[...nextauth]/route.ts`.
+5. Додали рольову модель у 3 вимірах:
   - monetization role: `FREE | SUBMITTED | PREMIUM`;
   - work role: `CLIENT | EXECUTOR | ORGANIZER | CEO`;
-  - dashboard role: строковая роль в `BoardMember.role`.
-6. Обновили роутинг и доступ:
-  - `/` теперь редиректит в `/auth/signin` или `/boards`;
-  - `middleware.ts` защищает `/boards` и `/dashboard/*`;
-  - добавлена страница `src/app/boards/page.tsx` как authenticated entry.
-7. Синхронизировали фронтовый API-клиент и типы под user-scoped данные.
-8. Починили инфраструктурные проблемы, которые блокировали запуск:
-  - Prisma v7 runtime/config нюансы;
-  - загрузка env в Nest;
-  - конфликтующие импорты Prisma-клиента;
-  - ошибки типизации `pg`.
-9. Проверили git-шум по `server-nest/node_modules`:
-  - папка игнорируется корректно;
-  - tracked-файлов в индексе нет.
-10. Довели Google OAuth до рабочего состояния end-to-end:
-  - создан OAuth Client в Google;
-  - прописаны `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` в `.env`;
-  - подтвержден вход через `/auth/signin` и callback Auth.js.
-11. Починили падение Auth.js adapter (`prisma.account.findUnique`):
-  - регенерация Prisma Client после изменений auth-моделей;
-  - перезапуск Next после обновления клиента.
-12. Исправили Prisma runtime module mismatch в сгенерированном клиенте:
-  - вместо `query_compiler_fast_bg.postgresql.*` используется доступный runtime `query_compiler_bg.postgresql.*`;
-  - после фикса сборка/запуск приложения больше не падают на `Module not found`.
+  - dashboard role: рядкова роль у `BoardMember.role`.
+6. Оновили роутинг і доступ:
+  - `/` тепер редіректить на `/auth/signin` або `/boards`;
+  - `middleware.ts` захищає `/boards` і `/dashboard/*`;
+  - додано сторінку `src/app/boards/page.tsx` як authenticated entry.
+7. Синхронізували фронтовий API-клієнт і типи під user-scoped дані.
+8. Полагодили інфраструктурні проблеми, які блокували запуск:
+  - Prisma v7 runtime/config нюанси;
+  - завантаження env у Nest;
+  - конфліктні імпорти Prisma-клієнта;
+  - помилки типізації `pg`.
+9. Перевірили git-шум щодо `server-nest/node_modules`:
+  - папка ігнорується коректно;
+  - tracked-файлів в індексі немає.
+10. Довели Google OAuth до робочого стану end-to-end:
+  - створено OAuth Client у Google;
+  - прописано `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` у `.env`;
+  - підтверджено вхід через `/auth/signin` і callback Auth.js.
+11. Полагодили падіння Auth.js adapter (`prisma.account.findUnique`):
+  - регенерація Prisma Client після змін auth-моделей;
+  - перезапуск Next після оновлення клієнта.
+12. Виправили Prisma runtime module mismatch у згенерованому клієнті:
+  - замість `query_compiler_fast_bg.postgresql.*` використовується доступний runtime `query_compiler_bg.postgresql.*`;
+  - після фіксу збірка/запуск застосунку більше не падають на `Module not found`.
 
-### Дополнительно сделано (финал дня, 2026-03-16)
+### Додатково зроблено (фінал дня, 2026-03-16)
 
-1. Полностью убрали Go legacy из runtime и документации:
-  - удален `server/` (Go backend);
-  - проект работает в связке Next + Nest.
-2. Провели cleanup фронта от Tailwind и лишних зависимостей:
-  - удалены tailwind/postcss хвосты;
-  - стили приведены к plain CSS + текущему UI стеку.
-3. Закрыли большой слой lint/type проблем:
-  - настроены корректные ignores для generated/dist;
-  - исправлены unsafe места в PrismaService и неиспользуемые импорты/переменные;
-  - линт приведен в рабочее состояние.
-4. Подняли локальную PostgreSQL и синхронизировали миграции:
-  - применены миграции Prisma;
-  - устранены конфликты портов и проблемы запуска dev-окружения.
-5. Усилили backend-proxy безопасность:
-  - браузер ходит в Nest через Next proxy;
-  - на proxy добавлена обязательная проверка сессии (401 без auth);
-  - добавлены явные ответы на ошибки конфигурации/недоступности backend (500/503).
-6. Пробовали onboarding-ветку с редиректами, затем откатили как избыточно сложную для текущего этапа.
-7. Принята рабочая модель без редиректа:
-  - после OAuth — обычный вход на `/boards`;
-  - добавлен флаг `User.isDefault` + профильные поля (`firstName`, `lastName`, `nickname`);
-  - при загрузке `/boards` фронт спрашивает state через Nest;
-  - если `isDefault=true`, показывается модалка профиля;
-  - после сохранения профиль пишется в БД, `isDefault=false`, UI обновляется динамически.
-8. Добавлен backend-модуль `users` в Nest:
+1. Повністю прибрали Go legacy з runtime і документації:
+  - видалено `server/` (Go backend);
+  - проєкт працює у зв'язці Next + Nest.
+2. Провели cleanup фронта від Tailwind і зайвих залежностей:
+  - видалено tailwind/postcss хвости;
+  - стилі приведено до plain CSS + поточного UI стеку.
+3. Закрили великий шар lint/type проблем:
+  - налаштовано коректні ignores для generated/dist;
+  - виправлено unsafe місця в PrismaService та невикористовувані імпорти/змінні;
+  - лінт приведено до робочого стану.
+4. Підняли локальну PostgreSQL і синхронізували міграції:
+  - застосовано Prisma-міграції;
+  - усунуто конфлікти портів і проблеми запуску dev-оточення.
+5. Посилили backend-proxy безпеку:
+  - браузер ходить у Nest через Next proxy;
+  - на proxy додано обов'язкову перевірку сесії (401 без auth);
+  - додано явні відповіді на помилки конфігурації/недоступності backend (500/503).
+6. Пробували onboarding-гілку з редіректами, потім відкотили як надмірно складну для поточного етапу.
+7. Прийнято робочу модель без редіректу:
+  - після OAuth — звичайний вхід на `/boards`;
+  - додано прапорець `User.isDefault` + профільні поля (`firstName`, `lastName`, `nickname`);
+  - під час завантаження `/boards` фронт запитує state через Nest;
+  - якщо `isDefault=true`, показується модалка профілю;
+  - після збереження профіль пишеться в БД, `isDefault=false`, UI оновлюється динамічно.
+8. Додано backend-модуль `users` у Nest:
   - `GET /users/me/default-state`;
   - `PATCH /users/me/default-profile`.
 
-### Текущее рабочее поведение (согласованное)
+### Поточна робоча поведінка (узгоджена)
 
-1. Авторизация: дефолтный OAuth flow (Google/GitHub/Facebook по мере наличия credentials).
-2. Редирект после входа: на `/boards`.
-3. Первичная донастройка профиля: через модалку на `/boards`, без отдельного onboarding route.
-4. API-доступ к Nest из браузера: только через Next proxy.
+1. Авторизація: дефолтний OAuth flow (Google/GitHub/Facebook у міру наявності credentials).
+2. Редірект після входу: на `/boards`.
+3. Первинне донастроювання профілю: через модалку на `/boards`, без окремого onboarding route.
+4. API-доступ до Nest із браузера: лише через Next proxy.
 
-### Что сейчас по факту архитектурно
+### Що зараз по факту архітектурно
 
-- Go-сервер удален из активной кодовой базы.
-- Nest-сервер покрывает текущий board-flow и развивается как единственный API backend.
-- Auth и сессии теперь завязаны на БД (а не на mock/local-only).
-- Авторизация на фронте работает по middleware + session provider.
-- Модель доступа уже готова под монетизацию и B2B/командные сценарии.
+- Go-сервер видалено з активної кодової бази.
+- Nest-сервер покриває поточний board-flow і розвивається як єдиний API backend.
+- Auth і сесії тепер зав'язані на БД (а не на mock/local-only).
+- Авторизація на фронті працює через middleware + session provider.
+- Модель доступу вже готова під монетизацію і B2B/командні сценарії.
 
 ---
 
-## 6. Ближайшие шаги (актуальный TODO)
+## 6. Найближчі кроки (актуальний TODO)
 
-### Критично (ближайшие 1-2 итерации)
+### Критично (найближчі 1-2 ітерації)
 
-1. Вынести модалку default-профиля из `boards/page` в отдельный компонент:
-  - уменьшить связность страницы;
-  - упростить дальнейшие изменения UX/валидаций.
-2. Закрыть UX валидации профиля:
-  - нормализовать nickname (регистр, пробелы, допустимые символы);
-  - понятные ошибки по конфликту уникальности;
-  - добавить optimistic/blocking состояния кнопок.
-3. Добить провайдеры OAuth:
-  - Google уже рабочий;
-  - подключить/проверить GitHub и Facebook (если нужны в MVP).
+1. Винести модалку default-профілю з `boards/page` в окремий компонент:
+  - зменшити зв'язність сторінки;
+  - спростити подальші зміни UX/валідацій.
+2. Закрити UX-валидації профілю:
+  - нормалізувати nickname (регістр, пробіли, допустимі символи);
+  - зрозумілі помилки щодо конфлікту унікальності;
+  - додати optimistic/blocking стани кнопок.
+3. Добити провайдери OAuth:
+  - Google уже робочий;
+  - підключити/перевірити GitHub і Facebook (якщо потрібні в MVP).
 
-### Важно (следующие итерации)
+### Важливо (наступні ітерації)
 
-1. Дошлифовать board management UX:
-  - не показывать или блокировать member/invite actions для `MEMBER` / `VIEWER`;
-  - не маскировать `401/403/500` на dashboard-страницах под `404`.
-2. Унифицировать ticket enums между frontend и backend:
-  - один источник правды для `status`, `type`, `priority`;
-  - убрать риск попадания произвольных строк в БД и последующей поломки колонок/UI.
-3. Продолжить regression/e2e-покрытие критичных flows:
-  - invite accept/revoke/create с role-based ограничениями;
-  - board settings/users сценарии для OWNER / ADMIN / MEMBER.
+1. Дополірувати board management UX:
+  - не показувати або блокувати member/invite actions для `MEMBER` / `VIEWER`;
+  - не маскувати `401/403/500` на dashboard-сторінках під `404`.
+2. Уніфікувати ticket enums між frontend і backend:
+  - одне джерело правди для `status`, `type`, `priority`;
+  - прибрати ризик потрапляння довільних рядків у БД і подальшої поломки колонок/UI.
+3. Продовжити regression/e2e-покриття критичних flows:
+  - invite accept/revoke/create з role-based обмеженнями;
+  - board settings/users сценарії для OWNER / ADMIN / MEMBER.
 
-### В ближайший релизный цикл
+### У найближчий релізний цикл
 
-1. Пройти smoke/regression по связке: auth -> boards -> default profile modal -> create board.
-2. Добавить e2e сценарий на `isDefault` flow.
-3. Стабилизировать dev scripts (один Next + один Nest процесс, без lock/порт-гонок).
+1. Пройти smoke/regression по зв'язці: auth -> boards -> default profile modal -> create board.
+2. Додати e2e-сценарій на `isDefault` flow.
+3. Стабілізувати dev scripts (один Next + один Nest процес, без lock/портових перегонів).
 
-## 7. Стратегия дальнейшей разработки (предложение)
+## 7. Стратегія подальшої розробки (пропозиція)
 
 ### Принцип
 
-Идем итеративно: "сначала паритет, потом улучшения". Не смешиваем одновременно глубокий рефакторинг и новые продуктовые фичи.
+Ідемо ітеративно: "спочатку паритет, потім покращення". Не змішуємо одночасно глибокий рефакторинг і нові продуктові фічі.
 
-Отдельно: избегаем крупных изменений auth-flow до момента, пока не закрыт продуктовый сценарий приглашений и membership.
+Окремо: уникаємо великих змін auth-flow до моменту, поки не закрито продуктовий сценарій запрошень і membership.
 
-### Рекомендуемый порядок
+### Рекомендований порядок
 
-1. Stabilize текущий auth+boards (без новых редиректов/онбордингов).
-2. Вынести и доработать default-profile модалку как отдельный UI модуль.
-3. Реализовать email-invite в борды как следующий вертикальный slice.
-4. После этого расширять domain (tickets/comments/realtime).
+1. Stabilize поточний auth+boards (без нових редіректів/онбордингів).
+2. Винести й допрацювати default-profile модалку як окремий UI-модуль.
+3. Реалізувати email-invite у борди як наступний вертикальний slice.
+4. Після цього розширювати domain (tickets/comments/realtime).
 
-### Технические правила на следующие этапы
+### Технічні правила на наступні етапи
 
-1. Prisma schema в корне и в `server-nest` держать синхронно, без ручного расхождения.
-2. Любая новая роль/permission сначала описывается в БД и серверных проверках, потом в UI.
-3. Любой новый endpoint сначала документируется коротким контрактом (input/output/errors), затем код.
-4. Все risky-изменения (auth, membership, роли) прогонять минимум через smoke-скрипт перед merge.
-5. Не запускать параллельно несколько `next dev`/`nest --watch` в одной рабочей копии (во избежание lock/порт-конфликтов и ложных 5xx).
+1. Prisma schema у корені та в `server-nest` тримати синхронно, без ручного розходження.
+2. Будь-яка нова роль/permission спочатку описується в БД і серверних перевірках, потім у UI.
+3. Будь-який новий endpoint спочатку документується коротким контрактом (input/output/errors), потім код.
+4. Усі risky-зміни (auth, membership, ролі) проганяти щонайменше через smoke-скрипт перед merge.
+5. Не запускати паралельно кілька `next dev`/`nest --watch` в одній робочій копії (щоб уникнути lock/порт-конфліктів і хибних 5xx).
 
 ---
 
-## Актуализация на 2026-03-17
+## Актуалізація на 2026-03-17
 
-### Что сделали за день
+### Що зробили за день
 
-1. Расширили доменную модель досок и ролей:
-  - `BoardMember.role` переведен на enum `BoardMemberRole`;
-  - добавлены `BoardRole` и `BoardInvitation`;
-  - схема синхронизирована и в корневом Prisma, и в `server-nest/prisma/schema.prisma`.
-2. Реализовали backend API для ролей доски:
+1. Розширили доменну модель дощок і ролей:
+  - `BoardMember.role` переведено на enum `BoardMemberRole`;
+  - додано `BoardRole` і `BoardInvitation`;
+  - схему синхронізовано і в кореневому Prisma, і в `server-nest/prisma/schema.prisma`.
+2. Реалізували backend API для ролей дошки:
   - `POST /boards/:boardId/roles`;
   - `GET /boards/:boardId/roles`;
   - `PATCH /boards/:boardId/roles/:roleId`;
   - `DELETE /boards/:boardId/roles/:roleId`.
-3. Реализовали backend API для инвайтов в доску:
+3. Реалізували backend API для інвайтів у дошку:
   - `POST /boards/:boardId/invitations`;
   - `GET /boards/:boardId/invitations`;
   - `POST /boards/:boardId/invitations/:invitationId/accept`;
   - `DELETE /boards/:boardId/invitations/:invitationId`.
-4. Обновили создание доски:
-  - в модалку добавлен ввод кастомных ролей;
-  - кастомные роли создаются сразу при создании борды;
-  - исправлен критичный баг: при создании борды теперь передается `ownerId`, поэтому для создателя реально создается `BoardMember`.
-5. Перевели создание тикетов с `prompt` на полноценную модалку:
+4. Оновили створення дошки:
+  - у модалку додано введення кастомних ролей;
+  - кастомні ролі створюються одразу під час створення борду;
+  - виправлено критичний баг: під час створення борду тепер передається `ownerId`, тому для створювача реально створюється `BoardMember`.
+5. Перевели створення тікетів з `prompt` на повноцінну модалку:
   - `title`, `description`, `type`, `priority`;
-  - выбор доступа по ролям;
-  - в мультиселекте сначала стандартные роли (`owner/admin/member/viewer`), затем кастомные роли доски.
-6. Доработали модалку тикета:
-  - добавили backend `PATCH /boards/:boardId/tickets/:ticketId`;
-  - добавили backend `DELETE /boards/:boardId/tickets/:ticketId`;
-  - редактирование тикета из модалки теперь реально сохраняется в Nest;
-  - удаление тикета из модалки теперь реально работает через API.
-7. Привели Next build к стабильному состоянию:
-  - исправили контракт `params` для Next 16 App Router;
-  - исключили `server-nest` из фронтового typecheck через `tsconfig.json`;
-  - добавили `@types/express` для корректной типизации во фронтовой сборке, когда Next захватывал backend-код.
-8. Провели фронтовый cleanup и первый слой систематизации UI:
-  - добавлены shared-компоненты `RolesSelect`, `TicketTypeSelect`, `TicketPrioritySelect`, `TicketStatusSelect`;
-  - введен единый barrel `src/components/ui/index.ts`;
-  - `TicketModal` и `BoardColumns` переведены на shared UI-компоненты;
-  - удалены неиспользуемые/пустые компоненты: `TaskList`, `TicketList`, `TicketDetails`, `ModalTaskEditor`.
+  - вибір доступу за ролями;
+  - у мультиселекті спочатку стандартні ролі (`owner/admin/member/viewer`), потім кастомні ролі дошки.
+6. Допрацювали модалку тікета:
+  - додали backend `PATCH /boards/:boardId/tickets/:ticketId`;
+  - додали backend `DELETE /boards/:boardId/tickets/:ticketId`;
+  - редагування тікета з модалки тепер реально зберігається в Nest;
+  - видалення тікета з модалки тепер реально працює через API.
+7. Привели Next build до стабільного стану:
+  - виправили контракт `params` для Next 16 App Router;
+  - виключили `server-nest` із фронтового typecheck через `tsconfig.json`;
+  - додали `@types/express` для коректної типізації у фронтовій збірці, коли Next захоплював backend-код.
+8. Провели фронтовий cleanup і перший шар систематизації UI:
+  - додано shared-компоненти `RolesSelect`, `TicketTypeSelect`, `TicketPrioritySelect`, `TicketStatusSelect`;
+  - введено єдиний barrel `src/components/ui/index.ts`;
+  - `TicketModal` і `BoardColumns` переведено на shared UI-компоненти;
+  - видалено невикористовувані/порожні компоненти: `TaskList`, `TicketList`, `TicketDetails`, `ModalTaskEditor`.
 
-### Ключевые баги и наблюдения
+### Ключові баги та спостереження
 
-1. Самый важный найденный баг за день:
-  - борда создавалась без `ownerId` в клиентском вызове `createBoard`;
-  - из-за этого в таблице `BoardMember` не появлялась запись для создателя;
-  - любые защищенные операции (`delete ticket`, `update ticket`, roles/invitations) падали через `ensureBoardMembership` с `400 board access denied`.
-2. В текущем состоянии `accessibilityRoles` уже сохраняются и редактируются корректно, но это пока только данные, а не полноценный enforcement.
-  - То есть ограничения видимости/редактирования на сервере пока не применяются по этим ролям автоматически.
-3. В Next 16 важно аккуратно следить за server/app route typing:
-  - `params` для dynamic routes в typegen ожидаются как `Promise<...>`.
-4. Во фронте был явный structural drift:
-  - часть UI уже жила через MUI/styled-components;
-  - часть через локальные ad-hoc компоненты;
-  - часть файлов была пустой или orphaned.
-  Сегодня это начали вычищать, но работа еще не завершена на весь фронт.
-5. В сборке Next остались warning'и по Prisma + Edge Runtime:
-  - это не ломает build сейчас;
-  - но это сигнал, что `auth.ts` / prisma imports потенциально могут быть чувствительны в edge-context, если туда продолжат попадать Node-only зависимости.
+1. Найважливіший знайдений баг за день:
+  - борд створювався без `ownerId` у клієнтському виклику `createBoard`;
+  - через це в таблиці `BoardMember` не з'являвся запис для створювача;
+  - будь-які захищені операції (`delete ticket`, `update ticket`, roles/invitations) падали через `ensureBoardMembership` з `400 board access denied`.
+2. У поточному стані `accessibilityRoles` уже зберігаються і редагуються коректно, але це поки що лише дані, а не повноцінний enforcement.
+  - Тобто обмеження видимості/редагування на сервері поки не застосовуються за цими ролями автоматично.
+3. У Next 16 важливо акуратно стежити за server/app route typing:
+  - `params` для dynamic routes у typegen очікуються як `Promise<...>`.
+4. На фронті був явний structural drift:
+  - частина UI вже жила через MUI/styled-components;
+  - частина через локальні ad-hoc компоненти;
+  - частина файлів була порожньою або orphaned.
+  Сьогодні це почали вичищати, але роботу ще не завершено на весь фронт.
+5. У збірці Next залишилися warning'и щодо Prisma + Edge Runtime:
+  - це не ламає build зараз;
+  - але це сигнал, що `auth.ts` / prisma imports потенційно можуть бути чутливими в edge-context, якщо туди й надалі потраплятимуть Node-only залежності.
 
-### Рекомендации
+### Рекомендації
 
-1. Не распыляться дальше на случайные UX-улучшения тикетов, пока не закрыт enforcement прав.
-2. Все новые поля доступа сначала реализовывать в серверных проверках, и только потом расширять UI.
-3. Продолжать выносить повторяющийся UI в shared-слой:
+1. Не розпорошуватися далі на випадкові UX-покращення тікетів, поки не закрито enforcement прав.
+2. Усі нові поля доступу спочатку реалізовувати в серверних перевірках, і лише потім розширювати UI.
+3. Продовжувати виносити повторюваний UI в shared-шар:
   - кнопки;
-  - select'ы;
+  - select'и;
   - field groups;
-  - модальные actions;
-  - статусные chip/badge-компоненты.
-4. После удаления orphaned-компонентов периодически делать повторную зачистку imports/types, потому что проект исторически уже накопил несколько слоев устаревших abstraction-ов.
-5. При проверке build на Windows лучше вызывать Node/Nest/Next напрямую через `node .../bin/...`, если PowerShell execution policy мешает обычным `npm`/`npx` сценариям.
+  - modal actions;
+  - статусні chip/badge-компоненти.
+4. Після видалення orphaned-компонентів періодично робити повторне очищення imports/types, тому що проєкт історично вже накопичив кілька шарів застарілих abstraction-ів.
+5. Під час перевірки build на Windows краще викликати Node/Nest/Next напряму через `node .../bin/...`, якщо PowerShell execution policy заважає звичайним `npm`/`npx` сценаріям.
 
-### Что логичнее делать дальше
+### Що логічніше робити далі
 
-#### Следующий лучший шаг
+#### Наступний найкращий крок
 
-1. Реализовать backend enforcement для тикетных доступов:
-  - фильтрация видимости тикетов по `accessibilityRoles`;
-  - проверка прав на update/delete;
-  - отдельное правило на изменение самого доступа к тикету.
+1. Реалізувати backend enforcement для ticket-доступів:
+  - фільтрація видимості тікетів за `accessibilityRoles`;
+  - перевірка прав на update/delete;
+  - окреме правило на зміну самого доступу до тікета.
 
-#### После этого
+#### Після цього
 
-1. Сделать `Board Settings` / `Board Management` UI:
-  - участники;
-  - инвайты;
-  - кастомные роли;
-  - смена ролей участникам.
-2. Затем перейти к permissions у кастомных ролей:
-  - пока у кастомных ролей есть только имя;
-  - следующий слой — реальные permissions (`ticket.view`, `ticket.edit`, `ticket.delete`, `board.manage_members` и т.д.).
+1. Зробити `Board Settings` / `Board Management` UI:
+  - учасники;
+  - інвайти;
+  - кастомні ролі;
+  - зміна ролей учасникам.
+2. Потім перейти до permissions у кастомних ролей:
+  - поки у кастомних ролей є лише ім'я;
+  - наступний шар — реальні permissions (`ticket.view`, `ticket.edit`, `ticket.delete`, `board.manage_members` тощо).
 
-### Практический TODO на следующую итерацию
+### Практичний TODO на наступну ітерацію
 
-1. Вынести серверные helper'ы доступа в отдельный service/guard utility для boards/tickets.
-2. Добавить серверную функцию вида `getEffectiveBoardRolesForUser(boardId, userId)`.
-3. На чтении борды фильтровать `tickets` по этим ролям.
-4. На mutation-эндпоинтах тикета ввести проверку не только membership, но и ticket-level access.
-5. После этого строить UI управления участниками и ролями доски.
+1. Винести серверні helper'и доступу в окремий service/guard utility для boards/tickets.
+2. Додати серверну функцію на кшталт `getEffectiveBoardRolesForUser(boardId, userId)`.
+3. На читанні борду фільтрувати `tickets` за цими ролями.
+4. На mutation-ендпоінтах тікета ввести перевірку не лише membership, а й ticket-level access.
+5. Після цього будувати UI керування учасниками та ролями дошки.
 
 ---
 
-## Актуализация на 2026-03-24
+## Актуалізація на 2026-03-24
 
-### Что сделали за день
+### Що зробили за день
 
-Это был в первую очередь **релизно-подготовительный** этап: не новые фичи, а системная доводка до стандарта, при котором проект можно запускать и передавать другим людям без страха.
+Це був насамперед **релізно-підготовчий** етап: не нові фічі, а системне доведення до стандарту, за якого проєкт можна запускати й передавати іншим людям без страху.
 
-#### Безопасность и хардening
+#### Безпека і hardening
 
-1. Подключили `helmet` в bootstrap Nest — базовые HTTP security headers на всех ответах API.
-2. Добавили глобальный rate limiting через `@nestjs/throttler` (AppModule + global guard).
-3. Добавили усиленные per-endpoint throttle декораторы на публичных invite-эндпоинтах (lookup / accept) — направленная защита от brute-force по токену.
-4. Добавили lightweight in-memory rate limiter в Next `middleware.ts` для `/auth/*` и `/invite/*` — защита от перебора на уровне фронтенда до того, как запрос дойдет до бекенда.
-5. Добавили расширенный набор security headers в `next.config.ts`:
+1. Підключили `helmet` у bootstrap Nest — базові HTTP security headers на всіх відповідях API.
+2. Додали глобальний rate limiting через `@nestjs/throttler` (AppModule + global guard).
+3. Додали посилені per-endpoint throttle декоратори на публічних invite-ендпоінтах (lookup / accept) — спрямований захист від brute-force за токеном.
+4. Додали lightweight in-memory rate limiter у Next `middleware.ts` для `/auth/*` і `/invite/*` — захист від перебору на рівні фронтенда до того, як запит дійде до бекенда.
+5. Додали розширений набір security headers у `next.config.ts`:
    - CSP baseline;
    - `X-Frame-Options: DENY`;
    - `X-Content-Type-Options: nosniff`;
    - `Referrer-Policy: strict-origin-when-cross-origin`;
-   - выключен `X-Powered-By`.
+   - вимкнено `X-Powered-By`.
 
-#### Тестирование (с нуля до рабочей инфраструктуры)
+#### Тестування (з нуля до робочої інфраструктури)
 
-1. Создан `jest.config.ts` для unit-тестов в `server-nest`.
-2. Создан `test/jest-e2e.json` для e2e-тестов.
-3. Добавлены npm-скрипты `test`, `test:watch`, `test:e2e` в `server-nest/package.json`.
-4. Написан первый `boards.service.spec.ts` — 4 unit-теста на приватную логику:
+1. Створено `jest.config.ts` для unit-тестів у `server-nest`.
+2. Створено `test/jest-e2e.json` для e2e-тестів.
+3. Додано npm-скрипти `test`, `test:watch`, `test:e2e` у `server-nest/package.json`.
+4. Написано перший `boards.service.spec.ts` — 4 unit-тести на приватну логіку:
    - pending invitation state;
-   - limit_reached при исчерпании shared-инвайта;
-   - OWNER всегда может управлять доступом;
-   - VIEWER не может редактировать при restrictive policy.
-5. Написан `test/health.e2e-spec.ts` — smoke e2e через supertest + Nest bootstrap.
-6. Прогнаны все тесты, стабильно зеленые: unit 4/4, e2e 1/1.
-7. В процессе доводки пришлось решить два нетривиальных нюанса:
-   - в e2e нужно `import * as request from 'supertest'`, не `default import` (CommonJS interop);
-   - health-контроллер возвращает plain `'ok'`, а не `{ status: 'ok' }` — тест должен проверять `response.text`, не `response.body`.
+   - limit_reached при вичерпанні shared-інвайту;
+   - OWNER завжди може керувати доступом;
+   - VIEWER не може редагувати при restrictive policy.
+5. Написано `test/health.e2e-spec.ts` — smoke e2e через supertest + Nest bootstrap.
+6. Прогнано всі тести, стабільно зелені: unit 4/4, e2e 1/1.
+7. У процесі доведення довелося вирішити два нетривіальні нюанси:
+   - в e2e потрібно `import * as request from 'supertest'`, а не `default import` (CommonJS interop);
+   - health-контролер повертає plain `'ok'`, а не `{ status: 'ok' }` — тест має перевіряти `response.text`, а не `response.body`.
 
-#### Новые фичи
+#### Нові фічі
 
-1. Добавлен `DELETE /boards/:boardId` в backend (owner-only, cascade через Prisma).
-2. Добавлен `deleteBoard` в API-клиент фронта, RTK Query mutation и UI-кнопку удаления борды с confirmation.
-3. Добавлена серверная поддержка пагинации тикетов при запросе борды: query-параметры `ticketsOffset` / `ticketsLimit` в `GET /boards/:id`.
+1. Додано `DELETE /boards/:boardId` у backend (owner-only, cascade через Prisma).
+2. Додано `deleteBoard` в API-клієнт фронта, RTK Query mutation і UI-кнопку видалення борду з confirmation.
+3. Додано серверну підтримку пагінації тікетів під час запиту борду: query-параметри `ticketsOffset` / `ticketsLimit` у `GET /boards/:id`.
 
-#### Фронтовая устойчивость (resilience)
+#### Фронтова стійкість (resilience)
 
-1. Создан `src/app/error.tsx` — глобальный error boundary для App Router с кнопками `Повторить` и `К доскам`.
-2. Создан `src/app/not-found.tsx` — кастомная 404-страница.
-3. В `src/app/dashboard/[boardId]/page.tsx` заменён ручной fallback на `notFound()`.
-4. Оба файла поддерживают i18n through `next-intl`.
-5. Добавлены переводы (`errors.*`) во все три locale: en / ru / uk.
+1. Створено `src/app/error.tsx` — глобальний error boundary для App Router з кнопками `Повторити` і `До дошок`.
+2. Створено `src/app/not-found.tsx` — кастомну 404-сторінку.
+3. У `src/app/dashboard/[boardId]/page.tsx` замінено ручний fallback на `notFound()`.
+4. Обидва файли підтримують i18n through `next-intl`.
+5. Додано переклади (`errors.*`) у всі три locale: en / ru / uk.
 
-#### Инфраструктура
+#### Інфраструктура
 
-1. Создан `.github/workflows/ci.yml` — два job'а: frontend (lint + build) и backend (build + unit + e2e).
-2. Расширен `.env.example` в корне (Swagger URL, rate limit env, app public URL).
-3. Создан `server-nest/.env.example` — первый раз задокументировал все переменные бекенда.
-4. Переписан `README.md` — убраны стандартные Next.js шаблонные тексты, добавлено: описание проекта, архитектура, инструкция по запуску, переменные окружения, тестирование, security notes.
+1. Створено `.github/workflows/ci.yml` — два job'и: frontend (lint + build) і backend (build + unit + e2e).
+2. Розширено `.env.example` у корені (Swagger URL, rate limit env, app public URL).
+3. Створено `server-nest/.env.example` — уперше задокументовано всі змінні бекенда.
+4. Переписано `README.md` — прибрано стандартні Next.js шаблонні тексти, додано: опис проєкту, архітектура, інструкція із запуску, змінні оточення, тестування, security notes.
 
-#### Lint и качество кода (финальный cleanup)
+#### Lint і якість коду (фінальний cleanup)
 
-1. Устранены 13 lint-ошибок:
-   - 4 `any` в `boards.service.ts` → заменены на `CreateBoardRoleDto`, `UpdateBoardRoleDto`, `Partial<{...}>`, `unknown`;
-   - `(service as any).method` в тесте → заменён на типизированный `serviceInternals` с explicit interface;
-   - `require()` import в e2e → заменён на `import * as`;
-   - 4 нарушения `react-hooks/set-state-in-effect` → `setState` обёрнут через `setTimeout(..., 0)` в `BoardColumns.tsx` и `TicketModal.tsx`.
-2. Финальные результаты после всех правок:
-   - `npm run lint` — 0 ошибок, 0 предупреждений;
-   - `npm run build` (Next) — успешно, 0 TypeScript ошибок;
-   - `nest build` — успешно, 0 TypeScript ошибок;
+1. Усунено 13 lint-помилок:
+   - 4 `any` у `boards.service.ts` → замінено на `CreateBoardRoleDto`, `UpdateBoardRoleDto`, `Partial<{...}>`, `unknown`;
+   - `(service as any).method` у тесті → замінено на типізований `serviceInternals` з explicit interface;
+   - `require()` import в e2e → замінено на `import * as`;
+   - 4 порушення `react-hooks/set-state-in-effect` → `setState` обгорнуто через `setTimeout(..., 0)` у `BoardColumns.tsx` і `TicketModal.tsx`.
+2. Фінальні результати після всіх правок:
+   - `npm run lint` — 0 помилок, 0 попереджень;
+   - `npm run build` (Next) — успішно, 0 TypeScript помилок;
+   - `nest build` — успішно, 0 TypeScript помилок;
    - unit tests — 4/4;
    - e2e tests — 1/1.
 
 ---
 
-### Наблюдения по итогам дня
+### Спостереження за підсумками дня
 
-#### Что видно в архитектуре прямо сейчас
+#### Що видно в архітектурі прямо зараз
 
-1. **`boards.service.ts` — критична точка роста.**
-   Файл уже превышает 2000 строк. Внутри него вперемешку: бизнес-логика досок, билеты, колонки, инвайты, роли, нотификации, агрегации. Это пока работает, но при следующем крупном feature-слое (например, real-time коллаборация или полноценный permission enforcement) файл станет непосильным для понимания или безопасного изменения.
+1. **`boards.service.ts` — критична точка росту.**
+   Файл уже перевищує 2000 рядків. Усередині нього впереміш: бізнес-логіка дощок, квитків, колонок, інвайтів, ролей, нотифікацій, агрегацій. Це поки працює, але при наступному великому feature-шарі (наприклад, real-time колаборація або повноцінний permission enforcement) файл стане непосильним для розуміння або безпечної зміни.
 
-2. **Notification-слой реализован, но не тестируется.**
-   `createAndDispatchNotifications`, `notifyBoardMembers`, `listUserNotifications` — эти методы существуют и, судя по TypeScript, корректны. Но ни один тест их не покрывает. При любом рефакторинге этого слоя можно сломать тихо.
+2. **Notification-шар реалізовано, але не тестується.**
+   `createAndDispatchNotifications`, `notifyBoardMembers`, `listUserNotifications` — ці методи існують і, судячи з TypeScript, коректні. Але жоден тест їх не покриває. За будь-якого рефакторингу цього шару його можна зламати тихо.
 
-3. **RTK Query API (`src/store/api.ts`) полностью соответствует backend.**
-   Это хороший признак: клиентский и серверный контракты не разошлись. Но весь `api.ts` — это один монолитный `createApi` с ~400 строк. При дальнейшем расширении стоит разбить по namespace'ам (boards, tickets, members, notifications).
+3. **RTK Query API (`src/store/api.ts`) повністю відповідає backend.**
+   Це добрий знак: клієнтський і серверний контракти не розійшлися. Але весь `api.ts` — це один монолітний `createApi` із ~400 рядків. При подальшому розширенні варто розбити за namespace'ами (boards, tickets, members, notifications).
 
-4. **Realtime-loop замкнут — `DashboardClient.tsx` уже подписывается и реагирует.**
-   `SocketContext.tsx` подключается, регистрирует userId. `RealtimeGateway` отправляет события. `DashboardClient.tsx` вызывает `useSocket()`, на `componentDidMount` эмитит `subscribe-board`, слушает `board-state-changed` (инвалидирует RTK-тег `Board`) и `ticket-state-changed` (инвалидирует `BoardTicket` + анимирует перемещение). Своя эхо-отсечка через `actorUserId === session.user.id`. На `unmount` — `unsubscribe-board`. Realtime полностью рабочий.
+4. **Realtime-loop замкнений — `DashboardClient.tsx` уже підписується і реагує.**
+   `SocketContext.tsx` підключається, реєструє userId. `RealtimeGateway` відправляє події. `DashboardClient.tsx` викликає `useSocket()`, на `componentDidMount` емітить `subscribe-board`, слухає `board-state-changed` (інвалідовує RTK-тег `Board`) і `ticket-state-changed` (інвалідовує `BoardTicket` + анімує переміщення). Власне echo-відсікання через `actorUserId === session.user.id`. На `unmount` — `unsubscribe-board`. Realtime повністю робочий.
 
-5. **Security headers — baseline, не финальный уровень.**
-   CSP написан как baseline (без nonces для inline-scripts). MUI + emotion генерируют inline-критические стили, что в production с `nonce`-based CSP потребует доработки. Сейчас это нормально, но надо иметь в виду, что текущий CSP — это отправная точка, а не production-hardened конфиг.
+5. **Security headers — baseline, не фінальний рівень.**
+   CSP написано як baseline (без nonces для inline-scripts). MUI + emotion генерують inline-критичні стилі, що в production із `nonce`-based CSP вимагатиме доопрацювання. Зараз це нормально, але треба мати на увазі, що поточний CSP — це відправна точка, а не production-hardened конфіг.
 
-6. **Тестовое покрытие пока очень мало.**
-   4 unit-теста + 1 e2e — это каркас инфраструктуры, не coverage. Из критичной логики не тестируются: invitation acceptance, ticket access enforcement, board deletion со связанными данными, notifications dispatch. Это технический долг, который вырастет резкo, когда проект начнут использовать несколько человек.
+6. **Тестове покриття поки дуже мале.**
+   4 unit-тести + 1 e2e — це каркас інфраструктури, а не coverage. Із критичної логіки не тестуються: invitation acceptance, ticket access enforcement, board deletion із пов'язаними даними, notifications dispatch. Це технічний борг, який різко зросте, коли проєкт почнуть використовувати кілька людей.
 
 ---
 
-### Видение дальнейшего развития
+### Бачення подальшого розвитку
 
-#### ~~Ближайший шаг — realtime реактивность~~ ✅ Уже сделано
+#### ~~Найближчий крок — realtime реактивність~~ ✅ Уже зроблено
 
-`DashboardClient.tsx` уже подписывается на `board-state-changed` и `ticket-state-changed`, инвалидирует RTK Query теги и анимирует перемещение тикетов. Realtime-loop закрыт. Это больше не задача.
+`DashboardClient.tsx` уже підписується на `board-state-changed` і `ticket-state-changed`, інвалідовує RTK Query теги та анімує переміщення тікетів. Realtime-loop закрито. Це більше не задача.
 
-#### Board Management UI — частично сделано
+#### Board Management UI — частково зроблено
 
-Серверная логика реализована полностью: роли, инвайты, управление участниками, удаление.
+Серверну логіку реалізовано повністю: ролі, інвайти, керування учасниками, видалення.
 
-На фронте существует страница `src/app/dashboard/[boardId]/users/` с компонентом `BoardUsersClient`:
-- список участников с их кастомными ролями и кнопкой удаления;
-- создание инвайтов типа `PERSONAL` (с email) и `SHARED` (без email, `SINGLE_USE` / `MULTI_USE`);
-- таблица ожидающих приглашений с кнопкой копирования ссылки и отзывом.
+На фронті існує сторінка `src/app/dashboard/[boardId]/users/` з компонентом `BoardUsersClient`:
+- список учасників зі зміною кастомної ролі й видаленням;
+- створення інвайтів типу `PERSONAL` (з email) і `SHARED` (без email, `SINGLE_USE` / `MULTI_USE`);
+- таблиця pending-інвайтів із копіюванням посилання і відкликанням.
 
-**Что пока не реализовано:**
-- Страница `/dashboard/[boardId]/settings` — sidebar на неё ссылается, но page.tsx не существует.
-- UI управления кастомными ролями (create / rename / delete) — доступно только при создании борды, не редактируется после.
+**Що поки не реалізовано:**
+- Сторінка `/dashboard/[boardId]/settings` — sidebar на неї посилається, але page.tsx не існує.
+- UI керування кастомними ролями (create / rename / delete) — доступно лише під час створення борду, не редагується після.
 
-Следующий реальный шаг — создать страницу `/settings` (или добавить вкладку "Роли" в `/users`) с CRUD кастомных ролей.
+Наступний реальний крок — створити сторінку `/settings` (або додати вкладку "Ролі" в `/users`) з CRUD кастомних ролей.
 
-#### Технический долг, который надо погасить до следующего feature-слоя
+#### Технічний борг, який треба погасити до наступного feature-шару
 
-1. **Разделить `boards.service.ts`** на несколько сервисов:
-   - `BoardsService` (CRUD борд + memberships);
-   - `TicketsService` (тикеты, комментарии, access policy enforcement);
-   - `BoardInvitationsService` (инвайты, токены, acceptance flow);
+1. **Розділити `boards.service.ts`** на кілька сервісів:
+   - `BoardsService` (CRUD борду + memberships);
+   - `TicketsService` (тікети, коментарі, access policy enforcement);
+   - `BoardInvitationsService` (інвайти, токени, acceptance flow);
    - `NotificationsService` (dispatch, list, read).
 
-2. **Добавить тесты на критичую логику:**
-   - acceptance флоу инвайтов (personal + shared, expiry, limit);
-   - ticket access enforcement (view/edit/delete по ролям);
-   - deleteBoard с каскадом.
+2. **Додати тести на критичну логіку:**
+   - acceptance флоу інвайтів (personal + shared, expiry, limit);
+   - ticket access enforcement (view/edit/delete за ролями);
+   - deleteBoard з каскадом.
 
-3. **RTK Query api.ts разбить по namespace:**
+3. **RTK Query api.ts розбити за namespace:**
    - `boardsApi`, `ticketsApi`, `membersApi`, `notificationsApi`;
-   - это также позволит переиспользовать теги и инвалидации точечно, а не через один глобальный `appApi`.
+   - це також дозволить перевикористовувати теги й інвалідації точково, а не через один глобальний `appApi`.
 
-#### Среднесрочное видение (следующие 2–3 итерации)
+#### Середньострокове бачення (наступні 2–3 ітерації)
 
-1. **Полноценный ticket lifecycle:**
-   - assignees (кому назначен);
+1. **Повноцінний ticket lifecycle:**
+   - assignees (кому призначено);
    - due date + reminder (через notification dispatch);
-   - subtask completion агрегация;
-   - attachments (хотя бы как ссылки).
+   - subtask completion агрегація;
+   - attachments (хоча б як посилання).
 
-2. **Board-level аналитика:**
-   - сколько тикетов в каждом статусе;
-   - burndown или простой счётчик прогресса спринта;
-   - это сделает борд не просто Kanban, а управленческим инструментом.
+2. **Board-level аналітика:**
+   - скільки тікетів у кожному статусі;
+   - burndown або простий лічильник прогресу спринту;
+   - це зробить борд не просто Kanban, а управлінським інструментом.
 
-3. **Email-нотификации:**
-   - сейчас нотификации хранятся в БД и отдаются в realtime;
-   - следующий уровень — отправка email при важных событиях (invite, mention, назначение);
-   - minimal MVP: SMTP + Nodemailer в Nest, шаблон приглашения.
+3. **Email-сповіщення:**
+   - зараз нотифікації зберігаються в БД і віддаються в realtime;
+   - наступний рівень — надсилання email при важливих подіях (invite, mention, призначення);
+   - minimal MVP: SMTP + Nodemailer у Nest, шаблон запрошення.
 
-4. **Многопользовательская коллаборация на тикете:**
-   - lock при редактировании (optimistic, через realtime);
-   - cursor awareness (кто смотрит на тикет прямо сейчас);
-   - это реалистично, потому что realtime-слой уже готов принять эти события.
+4. **Багатокористувацька колаборація на тікеті:**
+   - lock під час редагування (optimistic, через realtime);
+   - cursor awareness (хто дивиться на тікет просто зараз);
+   - це реалістично, тому що realtime-шар уже готовий приймати ці події.
 
-#### Долгосрочное видение
+#### Довгострокове бачення
 
-Проект строился как pet-project, но архитектурно уже сейчас готов к командной работе:
-- RBAC с кастомными ролями per-board — это enterprise-уровень;
-- realtime gateway — это product-level фича;
-- typed API + generated Prisma — это production-grade backend.
+Проєкт будувався як pet-project, але архітектурно вже зараз готовий до командної роботи:
+- RBAC з кастомними ролями per-board — це enterprise-рівень;
+- realtime gateway — це product-level фіча;
+- typed API + generated Prisma — це production-grade backend.
 
-Если добавить email-инвайты, board analytics и mobile-responsive layout — он превращается в реально конкурентоспособный B2B-продукт для небольших команд.
+Якщо додати email-інвайти, board analytics і mobile-responsive layout — він перетворюється на реально конкурентоспроможний B2B-продукт для невеликих команд.
 
-Ключевое, что осталось сделать для этого перехода:
-- закрыть realtime loop (subscribe → update → UI);
-- сделать Board Settings как полноценный UI;
-- добавить минимальный test coverage на критичную логику.
+Ключове, що залишилося зробити для цього переходу:
+- закрити realtime loop (subscribe → update → UI);
+- зробити Board Settings як повноцінний UI;
+- додати мінімальний test coverage на критичну логіку.
 
-Всё остальное — это наращивание, а не фундамент.
-
----
-
-### TODO на следующую итерацию (приоритет)
-
-1. `[x]` ~~Подписаться на `board-state-changed` в `[boardId]/page.tsx`, вызвать `refetch` при событии.~~ — **Сделано в `DashboardClient.tsx`** (invalidateTags Board + ticket-state-changed)
-2. `[x]` ~~Подписаться на `ticket-state-changed` в том же компоненте, инвалидировать `getBoardTicketById`.~~ — **Сделано** (см. выше)
-3. `[ ]` Создать страницу `/dashboard/[boardId]/settings` — sidebar уже ссылается, но файла нет.
-4. `[ ]` Добавить UI управления кастомными ролями (create / rename / delete) в settings или users page.
-5. `[ ]` Разбить `boards.service.ts` — минимум выделить `BoardInvitationsService` и `NotificationsService`.
-6. `[ ]` Добавить тест на acceptance flow инвайта (unit, mocked Prisma).
-7. `[ ]` Разбить `src/store/api.ts` на namespace-эндпоинты.
-8. `[ ]` Email-уведомления — Nodemailer в Nest, шаблон инвайта.
-9. `[ ]` Resume flow после auth — invite-токен должен переживать signin/register redirect chain.
+Усе інше — це нарощування, а не фундамент.
 
 ---
 
-## Актуализация на 2026-03-25
+### TODO на наступну ітерацію (пріоритет)
 
-### Ревизия — что реально сделано к этому моменту
+1. `[x]` ~~Підписатися на `board-state-changed` у `[boardId]/page.tsx`, викликати `refetch` при події.~~ — **Зроблено в `DashboardClient.tsx`** (invalidateTags Board + ticket-state-changed)
+2. `[x]` ~~Підписатися на `ticket-state-changed` у тому ж компоненті, інвалідовувати `getBoardTicketById`.~~ — **Зроблено** (див. вище)
+3. `[ ]` Створити сторінку `/dashboard/[boardId]/settings` — sidebar уже посилається, але файла немає.
+4. `[ ]` Додати UI керування кастомними ролями (create / rename / delete) у settings або users page.
+5. `[ ]` Розбити `boards.service.ts` — мінімум виділити `BoardInvitationsService` і `NotificationsService`.
+6. `[ ]` Додати тест на acceptance flow інвайту (unit, mocked Prisma).
+7. `[ ]` Розбити `src/store/api.ts` на namespace-ендпоінти.
+8. `[ ]` Email-сповіщення — Nodemailer у Nest, шаблон інвайту.
+9. `[ ]` Resume flow після auth — invite-токен має переживати signin/register redirect chain.
 
-Этот раздел исправляет ряд неточностей из секции 2026-03-24, которые описывали как «ещё не готово» то, что на самом деле уже было реализовано в более ранних итерациях.
+---
 
-#### Realtime — полностью готов
+## Актуалізація на 2026-03-25
 
-- `DashboardClient.tsx` импортирует `useSocket()`, на mount эмитит `subscribe-board`, слушает события:
+### Ревізія — що реально зроблено на цей момент
+
+Цей розділ виправляє низку неточностей із секції 2026-03-24, які описували як «ще не готово» те, що насправді вже було реалізовано в попередніх ітераціях.
+
+#### Realtime — повністю готовий
+
+- `DashboardClient.tsx` імпортує `useSocket()`, на mount емітить `subscribe-board`, слухає події:
   - `board-state-changed` → `dispatch(appApi.util.invalidateTags([{type:'Board', id:boardId}]))`
-  - `ticket-state-changed` → `dispatch(appApi.util.invalidateTags([{type:'BoardTicket', id:ticketId}]))` + анимация перемещения
-- Самоэхо-отсечка: события с `actorUserId === session.user.id` игнорируются.
+  - `ticket-state-changed` → `dispatch(appApi.util.invalidateTags([{type:'BoardTicket', id:ticketId}]))` + анімація переміщення
+- Самоехо-відсікання: події з `actorUserId === session.user.id` ігноруються.
 - На unmount — `unsubscribe-board`.
-- `SocketProvider` обёрнут в `src/components/Providers.tsx`, доступен глобально.
+- `SocketProvider` обгорнуто в `src/components/Providers.tsx`, доступний глобально.
 
-#### Board Users / Invitations UI — реализован
+#### Board Users / Invitations UI — реалізовано
 
-- Существует `src/app/dashboard/[boardId]/users/page.tsx`.
-- `BoardUsersClient.tsx` обеспечивает:
-  - список участников со сменой кастомной роли и удалением;
-  - создание инвайтов `PERSONAL` (с email) и `SHARED` (`SINGLE_USE` / `MULTI_USE`);
-  - таблица pending-инвайтов с копированием ссылки и отзывом.
+- Існує `src/app/dashboard/[boardId]/users/page.tsx`.
+- `BoardUsersClient.tsx` забезпечує:
+  - список учасників зі зміною кастомної ролі й видаленням;
+  - створення інвайтів `PERSONAL` (з email) і `SHARED` (`SINGLE_USE` / `MULTI_USE`);
+  - таблицю pending-інвайтів із копіюванням посилання і відкликанням.
 
-#### Ticket access enforcement — работает в бэкенде
+#### Ticket access enforcement — працює в бекенді
 
-- `boards.service.ts` содержит `normalizeTicketAccessPolicy()`, `canUseTicketPermission()`, `canAccessTicket()`.
-- Enforcement применяется на всех mutation-эндпоинтах: edit / fill / delete / estimate / comment.
+- `boards.service.ts` містить `normalizeTicketAccessPolicy()`, `canUseTicketPermission()`, `canAccessTicket()`.
+- Enforcement застосовується на всіх mutation-ендпоінтах: edit / fill / delete / estimate / comment.
 
-#### SHARED-инвайты — реализованы (вопреки заметкам от 2026-03-19)
+#### SHARED-інвайти — реалізовані (всупереч нотаткам від 2026-03-19)
 
-- Модель `BoardInvitation` содержит `type: PERSONAL | SHARED`, `email?`, `customRoleId?`, `maxUses?`, `usedCount`.
-- Acceptance-логика атомарно инкрементирует `usedCount` и проверяет `maxUses`.
-- Удалена жёсткая уникальность `@@unique([boardId, email])`.
+- Модель `BoardInvitation` містить `type: PERSONAL | SHARED`, `email?`, `customRoleId?`, `maxUses?`, `usedCount`.
+- Acceptance-логіка атомарно інкрементує `usedCount` і перевіряє `maxUses`.
+- Видалено жорстку унікальність `@@unique([boardId, email])`.
 
-### Что пока не реализовано (актуальный технический долг)
+### Що поки не реалізовано (актуальний технічний борг)
 
-| Задача | Приоритет |
+| Завдання | Пріоритет |
 |---|---|
-| `src/app/dashboard/[boardId]/settings/page.tsx` — sidebar ссылается, файла нет | Высокий |
-| UI управления кастомными ролями (создание/переименование/удаление) | Высокий |
-| Resume flow: invite-токен переживает цепочку редиректов signin/register | Средний |
-| Email-уведомления (Nodemailer, шаблон инвайта) | Средний |
-| Разбить `boards.service.ts` (2000+ строк) на `TicketsService`, `BoardInvitationsService`, `NotificationsService` | Средний |
-| Разбить `src/store/api.ts` (~400 строк) по namespace'ам | Низкий |
-| Тест на флоу принятия инвайта (unit, mocked Prisma) | Средний |
-| Тест на каскадное удаление борды | Низкий |
+| `src/app/dashboard/[boardId]/settings/page.tsx` — sidebar посилається, файла немає | Високий |
+| UI керування кастомними ролями (створення/перейменування/видалення) | Високий |
+| Resume flow: invite-токен переживає ланцюжок редіректів signin/register | Середній |
+| Email-сповіщення (Nodemailer, шаблон інвайта) | Середній |
+| Розбити `boards.service.ts` (2000+ рядків) на `TicketsService`, `BoardInvitationsService`, `NotificationsService` | Середній |
+| Розбити `src/store/api.ts` (~400 рядків) за namespace'ами | Низький |
+| Тест на флоу прийняття інвайту (unit, mocked Prisma) | Середній |
+| Тест на каскадне видалення борду | Низький |
