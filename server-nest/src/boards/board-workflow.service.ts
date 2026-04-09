@@ -11,7 +11,7 @@ import { BoardsAccessService } from './boards-access.service';
 import { BoardNotificationsService } from './board-notifications.service';
 import { BoardStructureService } from './board-structure.service';
 import { BoardTicketsService } from './board-tickets.service';
-import { DEFAULT_ASSIGNEE, DEFAULT_THEME_COLOR } from './boards.constants';
+import { DEFAULT_THEME_COLOR } from './boards.constants';
 import {
   ALL_TICKET_PERMISSIONS,
   FindBoardOptions,

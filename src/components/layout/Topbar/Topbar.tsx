@@ -20,6 +20,15 @@ import { Button } from "@/components/ui";
 import { useGetBoardByIdQuery, useLeaveBoardMutation } from "@/store/api";
 import { signOut, useSession } from "next-auth/react";
 import { DASHBOARD_CHROME_BACKGROUND } from "@/components/layout/chrome";
+import {
+    TOPBAR_ACTION_BUTTON_SX,
+    TOPBAR_COMPACT_ICON_BUTTON_SX,
+    TOPBAR_DANGER_BUTTON_SX,
+    TOPBAR_MENU_PAPER_SX,
+    TOPBAR_PROFILE_AVATAR_SX,
+    TOPBAR_TITLE_AVATAR_SX,
+    TOPBAR_WARNING_TEXT_SX,
+} from "./chromeStyles";
 
 export function Topbar() {
     const router = useRouter();
@@ -126,9 +135,9 @@ export function Topbar() {
                 >
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1.25, minWidth: 0, flex: "1 1 auto", pr: 1 }}>
                         {boardLogo ? (
-                            <Avatar src={boardLogo} alt={heading} sx={{ width: 34, height: 34 }} />
+                            <Avatar src={boardLogo} alt={heading} sx={TOPBAR_TITLE_AVATAR_SX} />
                         ) : (
-                            <Avatar sx={{ width: 34, height: 34 }}>{heading.charAt(0).toUpperCase()}</Avatar>
+                            <Avatar sx={TOPBAR_TITLE_AVATAR_SX}>{heading.charAt(0).toUpperCase()}</Avatar>
                         )}
                         <Typography
                             variant="h6"
@@ -156,12 +165,7 @@ export function Topbar() {
                         {isBackendUnavailable ? (
                             <Typography
                                 variant="caption"
-                                sx={{
-                                    color: "#ffe3b2",
-                                    fontWeight: 600,
-                                    mr: { xs: "auto", md: 0 },
-                                    maxWidth: { xs: "100%", md: 220 },
-                                }}
+                                sx={TOPBAR_WARNING_TEXT_SX}
                             >
                                 {t("backendUnavailable")}
                             </Typography>
@@ -173,12 +177,7 @@ export function Topbar() {
                                     size="small"
                                     variant="outlined"
                                     color="inherit"
-                                    sx={{
-                                        borderColor: "rgba(255, 255, 255, 0.44)",
-                                        px: { xs: 1, sm: 1.5 },
-                                        minWidth: 0,
-                                        whiteSpace: "nowrap",
-                                    }}
+                                    sx={TOPBAR_ACTION_BUTTON_SX}
                                     onClick={() => router.push("/boards")}
                                 >
                                     {t("home")}
@@ -189,12 +188,7 @@ export function Topbar() {
                                         size="small"
                                         variant="outlined"
                                         color="inherit"
-                                        sx={{
-                                            borderColor: "rgba(255, 255, 255, 0.44)",
-                                            px: { xs: 1, sm: 1.5 },
-                                            minWidth: 0,
-                                            whiteSpace: "nowrap",
-                                        }}
+                                        sx={TOPBAR_ACTION_BUTTON_SX}
                                         onClick={() => router.push(`/dashboard/${boardId}`)}
                                     >
                                         {t("backToBoard")}
@@ -204,17 +198,7 @@ export function Topbar() {
                                         size="small"
                                         variant="contained"
                                         color="error"
-                                        sx={{
-                                            boxShadow: "none",
-                                            px: { xs: 1, sm: 1.5 },
-                                            minWidth: 0,
-                                            whiteSpace: "nowrap",
-                                            color: "#ffffff",
-                                            "&.Mui-disabled": {
-                                                color: "#ffffff",
-                                                backgroundColor: "rgba(211, 47, 47, 0.78)",
-                                            },
-                                        }}
+                                        sx={TOPBAR_DANGER_BUTTON_SX}
                                         disabled={isLeaving || isOwner}
                                         onClick={() => void handleLeaveBoard()}
                                     >
@@ -230,9 +214,9 @@ export function Topbar() {
 
                         <Notifications />
                         <LocaleSwitcher />
-                        <IconButton color="inherit" onClick={handleOpenProfileMenu} sx={{ p: 0.25 }}>
+                        <IconButton color="inherit" onClick={handleOpenProfileMenu} sx={TOPBAR_COMPACT_ICON_BUTTON_SX}>
                             {session?.user?.name ? (
-                                <Avatar sx={{ width: 28, height: 28 }}>
+                                <Avatar sx={TOPBAR_PROFILE_AVATAR_SX}>
                                     {session.user.name.charAt(0).toUpperCase()}
                                 </Avatar>
                             ) : (
@@ -244,12 +228,7 @@ export function Topbar() {
                             open={Boolean(anchorEl)}
                             onClose={handleCloseProfileMenu}
                             PaperProps={{
-                                sx: {
-                                    borderRadius: 2,
-                                    minWidth: { xs: 180, sm: 220 },
-                                    border: "1px solid",
-                                    borderColor: "divider",
-                                },
+                                sx: TOPBAR_MENU_PAPER_SX,
                             }}
                         >
                             <MenuItem disabled>

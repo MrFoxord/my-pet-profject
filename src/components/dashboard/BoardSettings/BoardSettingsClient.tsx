@@ -7,12 +7,15 @@ import {
   Alert,
   Box,
   Button,
-  Checkbox,
+  CheckboxPill,
   CircularProgress,
   Divider,
   MenuItem,
-  Paper,
+  PageIntro,
+  SectionHeading,
   Select,
+  SectionCard,
+  SettingCheckboxRow,
   Stack,
   TextField,
   Typography,
@@ -111,7 +114,7 @@ export default function BoardSettingsClient({ boardId }: BoardSettingsClientProp
       sharedInviteMaxUses: String(board.sharedInviteMaxUses ?? 10),
     });
   }, [board]);
-  console.log("boardForm");
+
   useEffect(() => {
     if (roles.length === 0) {
       return;
@@ -395,27 +398,15 @@ export default function BoardSettingsClient({ boardId }: BoardSettingsClientProp
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 3, p: 3 }}>
-      <Box>
-        <Typography variant="h5" sx={{ mb: 1 }}>
-          {t("title")}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {t("subtitle")}
-        </Typography>
-      </Box>
+      <PageIntro title={t("title")} subtitle={t("subtitle")} />
 
       {notice ? <Alert severity={notice.type}>{notice.text}</Alert> : null}
       {hasLoadError ? <Alert severity="error">{t("loadError")}</Alert> : null}
       {!canManageSettings ? <Alert severity="info">{t("restrictedAlert")}</Alert> : null}
 
-      <Paper sx={{ p: 3, borderRadius: 3 }}>
+      <SectionCard>
         <Stack spacing={2.5}>
-          <Box>
-            <Typography variant="h6">{t("generalSection")}</Typography>
-            <Typography variant="body2" color="text.secondary">
-              {t("generalSectionHint")}
-            </Typography>
-          </Box>
+          <SectionHeading title={t("generalSection")} description={t("generalSectionHint")} />
 
           <TextField
             label={t("titleLabel")}
@@ -505,41 +496,24 @@ export default function BoardSettingsClient({ boardId }: BoardSettingsClientProp
           <Divider />
 
           <Stack spacing={1.5}>
-            <Box>
-              <Typography variant="subtitle1">{t("invitesSection")}</Typography>
-              <Typography variant="body2" color="text.secondary">
-                {t("invitesSectionHint")}
-              </Typography>
-            </Box>
+            <SectionHeading title={t("invitesSection")} description={t("invitesSectionHint")} />
 
             <Stack spacing={1}>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                <Checkbox
-                  checked={boardForm.allowPersonalInvites}
-                  onChange={(event) => setField("allowPersonalInvites", event.target.checked)}
-                  disabled={!canManageSettings || isSavingBoard}
-                />
-                <Box>
-                  <Typography variant="body1">{t("allowPersonalInvitesLabel")}</Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {t("allowPersonalInvitesHint")}
-                  </Typography>
-                </Box>
-              </Box>
+              <SettingCheckboxRow
+                checked={boardForm.allowPersonalInvites}
+                onChange={(event) => setField("allowPersonalInvites", event.target.checked)}
+                disabled={!canManageSettings || isSavingBoard}
+                label={t("allowPersonalInvitesLabel")}
+                hint={t("allowPersonalInvitesHint")}
+              />
 
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                <Checkbox
-                  checked={boardForm.allowSharedInvites}
-                  onChange={(event) => setField("allowSharedInvites", event.target.checked)}
-                  disabled={!canManageSettings || isSavingBoard}
-                />
-                <Box>
-                  <Typography variant="body1">{t("allowSharedInvitesLabel")}</Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {t("allowSharedInvitesHint")}
-                  </Typography>
-                </Box>
-              </Box>
+              <SettingCheckboxRow
+                checked={boardForm.allowSharedInvites}
+                onChange={(event) => setField("allowSharedInvites", event.target.checked)}
+                disabled={!canManageSettings || isSavingBoard}
+                label={t("allowSharedInvitesLabel")}
+                hint={t("allowSharedInvitesHint")}
+              />
             </Stack>
 
             <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
@@ -586,19 +560,15 @@ export default function BoardSettingsClient({ boardId }: BoardSettingsClientProp
             </Button>
           </Box>
         </Stack>
-      </Paper>
+      </SectionCard>
 
-      <Paper sx={{ p: 3, borderRadius: 3 }}>
+      <SectionCard>
         <Stack spacing={2.5}>
-          <Box>
-            <Typography variant="h6">{t("rolesSection")}</Typography>
-            <Typography variant="body2" color="text.secondary">
-              {t("rolesSectionHint")}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75 }}>
-              {roleCountText}
-            </Typography>
-          </Box>
+          <SectionHeading
+            title={t("rolesSection")}
+            description={t("rolesSectionHint")}
+            meta={roleCountText}
+          />
 
           <Stack direction={{ xs: "column", md: "row" }} spacing={1.5}>
             <TextField
@@ -641,28 +611,13 @@ export default function BoardSettingsClient({ boardId }: BoardSettingsClientProp
                               const checked = roleDrafts[role.id]?.permissions?.includes(permission) ?? false;
 
                               return (
-                                <Box
+                                <CheckboxPill
                                   key={permission}
-                                  sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: 0.5,
-                                    border: "1px solid",
-                                    borderColor: checked ? "primary.main" : "divider",
-                                    borderRadius: 999,
-                                    pr: 1.25,
-                                    pl: 0.5,
-                                    py: 0.25,
-                                  }}
-                                >
-                                  <Checkbox
-                                    checked={checked}
-                                    onChange={() => toggleRolePermission(role.id, permission)}
-                                    disabled={!canManageSettings || isBusy}
-                                    size="small"
-                                  />
-                                  <Typography variant="body2">{getPermissionLabel(permission)}</Typography>
-                                </Box>
+                                  checked={checked}
+                                  onToggle={() => toggleRolePermission(role.id, permission)}
+                                  disabled={!canManageSettings || isBusy}
+                                  label={getPermissionLabel(permission)}
+                                />
                               );
                             })}
                           </Stack>
@@ -708,18 +663,11 @@ export default function BoardSettingsClient({ boardId }: BoardSettingsClientProp
             })}
           </Stack>
         </Stack>
-      </Paper>
+      </SectionCard>
 
-      <Paper sx={{ p: 3, borderRadius: 3, border: "1px solid", borderColor: "error.light" }}>
+      <SectionCard tone="danger">
         <Stack spacing={2}>
-          <Box>
-            <Typography variant="h6" color="error.main">
-              {t("dangerZone")}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {t("dangerZoneHint")}
-            </Typography>
-          </Box>
+          <SectionHeading title={t("dangerZone")} description={t("dangerZoneHint")} tone="danger" />
 
           <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2, flexWrap: "wrap", alignItems: "center" }}>
             <Box>
@@ -738,7 +686,7 @@ export default function BoardSettingsClient({ boardId }: BoardSettingsClientProp
             </Button>
           </Box>
         </Stack>
-      </Paper>
+      </SectionCard>
     </Box>
   );
 }

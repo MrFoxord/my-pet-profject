@@ -13,6 +13,7 @@ import {
     useMarkNotificationReadMutation,
 } from "@/store/api";
 import { useAppDispatch } from "@/store/hooks";
+import { TOPBAR_OVERLAY_PAPER_SX } from "../chromeStyles";
 
 export function Notifications() {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -76,15 +77,7 @@ export function Notifications() {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
                 PaperProps={{
-                    sx: {
-                        width: { xs: "calc(100vw - 16px)", sm: 360 },
-                        maxWidth: 360,
-                        maxHeight: 420,
-                        borderRadius: 2,
-                        border: "1px solid",
-                        borderColor: "divider",
-                        boxShadow: "0 14px 30px rgba(15, 23, 42, 0.14)",
-                    },
+                    sx: TOPBAR_OVERLAY_PAPER_SX,
                 }}
             >
                 {notifications.length === 0 ? (

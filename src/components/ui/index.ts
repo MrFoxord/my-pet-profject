@@ -3,8 +3,14 @@ export { Button } from "./Button/Button";
 export type { ButtonProps } from "./Button/Button";
 export { Input } from "./Input/Input";
 export { Card } from "./Card/Card";
+export { CenteredPage } from "./CenteredPage/CenteredPage";
 export { Loader } from "./Loader/Loader";
 export { Modal } from "./Modal/Modal";
+export { PageIntro } from "./PageIntro/PageIntro";
+export { SectionHeading } from "./SectionHeading/SectionHeading";
+export { SectionCard } from "./SectionCard/SectionCard";
+export { SettingCheckboxRow } from "./SettingCheckboxRow/SettingCheckboxRow";
+export { CheckboxPill } from "./CheckboxPill/CheckboxPill";
 export { default as ActionDialog } from "./ActionDialog/ActionDialog";
 
 // ── Composite domain-specific components ──────────────────────────────────────

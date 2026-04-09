@@ -4,6 +4,7 @@ import { MenuItem, Select, type SelectChangeEvent } from "@mui/material";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { localeCookieName, type AppLocale } from "@/i18n/config";
+import { TOPBAR_SELECT_SX } from "../chromeStyles";
 
 const localeOrder: AppLocale[] = ["en", "uk", "ru"];
 
@@ -29,26 +30,7 @@ export function LocaleSwitcher() {
       onChange={handleChange}
       aria-label={t("language")}
       renderValue={(value) => String(value).toUpperCase()}
-      sx={{
-        minWidth: { xs: 72, sm: 108 },
-        color: "#f5f9ff",
-        borderRadius: 999,
-        fontSize: 13,
-        fontWeight: 600,
-        "& .MuiSelect-select": {
-          py: 0.5,
-          px: { xs: 1, sm: 1.2 },
-        },
-        "& .MuiOutlinedInput-notchedOutline": {
-          borderColor: "rgba(255, 255, 255, 0.38)",
-        },
-        "& .MuiSvgIcon-root": {
-          color: "#f5f9ff",
-        },
-        "&:hover .MuiOutlinedInput-notchedOutline": {
-          borderColor: "rgba(255, 255, 255, 0.6)",
-        },
-      }}
+      sx={TOPBAR_SELECT_SX}
     >
       <MenuItem value="en">{t("english")}</MenuItem>
       <MenuItem value="uk">{t("ukrainian")}</MenuItem>

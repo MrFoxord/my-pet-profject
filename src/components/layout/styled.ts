@@ -1,5 +1,7 @@
 import styled, { css, keyframes } from "styled-components";
 import { Avatar as MuiAvatar, Typography as MuiTypography } from "@mui/material";
+import { UI_COLORS } from "@/lib/ui-tokens";
+import { ambientDashboardBackground, glassPanelSurface } from "@/lib/styled-surfaces";
 
 const boardHeaderPulse = keyframes`
   0% {
@@ -19,10 +21,8 @@ const boardHeaderPulse = keyframes`
 export const Root = styled.div<{ $bg?: string }>`
   display: flex;
   min-height: 100vh;
-  background:
-    radial-gradient(circle at 8% 10%, rgba(11, 99, 206, 0.08), transparent 35%),
-    radial-gradient(circle at 92% 5%, rgba(14, 165, 164, 0.06), transparent 28%),
-    ${({ $bg }) => $bg || "#f6f8fc"};
+  ${ambientDashboardBackground};
+  background-color: ${({ $bg }) => $bg || UI_COLORS.pageBackground};
 
   @media (max-width: 900px) {
     display: block;
@@ -53,9 +53,7 @@ export const BoardHeader = styled.div<{ $remotePulseToken?: number }>`
   margin-bottom: 14px;
   padding: 10px 12px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.74);
-  border: 1px solid rgba(15, 23, 42, 0.06);
-  box-shadow: 0 5px 18px rgba(15, 23, 42, 0.07);
+  ${glassPanelSurface};
   ${({ $remotePulseToken }) =>
     ($remotePulseToken ?? 0) > 0
       ? css`
@@ -80,7 +78,7 @@ export const BoardTitle = styled(MuiTypography)`
 
 export const BoardDescription = styled(MuiTypography)`
   margin-bottom: 18px;
-  color: #5a6780;
+  color: ${UI_COLORS.textSecondary};
 `;
 
 export const TicketsWrapper = styled.div`

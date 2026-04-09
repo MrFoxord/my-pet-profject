@@ -1,4 +1,6 @@
 import styled, { css, keyframes } from "styled-components";
+import { UI_COLORS } from "@/lib/ui-tokens";
+import { interactiveCardSurface } from "@/lib/styled-surfaces";
 
 const movedCardSmoothing = keyframes`
   0% {
@@ -42,12 +44,10 @@ const movedCardFadeIn = keyframes`
 
 export const Card = styled.div<{ $moveTransitionPhase?: "out" | "in" }>`
     width: 100%;
-    background: #ffffff;
     border-radius: 12px;
-    border: 1px solid #dfe6f2;
     padding: 12px 13px;
     margin-bottom: 8px;
-    box-shadow: 0 5px 14px rgba(15, 23, 42, 0.08);
+    ${interactiveCardSurface};
     cursor: pointer;
     display: flex;
     flex-direction: column;
@@ -55,8 +55,6 @@ export const Card = styled.div<{ $moveTransitionPhase?: "out" | "in" }>`
     transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
     &:hover {
       transform: translateY(-1px);
-      border-color: #b7c9e4;
-      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.1);
     }
     ${({ $moveTransitionPhase }) =>
       $moveTransitionPhase === "out"
@@ -79,7 +77,7 @@ export const HeaderRow = styled.div`
 export const TicketId = styled.div`
   font-size: 13px;
   font-weight: 600;
-  color: #74839a;
+  color: ${UI_COLORS.textMuted};
 `;
 
 export const TypeBadge = styled.div<{ $type: string }>`
@@ -100,7 +98,7 @@ export const TypeBadge = styled.div<{ $type: string }>`
 export const Title = styled.div`
   font-size: 15px;
   font-weight: 700;
-  color: #1a2a43;
+  color: ${UI_COLORS.textPrimaryStrong};
 `;
 
 export const FooterRow = styled.div`
@@ -117,19 +115,19 @@ export const Left = styled.div`
 
 export const TaskSummary = styled.div`
   font-size: 13px;
-  color: #5f6f86;
+  color: ${UI_COLORS.textSecondary};
 `;
 
 export const Progress = styled.div`
   height: 4px;
-  background: #e2e8f2;
+  background: ${UI_COLORS.progressTrack};
   border-radius: 4px;
   width: 100%;
 `;
 
 export const ProgressBar = styled.div`
   height: 100%;
-  background: #10b981;
+  background: ${UI_COLORS.progressSuccess};
   border-radius: 4px;
   transition: width .3s ease;
 `;

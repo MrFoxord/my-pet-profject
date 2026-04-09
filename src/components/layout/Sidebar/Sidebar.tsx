@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Drawer, Toolbar, List, IconButton, Typography, Stack } from "@mui/material";
+import { Box, Drawer, Toolbar, List, IconButton, Typography } from "@mui/material";
 import { SidebarSection } from "./SidebarSection/SidebarSection";
 import { SidebarItem } from "./SidebarItem/SidebarItem";
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -13,7 +13,7 @@ import { DASHBOARD_CHROME_BACKGROUND } from "@/components/layout/chrome";
 
 const SIDEBAR_WIDTH = 248;
 
-export function Sidebar({ boardId, themeColor, mobileOpen = false, onMobileClose }: SidebarProps) {
+export function Sidebar({ boardId, mobileOpen = false, onMobileClose }: SidebarProps) {
     const t = useTranslations("sidebar");
 
     const content = (
