@@ -45,15 +45,16 @@ export async function POST(req: Request): Promise<NextResponse> {
   const realIp = req.headers.get("x-real-ip")?.trim();
   const clientIdentifier = forwardedFor || realIp || "unknown";
   let rateLimitKey = `ip:${clientIdentifier}`;
-  let session: Awaited<ReturnType<typeof auth>> | null = null;
+  let authenticatedUserId: string | null = null;
 
   if (config.requireAuth) {
-    session = await auth();
+    const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    rateLimitKey = `user:${session.user.id}`;
+    authenticatedUserId = session.user.id;
+    rateLimitKey = `user:${authenticatedUserId}`;
   }
 
   const rateLimitResult = consumeAiRateLimit({
@@ -96,10 +97,10 @@ export async function POST(req: Request): Promise<NextResponse> {
   let systemPrompt: string;
   let verifiedRuntimeContext: string | null = null;
 
-  if (session?.user?.id && aiRequest.runtimeContext) {
+  if (authenticatedUserId && aiRequest.runtimeContext) {
     try {
       verifiedRuntimeContext = await buildAiVerifiedRuntimeContext({
-        userId: session.user.id,
+        userId: authenticatedUserId,
         runtimeContext: aiRequest.runtimeContext,
       });
     } catch {
