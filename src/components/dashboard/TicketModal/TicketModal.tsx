@@ -55,7 +55,13 @@ export const TicketModal = ({
   onDeleteTicket,
 }: TicketModalProps) => {
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal
+      open={open}
+      onClose={onClose}
+      disableAutoFocus
+      disableEnforceFocus
+      disableRestoreFocus
+    >
       {ticket && (
         <TicketModalContent
           key={ticket.id}
