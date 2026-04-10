@@ -9,11 +9,29 @@ interface ModalProps {
   children: ReactNode;
   contentSx?: BoxProps["sx"];
   containerSx?: BoxProps["sx"];
+    disableAutoFocus?: MuiModalProps["disableAutoFocus"];
+    disableEnforceFocus?: MuiModalProps["disableEnforceFocus"];
+    disableRestoreFocus?: MuiModalProps["disableRestoreFocus"];
 }
 
-export const Modal = ({ open, onClose, children, contentSx, containerSx }: ModalProps) => {
+export const Modal = ({
+    open,
+    onClose,
+    children,
+    contentSx,
+    containerSx,
+    disableAutoFocus,
+    disableEnforceFocus,
+    disableRestoreFocus,
+}: ModalProps) => {
     return (
-        <MuiModal open={open} onClose={onClose}>
+                <MuiModal
+                        open={open}
+                        onClose={onClose}
+                        disableAutoFocus={disableAutoFocus}
+                        disableEnforceFocus={disableEnforceFocus}
+                        disableRestoreFocus={disableRestoreFocus}
+                >
             <Box
                 sx={{
                     position: "absolute",

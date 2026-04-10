@@ -8,6 +8,7 @@ import { ReactNode, useState } from "react";
 import theme from "@/lib/theme";
 import { SocketProvider } from "@/contexts/SocketContext";
 import { store } from "@/store";
+import { AiAssistant } from "@/components/ai/AiAssistant";
 
 export default function Providers({ children }: { children: ReactNode }) {
   const [queryClient] = useState(() => new QueryClient());
@@ -20,6 +21,7 @@ export default function Providers({ children }: { children: ReactNode }) {
             <ThemeProvider theme={theme}>
               <CssBaseline />
               {children}
+              <AiAssistant />
             </ThemeProvider>
           </QueryClientProvider>
         </SocketProvider>

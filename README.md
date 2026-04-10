@@ -99,6 +99,7 @@ High-level flow:
 - [prisma](prisma): root Prisma schema and migration history
 - [messages](messages): translation dictionaries
 - [docs/DEV_NOTES.md](docs/DEV_NOTES.md): engineering context and implementation notes
+- [docs/PATCH_NOTES.md](docs/PATCH_NOTES.md): recent product and engineering changes
 
 ### Requirements
 
