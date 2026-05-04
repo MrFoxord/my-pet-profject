@@ -1,5 +1,6 @@
 import { ApiBoardColumn } from "@/lib/api/client";
 import { BoardColumn, Ticket } from "@/types";
+import { TicketStatus } from "@/shared/tickets";
 
 export function buildColumnsFromApi(
   apiColumns: ApiBoardColumn[],
@@ -32,11 +33,11 @@ export function buildColumnsFromApi(
       title: column.title.toLowerCase(),
     }));
 
-    if (status === "todo") {
+    if (status === TicketStatus.TODO) {
       return normalized.find((c) => c.title.includes("todo") || c.title.includes("to do") || c.title.includes("backlog"))?.raw;
     }
 
-    if (status === "in-progress") {
+    if (status === TicketStatus.IN_PROGRESS) {
       return normalized.find((c) => c.title.includes("progress") || c.title.includes("doing") || c.title.includes("wip"))?.raw;
     }
 

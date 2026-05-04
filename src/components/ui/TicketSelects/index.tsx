@@ -2,26 +2,26 @@
 
 import { useTranslations } from "next-intl";
 import { MenuItem, TextField } from "@mui/material";
-import { TICKET_PRIORITY_VALUES, TICKET_STATUS_VALUES, TICKET_TYPE_VALUES } from "@/shared/tickets";
+import { TICKET_PRIORITY_VALUES, TICKET_STATUS_VALUES, TICKET_TYPE_VALUES, TicketPriority, TicketStatus, TicketType } from "@/shared/tickets";
 import type { Ticket } from "@/types";
 
 const TICKET_TYPE_LABEL_KEYS: Record<Ticket["type"], string> = {
-  bug: "typeBug",
-  feature: "typeFeature",
-  task: "typeTask",
+  [TicketType.BUG]: "typeBug",
+  [TicketType.FEATURE]: "typeFeature",
+  [TicketType.TASK]: "typeTask",
 };
 
 const TICKET_PRIORITY_LABEL_KEYS: Record<Ticket["priority"], string> = {
-  low: "priorityLow",
-  medium: "priorityMedium",
-  high: "priorityHigh",
-  critical: "priorityCritical",
+  [TicketPriority.LOW]: "priorityLow",
+  [TicketPriority.MEDIUM]: "priorityMedium",
+  [TicketPriority.HIGH]: "priorityHigh",
+  [TicketPriority.CRITICAL]: "priorityCritical",
 };
 
 const TICKET_STATUS_LABEL_KEYS: Record<Ticket["status"], string> = {
-  todo: "statusTodo",
-  "in-progress": "statusInProgress",
-  done: "statusDone",
+  [TicketStatus.TODO]: "statusTodo",
+  [TicketStatus.IN_PROGRESS]: "statusInProgress",
+  [TicketStatus.DONE]: "statusDone",
 };
 
 interface BaseSelectProps {

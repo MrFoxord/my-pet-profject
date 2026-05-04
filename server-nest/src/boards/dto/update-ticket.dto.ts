@@ -1,7 +1,6 @@
 import { Transform } from 'class-transformer';
-import { IsIn, IsInt, IsOptional, IsString, IsObject, Min } from 'class-validator';
+import { IsEnum, IsInt, IsOptional, IsString, IsObject, Min } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { TICKET_PRIORITY_VALUES, TICKET_STATUS_VALUES, TICKET_TYPE_VALUES } from '../boards.constants';
 import { TicketPriority, TicketStatus, TicketType } from '../../shared/tickets';
 
 export class UpdateTicketDto {
@@ -21,21 +20,21 @@ export class UpdateTicketDto {
   @IsOptional()
   @Transform(({ value }) => (typeof value === 'string' ? value.trim().toLowerCase() : value))
   @IsString()
-  @IsIn(TICKET_STATUS_VALUES)
+  @IsEnum(TicketStatus)
   status?: TicketStatus;
 
   @ApiPropertyOptional({ example: 'bug' })
   @IsOptional()
   @Transform(({ value }) => (typeof value === 'string' ? value.trim().toLowerCase() : value))
   @IsString()
-  @IsIn(TICKET_TYPE_VALUES)
+  @IsEnum(TicketType)
   type?: TicketType;
 
   @ApiPropertyOptional({ example: 'critical' })
   @IsOptional()
   @Transform(({ value }) => (typeof value === 'string' ? value.trim().toLowerCase() : value))
   @IsString()
-  @IsIn(TICKET_PRIORITY_VALUES)
+  @IsEnum(TicketPriority)
   priority?: TicketPriority;
 
   @ApiPropertyOptional({ example: 'col_done' })

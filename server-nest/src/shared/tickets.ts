@@ -1,8 +1,22 @@
-export const TICKET_STATUS_VALUES = ['todo', 'in-progress', 'done'] as const;
-export type TicketStatus = (typeof TICKET_STATUS_VALUES)[number];
+export enum TicketStatus {
+  TODO = 'todo',
+  IN_PROGRESS = 'in-progress',
+  DONE = 'done',
+}
 
-export const TICKET_TYPE_VALUES = ['bug', 'feature', 'task'] as const;
-export type TicketType = (typeof TICKET_TYPE_VALUES)[number];
+export enum TicketType {
+  BUG = 'bug',
+  FEATURE = 'feature',
+  TASK = 'task',
+}
 
-export const TICKET_PRIORITY_VALUES = ['low', 'medium', 'high', 'critical'] as const;
-export type TicketPriority = (typeof TICKET_PRIORITY_VALUES)[number];
+export enum TicketPriority {
+  LOW = 'low',
+  MEDIUM = 'medium',
+  HIGH = 'high',
+  CRITICAL = 'critical',
+}
+
+export const TICKET_STATUS_VALUES = Object.values(TicketStatus);
+export const TICKET_TYPE_VALUES = Object.values(TicketType);
+export const TICKET_PRIORITY_VALUES = Object.values(TicketPriority);

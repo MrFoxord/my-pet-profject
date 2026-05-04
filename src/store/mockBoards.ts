@@ -1,24 +1,25 @@
 import { Board } from "@/types";
 import { mockTickets } from "./tickets";
+import { TicketStatus } from "@/shared/tickets";
 
 const createColumnsFromTickets = (tickets: typeof mockTickets) => {
   return [
     {
       id: "todo",
       title: "To Do",
-      ticketIds: tickets.filter((t) => t.status === "todo").map((t) => t.id),
+      ticketIds: tickets.filter((t) => t.status === TicketStatus.TODO).map((t) => t.id),
     },
     {
       id: "in-progress",
       title: "In Progress",
       ticketIds: tickets
-        .filter((t) => t.status === "in-progress")
+        .filter((t) => t.status === TicketStatus.IN_PROGRESS)
         .map((t) => t.id),
     },
     {
       id: "done",
       title: "Done",
-      ticketIds: tickets.filter((t) => t.status === "done").map((t) => t.id),
+      ticketIds: tickets.filter((t) => t.status === TicketStatus.DONE).map((t) => t.id),
     },
   ];
 };

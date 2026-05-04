@@ -1,5 +1,9 @@
 import { Module } from '@nestjs/common';
 import { BoardsController } from './boards.controller';
+import { BoardTicketsController } from './board-tickets.controller';
+import { BoardInvitationsController } from './board-invitations.controller';
+import { BoardMembersController } from './board-members.controller';
+import { BoardRolesController } from './board-roles.controller';
 import { InvitationsPublicController } from './invitations.public.controller';
 import { NotificationsController } from './notifications.controller';
 import { BoardsService } from './board-workflow.service';
@@ -15,7 +19,15 @@ import { RealtimeModule } from '../realtime/realtime.module';
 
 @Module({
   imports: [AuthModule, RealtimeModule],
-  controllers: [BoardsController, InvitationsPublicController, NotificationsController],
+  controllers: [
+    BoardsController,
+    BoardTicketsController,
+    BoardInvitationsController,
+    BoardMembersController,
+    BoardRolesController,
+    InvitationsPublicController,
+    NotificationsController,
+  ],
   providers: [
     BoardsService,
     BoardsAccessService,

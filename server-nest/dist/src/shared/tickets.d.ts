@@ -1,6 +1,19 @@
-export declare const TICKET_STATUS_VALUES: readonly ["todo", "in-progress", "done"];
-export type TicketStatus = (typeof TICKET_STATUS_VALUES)[number];
-export declare const TICKET_TYPE_VALUES: readonly ["bug", "feature", "task"];
-export type TicketType = (typeof TICKET_TYPE_VALUES)[number];
-export declare const TICKET_PRIORITY_VALUES: readonly ["low", "medium", "high", "critical"];
-export type TicketPriority = (typeof TICKET_PRIORITY_VALUES)[number];
+export declare enum TicketStatus {
+    TODO = "todo",
+    IN_PROGRESS = "in-progress",
+    DONE = "done"
+}
+export declare enum TicketType {
+    BUG = "bug",
+    FEATURE = "feature",
+    TASK = "task"
+}
+export declare enum TicketPriority {
+    LOW = "low",
+    MEDIUM = "medium",
+    HIGH = "high",
+    CRITICAL = "critical"
+}
+export declare const TICKET_STATUS_VALUES: TicketStatus[];
+export declare const TICKET_TYPE_VALUES: TicketType[];
+export declare const TICKET_PRIORITY_VALUES: TicketPriority[];

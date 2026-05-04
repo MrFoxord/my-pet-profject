@@ -30,6 +30,7 @@ import {
   horizontalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { Board, Ticket, TicketAccessPolicy, DEFAULT_ACCESS_POLICY } from "@/types";
+import { TicketStatus, TicketType, TicketPriority } from "@/shared/tickets";
 import { ColumnsContainer } from "./styled";
 import { BoardColumnView } from "./BoardColumnView";
 
@@ -75,11 +76,11 @@ export function BoardColumns({
   const [createOpen, setCreateOpen] = useState(false);
   const [creating, setCreating] = useState(false);
   const [createColumnId, setCreateColumnId] = useState<string | null>(null);
-  const [createStatus, setCreateStatus] = useState<Ticket["status"]>("todo");
+  const [createStatus, setCreateStatus] = useState<Ticket["status"]>(TicketStatus.TODO);
   const [createTitle, setCreateTitle] = useState("");
   const [createDescription, setCreateDescription] = useState("");
-  const [createType, setCreateType] = useState<Ticket["type"]>("task");
-  const [createPriority, setCreatePriority] = useState<Ticket["priority"]>("medium");
+  const [createType, setCreateType] = useState<Ticket["type"]>(TicketType.TASK);
+  const [createPriority, setCreatePriority] = useState<Ticket["priority"]>(TicketPriority.MEDIUM);
   const [createAccessPolicy, setCreateAccessPolicy] = useState<TicketAccessPolicy>(DEFAULT_ACCESS_POLICY);
 
   const [movingOutTicketIds, setMovingOutTicketIds] = useState<Record<string, true>>({});
@@ -207,7 +208,7 @@ export function BoardColumns({
       value.includes("работ") ||
       value.includes("робот")
     ) {
-      return "in-progress";
+      return TicketStatus.IN_PROGRESS;
     }
     if (
       value.includes("done") ||
@@ -216,9 +217,9 @@ export function BoardColumns({
       value.includes("заверш") ||
       value.includes("викон")
     ) {
-      return "done";
+      return TicketStatus.DONE;
     }
-    return "todo";
+    return TicketStatus.TODO;
   };
 
   const buildReorderItems = (nextColumns: typeof columns) =>
@@ -416,8 +417,8 @@ export function BoardColumns({
       setCreateStatus(mapColumnToStatus(columnTitle));
       setCreateTitle("");
       setCreateDescription("");
-      setCreateType("task");
-      setCreatePriority("medium");
+      setCreateType(TicketType.TASK);
+      setCreatePriority(TicketPriority.MEDIUM);
       setCreateAccessPolicy(DEFAULT_ACCESS_POLICY);
       setCreateOpen(true);
     };

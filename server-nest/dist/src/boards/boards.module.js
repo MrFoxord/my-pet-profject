@@ -9,6 +9,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BoardsModule = void 0;
 const common_1 = require("@nestjs/common");
 const boards_controller_1 = require("./boards.controller");
+const board_tickets_controller_1 = require("./board-tickets.controller");
+const board_invitations_controller_1 = require("./board-invitations.controller");
+const board_members_controller_1 = require("./board-members.controller");
+const board_roles_controller_1 = require("./board-roles.controller");
 const invitations_public_controller_1 = require("./invitations.public.controller");
 const notifications_controller_1 = require("./notifications.controller");
 const board_workflow_service_1 = require("./board-workflow.service");
@@ -27,7 +31,15 @@ exports.BoardsModule = BoardsModule;
 exports.BoardsModule = BoardsModule = __decorate([
     (0, common_1.Module)({
         imports: [auth_module_1.AuthModule, realtime_module_1.RealtimeModule],
-        controllers: [boards_controller_1.BoardsController, invitations_public_controller_1.InvitationsPublicController, notifications_controller_1.NotificationsController],
+        controllers: [
+            boards_controller_1.BoardsController,
+            board_tickets_controller_1.BoardTicketsController,
+            board_invitations_controller_1.BoardInvitationsController,
+            board_members_controller_1.BoardMembersController,
+            board_roles_controller_1.BoardRolesController,
+            invitations_public_controller_1.InvitationsPublicController,
+            notifications_controller_1.NotificationsController,
+        ],
         providers: [
             board_workflow_service_1.BoardsService,
             boards_access_service_1.BoardsAccessService,

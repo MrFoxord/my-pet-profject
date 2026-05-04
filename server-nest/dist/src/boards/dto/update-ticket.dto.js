@@ -13,7 +13,7 @@ exports.UpdateTicketDto = void 0;
 const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
 const swagger_1 = require("@nestjs/swagger");
-const boards_constants_1 = require("../boards.constants");
+const tickets_1 = require("../../shared/tickets");
 class UpdateTicketDto {
 }
 exports.UpdateTicketDto = UpdateTicketDto;
@@ -36,7 +36,7 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_transformer_1.Transform)(({ value }) => (typeof value === 'string' ? value.trim().toLowerCase() : value)),
     (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsIn)(boards_constants_1.TICKET_STATUS_VALUES),
+    (0, class_validator_1.IsEnum)(tickets_1.TicketStatus),
     __metadata("design:type", String)
 ], UpdateTicketDto.prototype, "status", void 0);
 __decorate([
@@ -44,7 +44,7 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_transformer_1.Transform)(({ value }) => (typeof value === 'string' ? value.trim().toLowerCase() : value)),
     (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsIn)(boards_constants_1.TICKET_TYPE_VALUES),
+    (0, class_validator_1.IsEnum)(tickets_1.TicketType),
     __metadata("design:type", String)
 ], UpdateTicketDto.prototype, "type", void 0);
 __decorate([
@@ -52,7 +52,7 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_transformer_1.Transform)(({ value }) => (typeof value === 'string' ? value.trim().toLowerCase() : value)),
     (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsIn)(boards_constants_1.TICKET_PRIORITY_VALUES),
+    (0, class_validator_1.IsEnum)(tickets_1.TicketPriority),
     __metadata("design:type", String)
 ], UpdateTicketDto.prototype, "priority", void 0);
 __decorate([

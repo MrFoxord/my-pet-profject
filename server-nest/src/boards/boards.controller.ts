@@ -27,22 +27,16 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { BoardsService } from './board-workflow.service';
-import { BoardMembersService } from './board-members.service';
-import { BoardRolesService } from './board-roles.service';
-import { BoardInvitationsService } from './board-invitations.service';
+
 import { CreateBoardDto } from './dto/create-board.dto';
 import { CreateColumnDto } from './dto/create-column.dto';
 import { ReorderColumnsDto } from './dto/reorder-columns.dto';
 import { RenameColumnDto } from './dto/rename-column.dto';
 import { DeleteColumnDto } from './dto/delete-column.dto';
-import { CreateTicketDto } from './dto/create-ticket.dto';
-import { CreateTicketCommentDto } from './dto/create-ticket-comment.dto';
-import { UpdateTicketDto } from './dto/update-ticket.dto';
-import { ReorderTicketsDto } from './dto/reorder-tickets.dto';
-import { CreateBoardRoleDto } from './dto/create-board-role.dto';
-import { UpdateBoardRoleDto } from './dto/update-board-role.dto';
-import { CreateBoardInvitationDto } from './dto/create-board-invitation.dto';
-import { UpdateBoardMemberCustomRoleDto } from './dto/update-board-member-custom-role.dto';
+
+
+
+
 import { UpdateBoardDto } from './dto/update-board.dto';
 import { InternalAuthGuard, ServiceJwtPayload } from '../auth/internal-auth.guard';
 
@@ -57,9 +51,6 @@ type AuthRequest = Request & { serviceUser?: ServiceJwtPayload };
 export class BoardsController {
   constructor(
     private readonly boardsService: BoardsService,
-    private readonly boardMembersService: BoardMembersService,
-    private readonly boardRolesService: BoardRolesService,
-    private readonly boardInvitationsService: BoardInvitationsService,
   ) {}
 
   @Get()
@@ -200,270 +191,6 @@ export class BoardsController {
     return { ok: true };
   }
 
-  @Post(':boardId/tickets')
-  @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ summary: 'Create ticket in board' })
-  @ApiParam({ name: 'boardId', description: 'Board ID' })
-  @ApiBody({ type: CreateTicketDto })
-  @ApiCreatedResponse({ description: 'Ticket created' })
-  createTicket(
-    @Param('boardId') boardId: string,
-    @Body() dto: CreateTicketDto,
-    @Req() req: AuthRequest,
-  ) {
-    return this.boardsService.createTicket(boardId, dto, req.serviceUser?.sub);
-  }
 
-  @Patch(':boardId/tickets/reorder')
-  @ApiOperation({ summary: 'Reorder board tickets' })
-  @ApiParam({ name: 'boardId', description: 'Board ID' })
-  @ApiBody({ type: ReorderTicketsDto })
-  @ApiOkResponse({
-    description: 'Tickets reordered',
-    schema: { example: { ok: true } },
-  })
-  async reorderTickets(
-    @Param('boardId') boardId: string,
-    @Body() dto: ReorderTicketsDto,
-    @Req() req: AuthRequest,
-  ) {
-    await this.boardsService.reorderTickets(boardId, dto, req.serviceUser?.sub);
-    return { ok: true };
-  }
 
-  @Get(':boardId/tickets/:ticketId')
-  @ApiOperation({ summary: 'Get ticket by ID' })
-  @ApiParam({ name: 'boardId', description: 'Board ID' })
-  @ApiParam({ name: 'ticketId', description: 'Ticket ID' })
-  @ApiOkResponse({ description: 'Ticket details' })
-  @ApiNotFoundResponse({ description: 'Ticket not found' })
-  getTicketById(
-    @Param('boardId') boardId: string,
-    @Param('ticketId') ticketId: string,
-    @Req() req: AuthRequest,
-  ) {
-    return this.boardsService.getTicketById(boardId, ticketId, req.serviceUser?.sub);
-  }
-
-  @Patch(':boardId/tickets/:ticketId')
-  @ApiOperation({ summary: 'Update ticket' })
-  @ApiParam({ name: 'boardId', description: 'Board ID' })
-  @ApiParam({ name: 'ticketId', description: 'Ticket ID' })
-  @ApiBody({ type: UpdateTicketDto })
-  @ApiOkResponse({ description: 'Ticket updated' })
-  @ApiNotFoundResponse({ description: 'Ticket not found' })
-  updateTicket(
-    @Param('boardId') boardId: string,
-    @Param('ticketId') ticketId: string,
-    @Body() dto: UpdateTicketDto,
-    @Req() req: AuthRequest,
-  ) {
-    return this.boardsService.updateTicket(boardId, ticketId, dto, req.serviceUser?.sub);
-  }
-
-  @Post(':boardId/tickets/:ticketId/comments')
-  @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ summary: 'Create ticket comment' })
-  @ApiParam({ name: 'boardId', description: 'Board ID' })
-  @ApiParam({ name: 'ticketId', description: 'Ticket ID' })
-  @ApiBody({ type: CreateTicketCommentDto })
-  @ApiCreatedResponse({ description: 'Comment created' })
-  createTicketComment(
-    @Param('boardId') boardId: string,
-    @Param('ticketId') ticketId: string,
-    @Body() dto: CreateTicketCommentDto,
-    @Req() req: AuthRequest,
-  ) {
-    return this.boardsService.createTicketComment(boardId, ticketId, dto, req.serviceUser?.sub);
-  }
-
-  @Delete(':boardId/tickets/:ticketId')
-  @ApiOperation({ summary: 'Delete ticket' })
-  @ApiParam({ name: 'boardId', description: 'Board ID' })
-  @ApiParam({ name: 'ticketId', description: 'Ticket ID' })
-  @ApiOkResponse({
-    description: 'Ticket deleted',
-    schema: { example: { ok: true } },
-  })
-  async deleteTicket(
-    @Param('boardId') boardId: string,
-    @Param('ticketId') ticketId: string,
-    @Req() req: AuthRequest,
-  ) {
-    await this.boardsService.deleteTicket(boardId, ticketId, req.serviceUser?.sub);
-    return { ok: true };
-  }
-
-  @Get(':boardId/members')
-  @ApiOperation({ summary: 'List board members' })
-  @ApiParam({ name: 'boardId', description: 'Board ID' })
-  @ApiOkResponse({ description: 'Board members list' })
-  listBoardMembers(
-    @Param('boardId') boardId: string,
-    @Req() req: AuthRequest,
-  ) {
-    return this.boardMembersService.listBoardMembers(boardId, req.serviceUser?.sub);
-  }
-
-  @Patch(':boardId/members/:memberId/custom-role')
-  @ApiOperation({ summary: 'Update member custom role in board' })
-  @ApiParam({ name: 'boardId', description: 'Board ID' })
-  @ApiParam({ name: 'memberId', description: 'Board member ID' })
-  @ApiBody({ type: UpdateBoardMemberCustomRoleDto })
-  @ApiOkResponse({ description: 'Member custom role updated' })
-  updateBoardMemberCustomRole(
-    @Param('boardId') boardId: string,
-    @Param('memberId') memberId: string,
-    @Body() dto: UpdateBoardMemberCustomRoleDto,
-    @Req() req: AuthRequest,
-  ) {
-    return this.boardMembersService.updateBoardMemberCustomRole(boardId, memberId, dto, req.serviceUser?.sub);
-  }
-
-  @Delete(':boardId/members/me')
-  @ApiOperation({ summary: 'Leave board as current user' })
-  @ApiParam({ name: 'boardId', description: 'Board ID' })
-  @ApiOkResponse({
-    description: 'Left board successfully',
-    schema: { example: { ok: true } },
-  })
-  async leaveBoard(
-    @Param('boardId') boardId: string,
-    @Req() req: AuthRequest,
-  ) {
-    await this.boardMembersService.leaveBoard(boardId, req.serviceUser?.sub);
-    return { ok: true };
-  }
-
-  @Delete(':boardId/members/:memberId')
-  @ApiOperation({ summary: 'Remove board member' })
-  @ApiParam({ name: 'boardId', description: 'Board ID' })
-  @ApiParam({ name: 'memberId', description: 'Board member ID' })
-  @ApiOkResponse({
-    description: 'Member removed',
-    schema: { example: { ok: true } },
-  })
-  async removeBoardMember(
-    @Param('boardId') boardId: string,
-    @Param('memberId') memberId: string,
-    @Req() req: AuthRequest,
-  ) {
-    await this.boardMembersService.removeBoardMember(boardId, memberId, req.serviceUser?.sub);
-    return { ok: true };
-  }
-
-  @Post(':boardId/roles')
-  @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ summary: 'Create custom role for board' })
-  @ApiParam({ name: 'boardId', description: 'Board ID' })
-  @ApiBody({ type: CreateBoardRoleDto })
-  @ApiCreatedResponse({ description: 'Role created' })
-  createBoardRole(
-    @Param('boardId') boardId: string,
-    @Body() dto: CreateBoardRoleDto,
-    @Req() req: AuthRequest,
-  ) {
-    return this.boardRolesService.createBoardRole(boardId, dto, req.serviceUser?.sub);
-  }
-
-  @Get(':boardId/roles')
-  @ApiOperation({ summary: 'List board custom roles' })
-  @ApiParam({ name: 'boardId', description: 'Board ID' })
-  @ApiOkResponse({ description: 'Board roles list' })
-  listBoardRoles(
-    @Param('boardId') boardId: string,
-    @Req() req: AuthRequest,
-  ) {
-    return this.boardRolesService.listBoardRoles(boardId, req.serviceUser?.sub);
-  }
-
-  @Patch(':boardId/roles/:roleId')
-  @ApiOperation({ summary: 'Update board custom role' })
-  @ApiParam({ name: 'boardId', description: 'Board ID' })
-  @ApiParam({ name: 'roleId', description: 'Role ID' })
-  @ApiBody({ type: UpdateBoardRoleDto })
-  @ApiOkResponse({ description: 'Role updated' })
-  updateBoardRole(
-    @Param('boardId') boardId: string,
-    @Param('roleId') roleId: string,
-    @Body() dto: UpdateBoardRoleDto,
-    @Req() req: AuthRequest,
-  ) {
-    return this.boardRolesService.updateBoardRole(boardId, roleId, dto, req.serviceUser?.sub);
-  }
-
-  @Delete(':boardId/roles/:roleId')
-  @ApiOperation({ summary: 'Delete board custom role' })
-  @ApiParam({ name: 'boardId', description: 'Board ID' })
-  @ApiParam({ name: 'roleId', description: 'Role ID' })
-  @ApiOkResponse({
-    description: 'Role deleted',
-    schema: { example: { ok: true } },
-  })
-  async deleteBoardRole(
-    @Param('boardId') boardId: string,
-    @Param('roleId') roleId: string,
-    @Req() req: AuthRequest,
-  ) {
-    await this.boardRolesService.deleteBoardRole(boardId, roleId, req.serviceUser?.sub);
-    return { ok: true };
-  }
-
-  @Post(':boardId/invitations')
-  @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ summary: 'Create board invitation' })
-  @ApiParam({ name: 'boardId', description: 'Board ID' })
-  @ApiBody({ type: CreateBoardInvitationDto })
-  @ApiCreatedResponse({ description: 'Invitation created' })
-  createBoardInvitation(
-    @Param('boardId') boardId: string,
-    @Body() dto: CreateBoardInvitationDto,
-    @Req() req: AuthRequest,
-  ) {
-    return this.boardInvitationsService.createBoardInvitation(boardId, dto, req.serviceUser?.sub);
-  }
-
-  @Get(':boardId/invitations')
-  @ApiOperation({ summary: 'List board invitations' })
-  @ApiParam({ name: 'boardId', description: 'Board ID' })
-  @ApiOkResponse({ description: 'Invitations list' })
-  listBoardInvitations(
-    @Param('boardId') boardId: string,
-    @Req() req: AuthRequest,
-  ) {
-    return this.boardInvitationsService.listBoardInvitations(boardId, req.serviceUser?.sub);
-  }
-
-  @Post(':boardId/invitations/:invitationId/accept')
-  @ApiOperation({ summary: 'Accept board invitation by invitation ID' })
-  @ApiParam({ name: 'boardId', description: 'Board ID' })
-  @ApiParam({ name: 'invitationId', description: 'Invitation ID' })
-  @ApiOkResponse({
-    description: 'Invitation accepted',
-    schema: { example: { success: true, boardId: 'board_1' } },
-  })
-  acceptBoardInvitation(
-    @Param('boardId') boardId: string,
-    @Param('invitationId') invitationId: string,
-    @Req() req: AuthRequest,
-  ) {
-    return this.boardInvitationsService.acceptBoardInvitation(boardId, invitationId, req.serviceUser?.sub);
-  }
-
-  @Delete(':boardId/invitations/:invitationId')
-  @ApiOperation({ summary: 'Revoke board invitation' })
-  @ApiParam({ name: 'boardId', description: 'Board ID' })
-  @ApiParam({ name: 'invitationId', description: 'Invitation ID' })
-  @ApiOkResponse({
-    description: 'Invitation revoked',
-    schema: { example: { ok: true } },
-  })
-  async revokeBoardInvitation(
-    @Param('boardId') boardId: string,
-    @Param('invitationId') invitationId: string,
-    @Req() req: AuthRequest,
-  ) {
-    await this.boardInvitationsService.revokeBoardInvitation(boardId, invitationId, req.serviceUser?.sub);
-    return { ok: true };
-  }
 }
